@@ -1,0 +1,13 @@
+name: general
+version: 0.1.0
+
+authors:
+  - Ujjwal Gupta <ujjwalkumargupta44@gmail.com>
+
+targets:
+  general:
+    main: src/general.cr
+
+crystal: 0.32.1
+
+license: MIT

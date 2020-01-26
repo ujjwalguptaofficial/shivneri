@@ -14,11 +14,23 @@ module CrystalInsideFort
       end
     end
 
+    def createObject(val)
+      puts val;
+    end
+
     def create
       # puts Controller.name;
       # Controller.all_subclasses.each do |controller|
       #   puts "controller name: #{controller.name}"
       # end
+
+      {% for c in Controller.all_subclasses %}
+      # puts "c"
+      {% self.createObject(c.id) %}
+    
+      {% end %}
+
+      self.createObject 1
 
       @routes.each do |route|
         puts "route controller name #{route[:controllerName]}"

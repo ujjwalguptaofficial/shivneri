@@ -1,4 +1,6 @@
 module CrystalInsideFort
-  annotation Worker
+  module Annotations
+    annotation Worker
+    end
   end
 end

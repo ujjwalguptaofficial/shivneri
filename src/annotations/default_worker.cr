@@ -1,4 +1,5 @@
 module CrystalInsideFort
-  annotation DefaultWorker
+  module Annotations
+    annotation DefaultWorker; end
   end
 end

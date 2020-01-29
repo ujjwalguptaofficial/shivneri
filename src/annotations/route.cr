@@ -1,4 +1,6 @@
 module CrystalInsideFort
-  annotation Route
+  module Annotations
+    annotation Route
+    end
   end
 end

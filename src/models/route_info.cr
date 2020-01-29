@@ -1,15 +1,15 @@
 module CrystalInsideFort
   module Models
     class RouteInfo
-    
-
+      property path, workers
       @path : String
 
       # @shields
       # @values[]
 
-      def initialize(controllerId)
+      def initialize(controllerClass)
         # @controllerId = controllerId
+        @age = 0
         @path = ""
         @workers = {} of String => Models::WorkerInfo
       end

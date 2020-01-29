@@ -10,7 +10,13 @@ module General
       puts "hey Ujjwal"
     end
 
+    @[Worker("GET", "POST")]
     def index1
+      puts "hey Ujjwal"
+    end
+
+    @[Route("/index")]
+    def index2
       puts "hey Ujjwal"
     end
   end

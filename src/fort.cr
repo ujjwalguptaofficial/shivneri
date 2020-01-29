@@ -1,10 +1,13 @@
 require "./abstracts/index"
 require "./annotations/index"
+# require "./enums/index"
 require "http/server"
 
 module CrystalInsideFort
   include Annotations
   include Handlers
+
+  # include Enums
 
   class Fort
     # @server = nil;
@@ -41,13 +44,33 @@ module CrystalInsideFort
       # end
       # puts "routes length"
       # puts {{klass.annotations(DefaultWorker)}}
-      RouteHandler.getRouteValues().each do |klass|
-        # puts klass
-        # puts {{ @def.annotation(DefaultWorker)[:value] }}
-        # {% for method in @def.annotation(Annotations::DefaultWorker) %}
-        # puts {{method}}
-        # {% end %}
-      end
+      # RouteHandler.getRouteValues().each do |klass|
+      {% for klass in Controller.all_subclasses %}
+      
+        RouteHandler.addController({{klass}})
+
+        {% for method in klass.methods.select { |m| m.annotation(DefaultWorker) } %}
+          {% puts "method name is '#{method.name}' '#{method.annotation(DefaultWorker).args[0]}' " %}
+          {% mName = "#{method.name}" %}
+          RouteHandler.addWorker({{klass}}.name, {{mName}},["GET"])
+        {% end %}
+
+        {% for method in klass.methods.select { |m| m.annotation(Worker) } %}
+          {% mName = "#{method.name}" %}
+          {% args = method.annotation(Worker).args %}
+          RouteHandler.addWorker({{klass}}.name, {{mName}},{{args}}.to_a)
+        {% end %}
+
+
+        {% for method in klass.methods.select { |m| m.annotation(Route) } %}
+          {% mName = "#{method.name}" %}
+          {% args = method.annotation(Route).args %}
+          RouteHandler.addRoute({{klass}}.name, {{mName}},{{args}}[0])
+          {% end %}
+
+
+      {% end %}
+      # end
       address = @server.bind_tcp @port
       puts "Your fort is available on http://#{address}"
       @server.listen

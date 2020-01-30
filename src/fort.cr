@@ -47,7 +47,7 @@ module CrystalInsideFort
       # RouteHandler.getRouteValues().each do |klass|
       {% for klass in Controller.all_subclasses %}
       
-        RouteHandler.addController({{klass}})
+        RouteHandler.addController({{klass.id}})
 
         {% for method in klass.methods.select { |m| m.annotation(DefaultWorker) } %}
           {% puts "method name is '#{method.name}' '#{method.annotation(DefaultWorker).args[0]}' " %}

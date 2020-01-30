@@ -11,6 +11,7 @@ module CrystalInsideFort
     end
 
     def RouteHandler.addController(controller)
+      # controller.new
       @@routerCollection[controller.name] = RouteInfo.new(controller)
     end
 

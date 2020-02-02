@@ -1,7 +1,8 @@
 module CrystalInsideFort
   module Models
     class RouteInfo
-      property path, workers, controllerId
+      property path, workers, controllerId, controllerName
+      @controllerName : String
       @path : String
       @controllerId : Controller.class
       @shields : Array(Shield.class)
@@ -9,6 +10,7 @@ module CrystalInsideFort
       # @values[]
 
       def initialize(controllerClass)
+        @controllerName = controllerClass.name
         @controllerId = controllerClass
         # @controllerId.new
         @path = ""

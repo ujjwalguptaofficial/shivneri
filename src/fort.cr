@@ -74,6 +74,7 @@ module CrystalInsideFort
 
       {% end %}
 
+      #puts "looping through routes" + @routes.size.to_s
       @routes.each do |route|
         puts "route controller name #{route[:controllerName]}"
         RouteHandler.addControllerRoute(route[:controllerName], route[:path])

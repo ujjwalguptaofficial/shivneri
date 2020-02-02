@@ -1,5 +1,3 @@
-
-
 # class MyRouter
 #   def addRoute(val)
 #     puts "className" + val.name
@@ -80,6 +78,12 @@ end
 # {% end %}
 
 # annotation_value
-{{instance = MyModule1::MyClass.new}}
-#MyModule1::MyClass.call
-->{ %instance = {{klass.id}}.new; ->%instance.{{m.name.id}}{% if m.args.size > 0 %}({{arg_types.splat}}){% end %} }
+# {{instance = MyModule1::MyClass.new}}
+# #MyModule1::MyClass.call
+# ->{ %instance = {{klass.id}}.new; ->%instance.{{m.name.id}}{% if m.args.size > 0 %}({{arg_types.splat}}){% end %} }
+
+regexVal = "/{scripts}.js".match(/{(.*)}\.(\w+)(?!.)/)
+
+val = "Crqystal".match(/[a-z]/)
+
+puts regexVal;

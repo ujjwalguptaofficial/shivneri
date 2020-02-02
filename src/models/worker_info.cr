@@ -1,7 +1,7 @@
 module CrystalInsideFort
   module Models
     class WorkerInfo
-      property pattern
+      property pattern, methodsAllowed
       setter pattern : String
       @guards : Array(Shield.class)
 

@@ -22,15 +22,12 @@ module CrystalInsideFort
 
       while (key = iterator.next.to_s)
         if (key.includes?(controllerName))
+          @@routerCollection[key].path = path
           return
         end
       end
 
-      if (@@routerCollection.has_key?(controllerName))
-        @@routerCollection[controllerName].path = path
-      else
-        raise "No controller found for controller name #{controllerName}"
-      end
+      raise "No controller found for controller name #{controllerName}"
     end
 
     def RouteHandler.addWorker(controllerName, methodName : String, httpMethod : Array(String))
@@ -58,9 +55,10 @@ module CrystalInsideFort
         isMatched = false
         controller = @@routerCollection[controllerName]
         patternSplit = controller.path.split("/")
-
+        puts "path:" + controller.path
         patternSplit.each_with_index do |patternPart, i|
           isMatched = patternPart == urlParts[i]
+          puts "isMatched" + isMatched.to_s + "patternPart" + patternPart + "url" + urlParts[i]
           break if isMatched == false
         end
 
@@ -68,6 +66,7 @@ module CrystalInsideFort
           return controller
         end
       end
+      return nil
     end
 
     def RouteHandler.defaultRoute

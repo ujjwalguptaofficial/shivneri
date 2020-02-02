@@ -8,6 +8,7 @@ module CrystalInsideFort
   module Handlers
     class RouteHandler
       @@routerCollection = {} of String => Models::RouteInfo
+      @@defaultRouteControllerName : String = ""
     end
 
     def RouteHandler.addController(controller)
@@ -67,19 +68,10 @@ module CrystalInsideFort
           return controller
         end
       end
-      # for (const controllerName in routerCollection) {
-      #       let isMatched: boolean = false as any;
-      #       const controller = routerCollection[controllerName];
-      #       const patternSplit = controller.path.split("/");
+    end
 
-      #       patternSplit.every((patternPart, i) => {
-      #           isMatched = patternPart === urlParts[i];
-      #           return isMatched;
-      #       });
-      #       if (isMatched === true) {
-      #           return controller;
-      #       }
-      #   }
+    def RouteHandler.defaultRoute
+      return @@routerCollection[@@defaultRouteControllerName]
     end
   end
 end

@@ -1,0 +1,1 @@
+NamedTuple(controllerName: String, path: String)

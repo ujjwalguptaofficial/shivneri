@@ -49,5 +49,37 @@ module CrystalInsideFort
     def RouteHandler.getRouteValues
       return @@routerCollection.values
     end
+
+    def RouteHandler.findControllerFromPath(urlParts : Array(String))
+      iterator = @@routerCollection.each_key
+
+      while (controllerName = iterator.next.to_s)
+        isMatched = false
+        controller = @@routerCollection[controllerName]
+        patternSplit = controller.path.split("/")
+
+        patternSplit.each_with_index do |patternPart, i|
+          isMatched = patternPart == urlParts[i]
+          break if isMatched == false
+        end
+
+        if (isMatched)
+          return controller
+        end
+      end
+      # for (const controllerName in routerCollection) {
+      #       let isMatched: boolean = false as any;
+      #       const controller = routerCollection[controllerName];
+      #       const patternSplit = controller.path.split("/");
+
+      #       patternSplit.every((patternPart, i) => {
+      #           isMatched = patternPart === urlParts[i];
+      #           return isMatched;
+      #       });
+      #       if (isMatched === true) {
+      #           return controller;
+      #       }
+      #   }
+    end
   end
 end

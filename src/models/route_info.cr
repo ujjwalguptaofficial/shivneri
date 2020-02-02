@@ -4,8 +4,8 @@ module CrystalInsideFort
       property path, workers, controllerId
       @path : String
       @controllerId : Controller.class
+      @shields : Array(Shield.class)
 
-      # @shields
       # @values[]
 
       def initialize(controllerClass)
@@ -13,13 +13,7 @@ module CrystalInsideFort
         # @controllerId.new
         @path = ""
         @workers = {} of String => Models::WorkerInfo
-      end
-
-      def initialize(controllerClass)
-        @controllerId = controllerClass
-        # @controllerId.new
-        @path = ""
-        @workers = {} of String => Models::WorkerInfo
+        @shields = [] of Shield.class
       end
 
       def workersAsArray

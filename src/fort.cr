@@ -16,6 +16,7 @@ module CrystalInsideFort
 
     def initialize
       @server = HTTP::Server.new do |context|
+        RequestHandler.new(context.request, context.response).handle
         context.response.content_type = "text/plain"
         context.response.print "Hello world! The time is #{Time.local}"
       end

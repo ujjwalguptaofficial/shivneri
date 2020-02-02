@@ -3,8 +3,7 @@ module CrystalInsideFort
     class WorkerInfo
       property pattern
       setter pattern : String
-
-      # guards: Array<typeof GenericGuard>;
+      @guards : Array(Shield.class)
 
       # values = [] of any;
       # expectedQuery?: any;
@@ -14,6 +13,7 @@ module CrystalInsideFort
         @workerName = workerName
         @pattern = ""
         @methodsAllowed = httpMethods
+        @guards = [] of Shield.class
       end
     end
   end

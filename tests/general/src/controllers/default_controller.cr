@@ -8,6 +8,7 @@ module General
     @[DefaultWorker(2)]
     def index
       puts "hey Ujjwal"
+      return 0
     end
 
     @[Worker("GET", "POST")]

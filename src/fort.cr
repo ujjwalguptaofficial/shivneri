@@ -52,7 +52,9 @@ module CrystalInsideFort
         {% for method in klass.methods.select { |m| m.annotation(DefaultWorker) } %}
           {% puts "method name is '#{method.name}' '#{method.annotation(DefaultWorker).args[0]}' " %}
           {% mName = "#{method.name}" %}
-          RouteHandler.addWorker({{klass}}.name, {{mName}},["GET"])
+         result= {{klass}}.new.{{method.name}}
+         puts result;
+          RouteHandler.addWorker({{klass}}.name, {{mName}} ,["GET"])
         {% end %}
 
         {% for method in klass.methods.select { |m| m.annotation(Worker) } %}
@@ -70,6 +72,11 @@ module CrystalInsideFort
 
 
       {% end %}
+
+      @routes.each do |route|
+        puts "route controller name #{route[:controllerName]}"
+        RouteHandler.addControllerRoute(route[:controllerName], route[:path])
+      end
       # end
       address = @server.bind_tcp @port
       puts "Your fort is available on http://#{address}"

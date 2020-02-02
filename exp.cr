@@ -1,4 +1,4 @@
-require "./src/fort"
+
 
 # class MyRouter
 #   def addRoute(val)
@@ -75,9 +75,11 @@ def annotation_value
   # puts myVar
 end
 
-{{ method = MyModule1::MyClass.methods[0].name }}
-puts {{method}}
+# {{ method = MyModule1::MyClass.methods[0].name }}
+# puts {{method}}
 # {% end %}
 
-annotation_value
-MyModule1::MyClass.new.me
+# annotation_value
+{{instance = MyModule1::MyClass.new}}
+#MyModule1::MyClass.call
+->{ %instance = {{klass.id}}.new; ->%instance.{{m.name.id}}{% if m.args.size > 0 %}({{arg_types.splat}}){% end %} }

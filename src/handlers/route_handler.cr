@@ -49,13 +49,14 @@ module CrystalInsideFort
     end
 
     def RouteHandler.findControllerFromPath(urlParts : Array(String))
-      iterator = @@routerCollection.each_key
+      # iterator = @@routerCollection.each_key
 
-      while (controllerName = iterator.next.to_s)
+      @@routerCollection.to_a.each do |item|
+        puts "controller Name" + item[0]
         isMatched = false
-        controller = @@routerCollection[controllerName]
-        patternSplit = controller.path.split("/")
-        puts "path:" + controller.path
+        # controller = @@routerCollection[item.]
+        patternSplit = item[1].path.split("/")
+        # puts "path:" + controller.path
         patternSplit.each_with_index do |patternPart, i|
           isMatched = patternPart == urlParts[i]
           puts "isMatched" + isMatched.to_s + "patternPart" + patternPart + "url" + urlParts[i]
@@ -63,7 +64,7 @@ module CrystalInsideFort
         end
 
         if (isMatched)
-          return controller
+          return item[1]
         end
       end
       return nil
@@ -71,6 +72,10 @@ module CrystalInsideFort
 
     def RouteHandler.defaultRoute
       return @@routerCollection[@@defaultRouteControllerName]
+    end
+
+    def RouteHandler.defaultRouteControllerName=(value : String)
+      @@defaultRouteControllerName = value
     end
   end
 end

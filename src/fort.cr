@@ -1,11 +1,12 @@
 require "./abstracts/index"
 require "./annotations/index"
-# require "./enums/index"
+require "./generics/index"
 require "http/server"
 
 module CrystalInsideFort
   include Annotations
   include Handlers
+  include Generics
 
   # include Enums
 
@@ -74,12 +75,19 @@ module CrystalInsideFort
 
       {% end %}
 
-      #puts "looping through routes" + @routes.size.to_s
+      isDefaultRouteExist = false
       @routes.each do |route|
-        puts "route controller name #{route[:controllerName]}"
-        RouteHandler.addControllerRoute(route[:controllerName], route[:path])
+        RouteHandler.addControllerRoute(route[:controllerName], removeLastSlash(route[:path]))
+        if (route[:path] === "/*")
+          RouteHandler.defaultRouteControllerName = route[:controllerName]
+          isDefaultRouteExist = true
+        end
       end
-      # end
+
+      if (!isDefaultRouteExist)
+        RouteHandler.defaultRouteControllerName = GenericController.name
+        RouteHandler.addControllerRoute(GenericController.name, "/*")
+      end
       address = @server.bind_tcp @port
       puts "Your fort is available on http://#{address}"
       @server.listen

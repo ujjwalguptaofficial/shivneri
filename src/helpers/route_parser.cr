@@ -4,9 +4,8 @@ module CrystalInsideFort
       matchedRoute = RouteMatch.new(route)
       urlPartLength = urlParts.size
 
-      iterator = route.workers.each_key
-      while (workerName = iterator.next)
-        worker = route.workers[workerName]
+      route.workers.to_a.each do |item|
+        worker = item[1]
         patternSplit = worker.pattern.split("/")
         if (urlPartLength == patternSplit.size)
           params = {} of String => String | Int32
@@ -17,8 +16,6 @@ module CrystalInsideFort
               regex2 = /{(.*)}\.(\w+)(?!.)/
               regMatch1 = patternSplit[i].scan(regex1).map(&.string)
               regMatch2 = patternSplit[i].scan(regex2).map(&.string)
-              # regMatch1 = regex1.match(patternSplit[i])
-              # regMatch2 = regex2.match(patternSplit[i])
               if (regMatch1 != nil)
                 params[regMatch1[1]] = urlPart
               elsif (regMatch2 != nil)

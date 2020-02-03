@@ -1,0 +1,1 @@
+require "./generic_controller"

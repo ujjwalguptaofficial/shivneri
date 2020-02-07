@@ -1,8 +1,8 @@
 module CrystalInsideFort
-  module Enums
+  module ENUM
     # HttpMethod  = NamedTuple(Get: String)
-    HTTP_METHOD = {
-      Get: "GET",
-    }
+    enum HttpStatus
+      
+    end
   end
 end

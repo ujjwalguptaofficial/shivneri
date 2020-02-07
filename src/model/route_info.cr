@@ -1,5 +1,5 @@
 module CrystalInsideFort
-  module Models
+  module MODEL
     class RouteInfo
       property path, workers, controllerId, controllerName
       @controllerName : String
@@ -14,7 +14,7 @@ module CrystalInsideFort
         @controllerId = controllerClass
         # @controllerId.new
         @path = ""
-        @workers = {} of String => Models::WorkerInfo
+        @workers = {} of String => MODEL::WorkerInfo
         @shields = [] of Shield.class
       end
 

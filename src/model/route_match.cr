@@ -1,5 +1,5 @@
 module CrystalInsideFort
-  module Models
+  module MODEL
     class RouteMatch
       property controllerInfo, workerInfo, params, allowedHttpMethod
 

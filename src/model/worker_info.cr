@@ -1,5 +1,5 @@
 module CrystalInsideFort
-  module Models
+  module MODEL
     class WorkerInfo
       property pattern, methodsAllowed
       setter pattern : String

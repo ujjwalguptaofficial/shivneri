@@ -1,5 +1,5 @@
 module CrystalInsideFort
-  module Helpers
+  module HELPER
     def checkRouteInWorker(route : RouteInfo, httpMethod : String, urlParts : Array(String))
       matchedRoute = RouteMatch.new(route)
       urlPartLength = urlParts.size
@@ -49,7 +49,7 @@ module CrystalInsideFort
       return matchedRoute
     end
 
-    def parseRoute(url : String, httpMethod : String)
+    def parseRoute?(url : String, httpMethod : String) : RouteMatch | Nil
       url = removeLastSlash(url)
       urlParts = url.split("/")
       route = RouteHandler.findControllerFromPath(urlParts)

@@ -6,7 +6,7 @@ require "http/server"
 module CrystalInsideFort
   include Annotations
   include Handlers
-  include Generics
+  include GENERIC
 
   # include Enums
 
@@ -64,10 +64,13 @@ module CrystalInsideFort
           {% args = method.annotation(Worker).args %}
           RouteHandler.addWorker({{klass}}.name, {{mName}},{{args}}.to_a)
         {% end %}
-
+        store = {} of String => Proc(Nil);
 
         {% for method in klass.methods.select { |m| m.annotation(Route) } %}
           {% mName = "#{method.name}" %}
+          store[{{mName}}] = -> { {{method.body}} }
+          # {{klass}}.new.methods
+          # {{klass}}.new.index2();
           {% args = method.annotation(Route).args %}
           RouteHandler.addRoute({{klass}}.name, {{mName}},{{args}}[0])
           {% end %}

@@ -1,13 +1,13 @@
-require "../models/index"
+require "../model/index"
 require "../helpers/index"
 
 module CrystalInsideFort
-  include Models
-  include Helpers
+  include MODEL
+  include HELPER
 
   module Handlers
     class RouteHandler
-      @@routerCollection = {} of String => Models::RouteInfo
+      @@routerCollection = {} of String => MODEL::RouteInfo
       @@defaultRouteControllerName : String = ""
     end
 

@@ -82,8 +82,9 @@ end
 # #MyModule1::MyClass.call
 # ->{ %instance = {{klass.id}}.new; ->%instance.{{m.name.id}}{% if m.args.size > 0 %}({{arg_types.splat}}){% end %} }
 
-regexVal = "/{scripts}.js".match(/{(.*)}\.(\w+)(?!.)/)
+VALUES = MyModule1::MyClass.id
 
-val = "Crqystal".match(/[a-z]/)
-
-puts regexVal;
+{% for method in VALUES.methods %}
+  {% mName = "#{method.name}" %}
+  puts {{mName}}
+{% end %}

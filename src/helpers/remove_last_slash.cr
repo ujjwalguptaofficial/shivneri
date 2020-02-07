@@ -1,5 +1,5 @@
 module CrystalInsideFort
-  module Helpers
+  module HELPER
     def removeLastSlash(value : String)
       valueLength = value.size
       # removing / from value;

@@ -30,14 +30,13 @@ module CrystalInsideFort
         return workersArray
       end
 
-      #    def init(value : IRouteInfo)
-      #         this.controllerName = value.controllerName;
-      #         this.controller = value.controller;
-      #         this.path = value.path;
-      #         this.shields = value.shields;
-      #         this.values = value.values;
-      #         this.workers = value.workers;
-      #     end
+      def to_json
+        return {
+          @controllerName,
+          @path,
+          @workers
+        }
+      end
     end
   end
 end

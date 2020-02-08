@@ -2,11 +2,12 @@ module CrystalInsideFort
   module MODEL
     class WorkerInfo
       property pattern, methodsAllowed
-      setter pattern : String
+      @pattern : String
+
       @guards : Array(Guard.class)
       @workerProc : Proc(HttpResult)
 
-      getter workerName : String
+      getter name : String
 
       getter workerProc : Proc(HttpResult)
 
@@ -15,10 +16,18 @@ module CrystalInsideFort
       # expectedBody?: any;
 
       def initialize(workerName : String, httpMethods : Array(String), @workerProc)
-        @workerName = workerName
-        @pattern = ""
+        @name = workerName
+        @pattern = "/#{workerName}"
         @methodsAllowed = httpMethods
         @guards = [] of Guard.class
+      end
+
+      def to_json
+        return {
+          @name,
+          @pattern,
+          @methodsAllowed.to_json,
+        }
       end
     end
   end

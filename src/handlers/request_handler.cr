@@ -34,7 +34,7 @@ module CrystalInsideFort
       end
 
       private def setPreHeader
-        @response.headers["X-Powered-By"] = FortGlobal.appName
+        @response.headers["X-Powered-By"] = FortGlobal.app_name
         @response.headers["Vary"] = "Accept-Encoding"
         @response.headers["Date"] = Time.utc.to_s
       end
@@ -79,17 +79,21 @@ module CrystalInsideFort
         shouldExecuteNextProcess : Bool = self.parse_cookie_from_request
         if (shouldExecuteNextProcess)
           path_url = @request.path
+          puts "url is #{path_url}"
           #  shouldExecuteNextProcess = await this.executeWallIncoming_
           begin
             route_match_info = parseRoute?(path_url.downcase, requestMethod)
             if (route_match_info == nil) # no route matched
               # it may be a file or folder then
               # @handleFileRequest(pathUrl);
+              puts "url not matched"
             else
+              puts "url matched"
               @route_match_info = route_match_info.as(RouteMatch)
               self.on_route_matched
             end
           rescue ex
+            puts "exception #{ex.message} #{ex.callstack.as(CallStack).printable_backtrace}"
             self.onErrorOccured(ex)
           end
         end
@@ -120,21 +124,7 @@ module CrystalInsideFort
       end
 
       private def run_controller
-        result = self.set_controller_props
-        # self.on_result_from_controller(result)
-      end
-
-      private def on_result_from_controller(result : HttpResult)
-      end
-
-      macro run_worker(klass, workerName)
-        {% for method in klass.methods.select { |m| m.name == workerName } %}
-          {% mName = "#{method.name}" %}
-        #return controllerObj
-        {% end %}
-      end
-
-      private def set_controller_props
+        puts "hitting controller"
         controllerObj : Controller = @route_match_info.controllerInfo.controllerId.new
         controllerObj.request = @request
         controllerObj.response = @response
@@ -146,33 +136,33 @@ module CrystalInsideFort
         # controllerObj.data = this.data_;
         # controllerObj.file = this.file;
 
-        return @route_match_info.workerInfo.as(WorkerInfo).workerProc.call
-        # methods = klass.id.{{methods}}
-        # run_worker(klass, @route_match_info.workerInfo.workerName)
-        # run_worker :klass, @route_match_info.workerInfo.workerName
-        # {% for method in GenericController.methods.select { |m| m.name == workerName } %}
-        #   {% mName = "#{method.name}" %}
-        # #return controllerObj
-        # {% end %}
-        # return controllerObj[this.routeMatchInfo_.workerInfo.workerName]();
+        result = @route_match_info.workerInfo.as(WorkerInfo).workerProc.call
+        self.on_result_from_controller(result)
+      end
+
+      macro run_worker(klass, workerName)
+        {% for method in klass.methods.select { |m| m.name == workerName } %}
+          {% mName = "#{method.name}" %}
+        #return controllerObj
+        {% end %}
       end
 
       private def parse_cookie_from_request : Bool
-        if (FortGlobal.shouldParseCookie)
-          rawCookie = @request.headers[CONSTANTS.cookie] || @request.headers["cookie"]
+        # if (FortGlobal.shouldParseCookie)
+        #   rawCookie = @request.headers[CONSTANTS.cookie] || @request.headers["cookie"]
 
-          begin
-            parsedCookies = parse_cookie(rawCookie)
-            # @session_ = new FortGlobal.sessionProvider
-            # @session_.cookie = @cookieManager = CookieManager.new(parsedCookies)
-            # @session_.sessionId = parsedCookies[FortGlobal.appSessionIdentifier]
-          rescue ex
-            self.onErrorOccured(ex)
-            return false
-          end
-        else
-          @cookieManager = CookieManager.new({} of String => String)
-        end
+        #   begin
+        #     parsedCookies = parse_cookie(rawCookie)
+        #     # @session_ = new FortGlobal.sessionProvider
+        #     # @session_.cookie = @cookieManager = CookieManager.new(parsedCookies)
+        #     # @session_.sessionId = parsedCookies[FortGlobal.appSessionIdentifier]
+        #   rescue ex
+        #     self.onErrorOccured(ex)
+        #     return false
+        #   end
+        # else
+        #   @cookieManager = CookieManager.new({} of String => String)
+        # end
         return true
       end
     end

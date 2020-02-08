@@ -1,5 +1,6 @@
 # require "../handlers/index"
 # require "../annotations/index"
+require "json"
 
 module CrystalInsideFort
   module Abstracts
@@ -11,12 +12,10 @@ module CrystalInsideFort
       @response : HTTP::Server::Response | Nil = nil
       @query = {} of String => String | Int32
 
-      macro method_added(method)
-        {% puts "Method added:", method.name.stringify %}
-      end
-
-      macro finished
-         {% puts "methods are", @type.methods.map &.name %}
+      def json_result(value)
+        result = HttpResult.new(value.to_json, MIME_TYPE["json"])
+        puts "result #{result}.to_json"
+        return result
       end
     end
   end

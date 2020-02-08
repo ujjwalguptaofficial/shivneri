@@ -17,17 +17,21 @@ module CrystalInsideFort
         # return Promise.all(outgoingResults);
       end
 
-      protected def onErrorOccured(error)
+      protected def onErrorOccured(error : Exception)
+        # puts typeof(error)
         errMessage : String = ""
         begin
           self.runWallOutGoing
-          # errMessage = FortGlobal.errorHandler.new.onServerError(error)
+          errMessage = FortGlobal.error_handler.new.on_server_error(error)
         rescue ex
           errMessage = ""
           # ex.message
         end
-        @response.headers[CONSTANTS.content_type] = MIME_TYPE["html"]
-        @response.respond_with_status(500, errMessage)
+        # @response.headers[CONSTANTS.content_type] = MIME_TYPE["html"]
+        # @response.respond_with_status(500, errMessage)
+        @response.content_type = MIME_TYPE["html"]
+        @response.status = HTTP::Status::INTERNAL_SERVER_ERROR
+        @response.print(errMessage)
       end
     end
   end

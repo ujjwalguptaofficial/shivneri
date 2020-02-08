@@ -5,7 +5,7 @@ module CrystalInsideFort
     end
 
     def self.content_type
-      return "Content-Type"
+      return "content-type"
     end
   end
 end

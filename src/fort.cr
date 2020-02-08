@@ -12,8 +12,11 @@ module CrystalInsideFort
 
   class Fort
     # @server = nil;
+    @error_handler : MODEL::ErrorHandler.class = ErrorHandler
     setter port : Int32 = 4000
     setter routes = [] of NamedTuple(controllerName: String, path: String)
+
+    setter error_handler
 
     def initialize
       @server = HTTP::Server.new do |context|
@@ -23,45 +26,11 @@ module CrystalInsideFort
       end
     end
 
-    def createObject(val)
-      puts val
-    end
-
     def create
+       
       {% for klass in Controller.all_subclasses %}
-      
+
         RouteHandler.addController({{klass.id}})
-
-        {% for method in klass.methods.select { |m| m.annotation(DefaultWorker) } %}
-          {% puts "method name is '#{method.name}' '#{method.annotation(DefaultWorker).args[0]}' " %}
-          {% mName = "#{method.name}" %}
-          action = Proc(HttpResult).new { 
-               instance = {{klass}}.new;
-               instance.{{method.name}}
-               return HttpResult.new
-          }
-          workerInfo =  WorkerInfo.new({{mName}},["GET"], action)
-          RouteHandler.addWorker({{klass}}.name, workerInfo)
-        {% end %}
-
-        {% for method in klass.methods.select { |m| m.annotation(Worker) } %}
-          {% mName = "#{method.name}" %}
-          {% args = method.annotation(Worker).args %}
-          action = Proc(HttpResult).new { 
-               instance = {{klass}}.new;
-               instance.{{method.name}}
-               return HttpResult.new
-          }
-          workerInfo =  WorkerInfo.new({{mName}},{{args}}.to_a, action)
-          RouteHandler.addWorker({{klass}}.name, workerInfo)
-        {% end %}
-
-        {% for method in klass.methods.select { |m| m.annotation(Route) } %}
-          {% mName = "#{method.name}" %}
-          {% args = method.annotation(Route).args %}
-          RouteHandler.addRoute({{klass}}.name, {{mName}},{{args}}[0])
-        {% end %}
-
 
       {% end %}
 
@@ -73,6 +42,43 @@ module CrystalInsideFort
           isDefaultRouteExist = true
         end
       end
+
+      {% for klass in Controller.all_subclasses %}
+
+        {% for method in klass.methods.select { |m| m.annotation(DefaultWorker) } %}
+          {% puts "method name is '#{method.name}' '#{method.annotation(DefaultWorker).args[0]}' " %}
+          {% mName = "#{method.name}" %}
+          action = Proc(HttpResult).new { 
+               instance = {{klass}}.new;
+              return instance.{{method.name}}
+              #  return HttpResult.new
+          }
+          workerInfo =  WorkerInfo.new({{mName}},["GET"], action)
+          RouteHandler.addWorker({{klass}}.name, workerInfo)
+          RouteHandler.addRoute({{klass}}.name, {{mName}},"/")
+        {% end %}
+
+        {% for method in klass.methods.select { |m| m.annotation(Worker) } %}
+          {% mName = "#{method.name}" %}
+          {% args = method.annotation(Worker).args %}
+          action = Proc(HttpResult).new { 
+               instance = {{klass}}.new;
+               return instance.{{method.name}}
+              #  return HttpResult.new
+          }
+          workerInfo =  WorkerInfo.new({{mName}},{{args}}.to_a, action)
+          RouteHandler.addWorker({{klass}}.name, workerInfo)
+          RouteHandler.addRoute({{klass}}.name, {{mName}},"/#{workerInfo.name}")
+        {% end %}
+
+        {% for method in klass.methods.select { |m| m.annotation(Route) } %}
+          {% mName = "#{method.name}" %}
+          {% args = method.annotation(Route).args %}
+          RouteHandler.addRoute({{klass}}.name, {{mName}},{{args}}[0])
+        {% end %}
+
+
+      {% end %}
 
       if (!isDefaultRouteExist)
         RouteHandler.defaultRouteControllerName = GenericController.name

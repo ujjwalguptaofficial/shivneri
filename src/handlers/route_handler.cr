@@ -22,7 +22,9 @@ module CrystalInsideFort
 
       while (key = iterator.next.to_s)
         if (key.includes?(controllerName))
+          # puts "before path #{@@routerCollection[key].to_json}"
           @@routerCollection[key].path = path
+          # puts "path updated for controller : #{path} #{@@routerCollection[key].to_json}"
           return
         end
       end
@@ -31,8 +33,7 @@ module CrystalInsideFort
     end
 
     def RouteHandler.addWorker(controllerName, workerInfo : WorkerInfo)
-      # puts "controller Name" + controllerName
-      @@routerCollection[controllerName].workers[workerInfo.workerName] = workerInfo
+      @@routerCollection[controllerName].workers[workerInfo.name] = workerInfo
     end
 
     def RouteHandler.addRoute(controllerName, methodName : String, format : String)
@@ -40,6 +41,9 @@ module CrystalInsideFort
         if (format != nil)
           format = removeLastSlash(format)
         end
+        controllerPath = @@routerCollection[controllerName].path
+        puts "controller : #{@@routerCollection[controllerName].to_json}"
+        format = controllerPath.empty? || controllerPath === "/*" ? format : "#{controllerPath}#{format}"
         @@routerCollection[controllerName].workers[methodName].pattern = format
       end
     end
@@ -52,14 +56,14 @@ module CrystalInsideFort
       # iterator = @@routerCollection.each_key
 
       @@routerCollection.to_a.each do |item|
-        puts "controller Name" + item[0]
+        # puts "controller Name" + item[0]
         isMatched = false
         # controller = @@routerCollection[item.]
         patternSplit = item[1].path.split("/")
         # puts "path:" + controller.path
         patternSplit.each_with_index do |patternPart, i|
           isMatched = patternPart == urlParts[i]
-          puts "isMatched" + isMatched.to_s + "patternPart" + patternPart + "url" + urlParts[i]
+          # puts "isMatched" + isMatched.to_s + "patternPart" + patternPart + "url" + urlParts[i]
           break if isMatched == false
         end
 

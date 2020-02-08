@@ -7,15 +7,19 @@ module CrystalInsideFort
     abstract class Controller
       # include Handlers
       # include Annotations
-      property request, response, query
+      property context
       @request : HTTP::Request | Nil = nil
       @response : HTTP::Server::Response | Nil = nil
-      @query = {} of String => String | Int32
+
+      @context : RequestHandler | Nil = nil
 
       def json_result(value)
         result = HttpResult.new(value.to_json, MIME_TYPE["json"])
-        puts "result #{result}.to_json"
         return result
+      end
+
+      def query
+        return @context.as(RequestHandler).query
       end
     end
   end

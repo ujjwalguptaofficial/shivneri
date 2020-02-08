@@ -14,7 +14,8 @@ module General
 
     @[Worker("GET", "POST")]
     def index1
-      return json_result({"name" => "ujjwal gupta"})
+      # return json_result({"name" => "ujjwal gupta"})
+      return json_result(query)
     end
 
     @[Route("/index")]

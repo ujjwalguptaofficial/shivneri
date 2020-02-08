@@ -1,17 +1,17 @@
 module CrystalInsideFort
   module MODEL
     class RouteInfo
-      property path, workers, controllerId, controllerName
+      property path, workers, controllerName
       @controllerName : String
       @path : String
-      @controllerId : Controller.class
+      # @controllerId : Controller.class
       @shields : Array(Shield.class)
 
       # @values[]
 
       def initialize(controllerClass)
         @controllerName = controllerClass.name
-        @controllerId = controllerClass
+        # @controllerId = controllerClass
         # @controllerId.new
         @path = ""
         @workers = {} of String => MODEL::WorkerInfo
@@ -34,7 +34,7 @@ module CrystalInsideFort
         return {
           @controllerName,
           @path,
-          @workers
+          @workers,
         }
       end
     end

@@ -9,7 +9,7 @@ module CrystalInsideFort
 
       getter name : String
 
-      getter workerProc : Proc(HttpResult)
+      getter workerProc : Proc(RequestHandler, HttpResult)
 
       # values = [] of any;
       # expectedQuery?: any;

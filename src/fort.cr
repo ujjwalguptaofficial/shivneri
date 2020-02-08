@@ -27,7 +27,6 @@ module CrystalInsideFort
     end
 
     def create
-       
       {% for klass in Controller.all_subclasses %}
 
         RouteHandler.addController({{klass.id}})
@@ -48,8 +47,9 @@ module CrystalInsideFort
         {% for method in klass.methods.select { |m| m.annotation(DefaultWorker) } %}
           {% puts "method name is '#{method.name}' '#{method.annotation(DefaultWorker).args[0]}' " %}
           {% mName = "#{method.name}" %}
-          action = Proc(HttpResult).new { 
-               instance = {{klass}}.new;
+          action = -> (ctx : RequestHandler) { 
+              instance = {{klass}}.new;
+              instance.context = ctx;
               return instance.{{method.name}}
               #  return HttpResult.new
           }
@@ -61,10 +61,10 @@ module CrystalInsideFort
         {% for method in klass.methods.select { |m| m.annotation(Worker) } %}
           {% mName = "#{method.name}" %}
           {% args = method.annotation(Worker).args %}
-          action = Proc(HttpResult).new { 
-               instance = {{klass}}.new;
-               return instance.{{method.name}}
-              #  return HttpResult.new
+          action = -> (ctx : RequestHandler) { 
+            instance = {{klass}}.new;
+            instance.context = ctx;
+            return instance.{{method.name}}
           }
           workerInfo =  WorkerInfo.new({{mName}},{{args}}.to_a, action)
           RouteHandler.addWorker({{klass}}.name, workerInfo)

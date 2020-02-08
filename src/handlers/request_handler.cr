@@ -14,8 +14,9 @@ module CrystalInsideFort
     include GENERIC
 
     class RequestHandler < ControllerResultHandler
-      property request
+      getter query, request
 
+      @query = {} of String => String | Int32
       @request : HTTP::Request
       @response : HTTP::Server::Response
       @wallInstances : Array(Wall) = [] of Wall
@@ -75,12 +76,15 @@ module CrystalInsideFort
       end
 
       private def execute
-        requestMethod = @request.method
+        @request.query_params.each do |name, value|
+          @query[name] = value
+        end
         shouldExecuteNextProcess : Bool = self.parse_cookie_from_request
         if (shouldExecuteNextProcess)
           path_url = @request.path
           puts "url is #{path_url}"
           #  shouldExecuteNextProcess = await this.executeWallIncoming_
+          requestMethod = @request.method
           begin
             route_match_info = parseRoute?(path_url.downcase, requestMethod)
             if (route_match_info == nil) # no route matched
@@ -125,9 +129,9 @@ module CrystalInsideFort
 
       private def run_controller
         puts "hitting controller"
-        controllerObj : Controller = @route_match_info.controllerInfo.controllerId.new
-        controllerObj.request = @request
-        controllerObj.response = @response
+        # controllerObj : Controller = @route_match_info.controllerInfo.controllerId.new
+        # controllerObj.request = @request
+        # controllerObj.response = @response
         # controllerObj.query = this.query_;
         # controllerObj.body = this.body;
         # controllerObj.session = this.session_;
@@ -136,15 +140,8 @@ module CrystalInsideFort
         # controllerObj.data = this.data_;
         # controllerObj.file = this.file;
 
-        result = @route_match_info.workerInfo.as(WorkerInfo).workerProc.call
+        result = @route_match_info.workerInfo.as(WorkerInfo).workerProc.call(self)
         self.on_result_from_controller(result)
-      end
-
-      macro run_worker(klass, workerName)
-        {% for method in klass.methods.select { |m| m.name == workerName } %}
-          {% mName = "#{method.name}" %}
-        #return controllerObj
-        {% end %}
       end
 
       private def parse_cookie_from_request : Bool

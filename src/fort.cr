@@ -18,8 +18,8 @@ module CrystalInsideFort
     def initialize
       @server = HTTP::Server.new do |context|
         RequestHandler.new(context.request, context.response).handle
-        context.response.content_type = "text/plain"
-        context.response.print "Hello world! The time is #{Time.local}"
+        # context.response.content_type = "text/plain"
+        # context.response.print "Hello world! The time is #{Time.local}"
       end
     end
 
@@ -28,25 +28,6 @@ module CrystalInsideFort
     end
 
     def create
-      # puts Controller.name;
-      # Controller.all_subclasses.each do |controller|
-      #   puts "controller name: #{controller.name}"
-      # end
-
-      # {% for c in Controller.all_subclasses %}
-      # # puts "c"
-      # {% self.createObject(c.id) %}
-
-      # {% end %}
-
-      # self.createObject 1
-
-      # @routes.each do |route|
-      #   puts "route controller name #{route[:controllerName]}"
-      # end
-      # puts "routes length"
-      # puts {{klass.annotations(DefaultWorker)}}
-      # RouteHandler.getRouteValues().each do |klass|
       {% for klass in Controller.all_subclasses %}
       
         RouteHandler.addController({{klass.id}})
@@ -54,26 +35,32 @@ module CrystalInsideFort
         {% for method in klass.methods.select { |m| m.annotation(DefaultWorker) } %}
           {% puts "method name is '#{method.name}' '#{method.annotation(DefaultWorker).args[0]}' " %}
           {% mName = "#{method.name}" %}
-         result= {{klass}}.new.{{method.name}}
-         puts result;
-          RouteHandler.addWorker({{klass}}.name, {{mName}} ,["GET"])
+          action = Proc(HttpResult).new { 
+               instance = {{klass}}.new;
+               instance.{{method.name}}
+               return HttpResult.new
+          }
+          workerInfo =  WorkerInfo.new({{mName}},["GET"], action)
+          RouteHandler.addWorker({{klass}}.name, workerInfo)
         {% end %}
 
         {% for method in klass.methods.select { |m| m.annotation(Worker) } %}
           {% mName = "#{method.name}" %}
           {% args = method.annotation(Worker).args %}
-          RouteHandler.addWorker({{klass}}.name, {{mName}},{{args}}.to_a)
+          action = Proc(HttpResult).new { 
+               instance = {{klass}}.new;
+               instance.{{method.name}}
+               return HttpResult.new
+          }
+          workerInfo =  WorkerInfo.new({{mName}},{{args}}.to_a, action)
+          RouteHandler.addWorker({{klass}}.name, workerInfo)
         {% end %}
-        store = {} of String => Proc(Nil);
 
         {% for method in klass.methods.select { |m| m.annotation(Route) } %}
           {% mName = "#{method.name}" %}
-          store[{{mName}}] = -> { {{method.body}} }
-          # {{klass}}.new.methods
-          # {{klass}}.new.index2();
           {% args = method.annotation(Route).args %}
           RouteHandler.addRoute({{klass}}.name, {{mName}},{{args}}[0])
-          {% end %}
+        {% end %}
 
 
       {% end %}

@@ -30,9 +30,9 @@ module CrystalInsideFort
       raise "No controller found for controller name #{controllerName}"
     end
 
-    def RouteHandler.addWorker(controllerName, methodName : String, httpMethod : Array(String))
+    def RouteHandler.addWorker(controllerName, workerInfo : WorkerInfo)
       # puts "controller Name" + controllerName
-      @@routerCollection[controllerName].workers[methodName] = WorkerInfo.new(methodName, httpMethod)
+      @@routerCollection[controllerName].workers[workerInfo.workerName] = workerInfo
     end
 
     def RouteHandler.addRoute(controllerName, methodName : String, format : String)

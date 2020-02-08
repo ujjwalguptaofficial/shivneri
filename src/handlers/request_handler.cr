@@ -121,7 +121,7 @@ module CrystalInsideFort
 
       private def run_controller
         result = self.set_controller_props
-        #self.on_result_from_controller(result)
+        # self.on_result_from_controller(result)
       end
 
       private def on_result_from_controller(result : HttpResult)
@@ -146,14 +146,14 @@ module CrystalInsideFort
         # controllerObj.data = this.data_;
         # controllerObj.file = this.file;
 
-        klass = @route_match_info.controllerInfo.controllerId
+        return @route_match_info.workerInfo.as(WorkerInfo).workerProc.call
         # methods = klass.id.{{methods}}
         # run_worker(klass, @route_match_info.workerInfo.workerName)
         # run_worker :klass, @route_match_info.workerInfo.workerName
-        {% for method in GenericController.methods.select { |m| m.name == workerName } %}
-          {% mName = "#{method.name}" %}
-        #return controllerObj
-        {% end %}
+        # {% for method in GenericController.methods.select { |m| m.name == workerName } %}
+        #   {% mName = "#{method.name}" %}
+        # #return controllerObj
+        # {% end %}
         # return controllerObj[this.routeMatchInfo_.workerInfo.workerName]();
       end
 

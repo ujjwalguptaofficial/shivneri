@@ -4,7 +4,7 @@ module CrystalInsideFort
       property controllerInfo, workerInfo, params, allowedHttpMethod
 
       @controllerInfo : RouteInfo
-      @workerInfo : WorkerInfo
+      @workerInfo : WorkerInfo | Nil = nil
       @allowedHttpMethod : Array(String)
       @params : Hash(String, String | Int32)
 
@@ -12,7 +12,7 @@ module CrystalInsideFort
         @controllerInfo = controllerInfo
         @allowedHttpMethod = [] of String
         @params = {} of String => String | Int32
-        @workerInfo = WorkerInfo.new("", [] of String)
+        # @workerInfo = WorkerInfo.new("", [] of String, -> { 1 })
       end
     end
   end

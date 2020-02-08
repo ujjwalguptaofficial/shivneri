@@ -4,6 +4,7 @@ module CrystalInsideFort
     @@shouldParseCookie = true
     @@walls = [] of Wall.class
     @@error_handler = ErrorHandler
+    @@should_parse_post = true
   end
 
   def FortGlobal.app_name
@@ -20,5 +21,9 @@ module CrystalInsideFort
 
   def FortGlobal.error_handler
     return @@error_handler
+  end
+
+  def FortGlobal.should_parse_post
+    return @@should_parse_post
   end
 end

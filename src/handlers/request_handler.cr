@@ -1,6 +1,6 @@
 require "http"
 require "../fort_global"
-require "./controller_result_handler"
+require "./post_handler"
 require "../model/index"
 require "../constants"
 require "../helpers/index"
@@ -13,10 +13,11 @@ module CrystalInsideFort
     include MODEL
     include GENERIC
 
-    class RequestHandler < ControllerResultHandler
+    class RequestHandler < PostHandler
       getter query, request
 
       @query = {} of String => String | Int32
+
       @request : HTTP::Request
       @response : HTTP::Server::Response
       @wallInstances : Array(Wall) = [] of Wall
@@ -79,6 +80,7 @@ module CrystalInsideFort
         @request.query_params.each do |name, value|
           @query[name] = value
         end
+
         shouldExecuteNextProcess : Bool = self.parse_cookie_from_request
         if (shouldExecuteNextProcess)
           path_url = @request.path
@@ -103,6 +105,21 @@ module CrystalInsideFort
         end
       end
 
+      private def handle_post_data
+        if (@request.method == HTTP_METHOD["get"])
+          puts "me"
+          # this.file = new FileManager({});
+        elsif (@request.body != nil && FortGlobal.should_parse_post == true)
+          begin
+            self.parse_post_data_and_set_body
+          rescue ex
+            self.on_bad_request(ex)
+            return false
+          end
+        end
+        return true
+      end
+
       private def on_route_matched
         actionInfo = @route_match_info.workerInfo
         if (actionInfo == nil)
@@ -114,7 +131,7 @@ module CrystalInsideFort
         else
           # let shouldExecuteNextComponent = await this.executeShieldsProtection_();
           # if (shouldExecuteNextComponent === true)
-          #     shouldExecuteNextComponent = await this.handlePostData();
+          shouldExecuteNextComponent = self.handle_post_data
           #     if (shouldExecuteNextComponent === true) {
           #         this.checkExpectedBody_();
 

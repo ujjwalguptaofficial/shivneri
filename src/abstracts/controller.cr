@@ -21,6 +21,10 @@ module CrystalInsideFort
       def query
         return @context.as(RequestHandler).query
       end
+
+      def body
+        return @context.as(RequestHandler).body
+      end
     end
   end
 end

@@ -26,7 +26,7 @@ module CrystalInsideFort
       # Otf            => "font/otf",
       # Swf            => "application/x-shockwave-flash",
       # Avi            => "video/avi",
-      # FormMultiPart  => "multipart/form-data",
+      "form_multi_part" => "multipart/form-data",
     }
   end
 end

@@ -18,19 +18,28 @@ module CrystalInsideFort
       end
 
       protected def onErrorOccured(error : Exception)
-        # puts typeof(error)
         errMessage : String = ""
         begin
           self.runWallOutGoing
           errMessage = FortGlobal.error_handler.new.on_server_error(error)
         rescue ex
-          errMessage = ""
-          # ex.message
+          errMessage = "#{ex.message}"
         end
-        # @response.headers[CONSTANTS.content_type] = MIME_TYPE["html"]
-        # @response.respond_with_status(500, errMessage)
         @response.content_type = MIME_TYPE["html"]
         @response.status = HTTP::Status::INTERNAL_SERVER_ERROR
+        @response.print(errMessage)
+      end
+
+      protected def on_bad_request(error)
+        errMessage = ""
+        begin
+          # await this.runWallOutgoing();
+          errMessage = FortGlobal.error_handler.new.on_bad_request(error)
+        rescue ex
+          return self.onErrorOccured(ex)
+        end
+        @response.content_type = MIME_TYPE["html"]
+        @response.status = HTTP::Status::BAD_REQUEST
         @response.print(errMessage)
       end
     end

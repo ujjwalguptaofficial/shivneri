@@ -13,10 +13,11 @@ module CrystalInsideFort
   class Fort
     # @server = nil;
     @error_handler : MODEL::ErrorHandler.class = ErrorHandler
+    @walls = [] of Wall.class
     setter port : Int32 = 4000
     setter routes = [] of NamedTuple(controllerName: String, path: String)
 
-    setter error_handler
+    setter error_handler, walls
 
     def initialize
       @server = HTTP::Server.new do |context|
@@ -26,7 +27,52 @@ module CrystalInsideFort
       end
     end
 
-    def create
+    private def add_actions
+      {% for klass in Controller.all_subclasses %}
+
+      {% for method in klass.methods.select { |m| m.annotation(DefaultWorker) } %}
+        {% puts "method name is '#{method.name}' '#{method.annotation(DefaultWorker).args[0]}' " %}
+        {% mName = "#{method.name}" %}
+          action = -> (ctx : RequestHandler) { 
+              instance = {{klass}}.new;
+              instance.context = ctx;
+              return instance.{{method.name}}
+              #  return HttpResult.new
+          }
+          workerInfo =  WorkerInfo.new({{mName}},["GET"], action)
+          RouteHandler.addWorker({{klass}}.name, workerInfo)
+          RouteHandler.addRoute({{klass}}.name, {{mName}},"/")
+        {% end %}
+
+      {% for method in klass.methods.select { |m| m.annotation(Worker) } %}
+        {% mName = "#{method.name}" %}
+        {% args = method.annotation(Worker).args %}
+        action = -> (ctx : RequestHandler) { 
+          instance = {{klass}}.new;
+          instance.context = ctx;
+          return instance.{{method.name}}
+        }
+        http_methods = [] of String;
+        {% if !args.empty? %}
+            http_methods = {{args}}.to_a
+        {% end %}
+         
+        workerInfo =  WorkerInfo.new({{mName}},http_methods, action)
+        RouteHandler.addWorker({{klass}}.name, workerInfo)
+        RouteHandler.addRoute({{klass}}.name, {{mName}},"/#{workerInfo.name}")
+      {% end %}
+
+      {% for method in klass.methods.select { |m| m.annotation(Route) } %}
+        {% mName = "#{method.name}" %}
+        {% args = method.annotation(Route).args %}
+        RouteHandler.addRoute({{klass}}.name, {{mName}},{{args}}[0])
+      {% end %}
+
+
+      {% end %}
+    end
+
+    private def add_controller_route
       {% for klass in Controller.all_subclasses %}
 
         RouteHandler.addController({{klass.id}})
@@ -41,56 +87,30 @@ module CrystalInsideFort
           isDefaultRouteExist = true
         end
       end
-
-      {% for klass in Controller.all_subclasses %}
-
-        {% for method in klass.methods.select { |m| m.annotation(DefaultWorker) } %}
-          {% puts "method name is '#{method.name}' '#{method.annotation(DefaultWorker).args[0]}' " %}
-          {% mName = "#{method.name}" %}
-          action = -> (ctx : RequestHandler) { 
-              instance = {{klass}}.new;
-              instance.context = ctx;
-              return instance.{{method.name}}
-              #  return HttpResult.new
-          }
-          workerInfo =  WorkerInfo.new({{mName}},["GET"], action)
-          RouteHandler.addWorker({{klass}}.name, workerInfo)
-          RouteHandler.addRoute({{klass}}.name, {{mName}},"/")
-        {% end %}
-
-        {% for method in klass.methods.select { |m| m.annotation(Worker) } %}
-          {% mName = "#{method.name}" %}
-          {% args = method.annotation(Worker).args %}
-          action = -> (ctx : RequestHandler) { 
-            instance = {{klass}}.new;
-            instance.context = ctx;
-            return instance.{{method.name}}
-          }
-          puts "value is : #{ {{method.annotation(Worker)[0]}} }"
-          puts "type is : #{typeof({{method.annotation(Worker)[0]}})}"
-          http_methods = [] of String;
-          {% if !args.empty? %}
-              http_methods = {{args}}.to_a
-          {% end %}
-           
-          workerInfo =  WorkerInfo.new({{mName}},http_methods, action)
-          RouteHandler.addWorker({{klass}}.name, workerInfo)
-          RouteHandler.addRoute({{klass}}.name, {{mName}},"/#{workerInfo.name}")
-        {% end %}
-
-        {% for method in klass.methods.select { |m| m.annotation(Route) } %}
-          {% mName = "#{method.name}" %}
-          {% args = method.annotation(Route).args %}
-          RouteHandler.addRoute({{klass}}.name, {{mName}},{{args}}[0])
-        {% end %}
-
-
-      {% end %}
-
       if (!isDefaultRouteExist)
         RouteHandler.defaultRouteControllerName = GenericController.name
         RouteHandler.addControllerRoute(GenericController.name, "/*")
       end
+    end
+
+    private def add_walls
+      {% for klass in Wall.all_subclasses %}
+        create_wall_instance = -> (ctx : RequestHandler) { 
+          instance = {{klass}}.new;
+          instance.context = ctx;
+          return instance.as(Wall);
+        }
+        if(!{{klass}}.name.includes?("GenericWall"))
+        FortGlobal.walls.push(create_wall_instance)
+      end
+      {% end %}
+    end
+
+    def create
+      add_controller_route
+      add_actions
+      add_walls
+
       address = @server.bind_tcp @port
       puts "Your fort is available on http://#{address}"
       @server.listen

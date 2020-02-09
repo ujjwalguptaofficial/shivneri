@@ -7,11 +7,24 @@ module CrystalInsideFort
       include Handlers
       include Annotations
 
-      @query = {} of String => String | Int32
+      property context
+      @request : HTTP::Request | Nil = nil
+      # @response : HTTP::Server::Response | Nil = nil
 
-      abstract def onIncoming(*args)
+      @context : RequestHandler | Nil = nil
 
-      abstract def onOutgoing(*args)
+      abstract def on_incoming(*args) : HttpResult | Nil
+
+      def on_outgoing(*args)
+      end
+
+      def response
+        return @context.as(RequestHandler).response
+      end
+
+      def query
+        return @context.as(RequestHandler).query
+      end
     end
   end
 end

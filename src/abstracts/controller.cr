@@ -5,8 +5,7 @@ require "json"
 module CrystalInsideFort
   module Abstracts
     abstract class Controller
-      # include Handlers
-      # include Annotations
+       
       property context
       @request : HTTP::Request | Nil = nil
       @response : HTTP::Server::Response | Nil = nil

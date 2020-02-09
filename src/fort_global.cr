@@ -2,7 +2,7 @@ module CrystalInsideFort
   class FortGlobal
     @@app_name = "fort"
     @@shouldParseCookie = true
-    @@walls = [] of Wall.class
+    @@walls = [] of Proc(RequestHandler, Wall)
     @@error_handler = ErrorHandler
     @@should_parse_post = true
   end

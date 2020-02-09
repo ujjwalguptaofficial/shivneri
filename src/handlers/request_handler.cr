@@ -14,13 +14,12 @@ module CrystalInsideFort
     include GENERIC
 
     class RequestHandler < PostHandler
-      getter query, request, route_match_info
+      getter query, request, route_match_info, response
 
       @query = {} of String => String | Int32
 
       @request : HTTP::Request
       @response : HTTP::Server::Response
-      @wallInstances : Array(Wall) = [] of Wall
 
       @route_match_info : RouteMatch = RouteMatch.new(RouteInfo.new(GenericController))
 
@@ -41,39 +40,20 @@ module CrystalInsideFort
         @response.headers["Date"] = Time.utc.to_s
       end
 
-      private def executeWallIncoming_ : Boolean
-        index = 0
-        wallLength = FortGlobal.walls.length
-        executeWallIncomingByIndex = ->(wall) {
-          if (wallLength > index)
-            wall = FortGlobal.walls[index += 1]
-            constructorArgsValues = InjectorHandler.getConstructorValues(wall.name)
-            wallObj = wall.new(...constructorArgsValues)
-            wallObj.cookie = this.cookieManager
-            wallObj.session = this.session_
-            wallObj.request = this.request as HttpRequest
-            wallObj.response = this.response as HttpResponse
-            wallObj.data = this.data_
-            wallObj.query = this.query_
-            @wallInstances.push(wallObj)
-
-            begin
-              const result = await wallObj.onIncoming
-              if (result == null)
-                executeWallIncomingByIndex()
-              else
-                return false
-                self.onTerminationFromWall(result)
-              end
-            rescue ex
-              self.onErrorOccured(ex)
-              return false
-            end
-          else
-            return true
+      private def execute_wall_incoming : Bool
+        status = true
+        FortGlobal.walls.each do |create_wall_instance|
+          wall_instance = create_wall_instance.call(self)
+          self.wall_instances.push(wall_instance)
+          wall_result = wall_instance.on_incoming
+          if (wall_result != nil)
+            status = false
+            self.on_termination_from_Wall(wall_result.as(HttpResult))
           end
-        }
-        executeWallIncomingByIndex()
+          break if status == false
+        end
+        puts "wall status #{status}"
+        return status
       end
 
       private def execute
@@ -85,7 +65,10 @@ module CrystalInsideFort
         if (shouldExecuteNextProcess)
           path_url = @request.path
           puts "url is #{path_url}"
-          #  shouldExecuteNextProcess = await this.executeWallIncoming_
+          shouldExecuteNextProcess = execute_wall_incoming()
+          if (shouldExecuteNextProcess == false)
+            return
+          end
           requestMethod = @request.method
           begin
             route_match_info = parseRoute?(path_url.downcase, requestMethod)
@@ -124,9 +107,9 @@ module CrystalInsideFort
         actionInfo = @route_match_info.workerInfo
         if (actionInfo == nil)
           if (@request.method == HTTP_METHOD["options"])
-            # this.onRequestOptions(this.routeMatchInfo_.allowedHttpMethod);
+            self.on_request_options(@route_match_info.allowedHttpMethod)
           else
-            # this.onMethodNotAllowed(this.routeMatchInfo_.allowedHttpMethod);
+            self.on_method_not_allowed(@route_match_info.allowedHttpMethod)
           end
         else
           # let shouldExecuteNextComponent = await this.executeShieldsProtection_();

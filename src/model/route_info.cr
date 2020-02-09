@@ -11,18 +11,12 @@ module CrystalInsideFort
 
       def initialize(controllerClass)
         @controllerName = controllerClass.name
-        # @controllerId = controllerClass
-        # @controllerId.new
         @path = ""
         @workers = {} of String => MODEL::WorkerInfo
         @shields = [] of Shield.class
       end
 
-      def workersAsArray
-        # return Object.keys(this.workers).map(workerName => {
-        #     return this.workers[workerName];
-        #     return this.workers[workerName];
-        # });
+      def workers_as_array
         workersArray = [] of WorkerInfo
         h.each_key do |key|
           workersArray.push(workers[key]) # => "foo"
@@ -32,9 +26,9 @@ module CrystalInsideFort
 
       def to_json
         return {
-          @controllerName,
-          @path,
-          @workers,
+          "controller Name": @controllerName,
+          "path":            @path,
+          "workers":         @workers,
         }
       end
     end

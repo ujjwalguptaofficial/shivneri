@@ -6,8 +6,8 @@ module CrystalInsideFort
     class ControllerResultHandler < RequestHandlerHelper
       @controller_result : HttpResult = HttpResult.new("", "")
 
-      private def onTerminationFromWall(result : HttpResult | HttpFormatResult)
-        # @handleFinalResult_(result);
+      private def on_termination_from_Wall(result : HttpResult | Nil)
+        handle_final_result(result)
       end
 
       private def endResponse_(negotiateMimeType : String)
@@ -28,12 +28,7 @@ module CrystalInsideFort
         @response.content_type = negotiateMimeType
         @response.status_code = @controller_result.status_code
         @response.print(@controller_result.response_data)
-        # @response.respond_with_status(@controller_result.status_code,
-        #   @controller_result.response_data)
-
-        # this.response.writeHead(this.controllerResult_.statusCode || HTTP_STATUS_CODE.Ok,
-        #     { [__ContentType]: negotiateMimeType });
-        # this.response.end(data);
+       
       end
 
       protected def on_result_from_controller(result : HttpResult)
@@ -43,10 +38,10 @@ module CrystalInsideFort
           self.onErrorOccured(ex)
           return
         end
-        self.handleFinalResult_(result)
+        self.handle_final_result(result)
       end
 
-      private def handleFinalResult_(result : HttpResult)
+      private def handle_final_result(result : HttpResult)
         puts result
         # result = result || textResult("")
         @controller_result = result

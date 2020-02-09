@@ -1,10 +1,10 @@
 module CrystalInsideFort
   module HASHES
     MIME_TYPE = {
-      "text" => "text/plain",
-      "json" => "application/json",
-      "html" => "text/html",
-      # formUrlEncoded => "application/x-www-form-urlencoded",
+      "text"             => "text/plain",
+      "json"             => "application/json",
+      "html"             => "text/html",
+      "form_url_encoded" => "application/x-www-form-urlencoded",
       # css            => "text/css",
       # Csv            => "text/csv",
       # Js             => "application/javascript",

@@ -66,7 +66,14 @@ module CrystalInsideFort
             instance.context = ctx;
             return instance.{{method.name}}
           }
-          workerInfo =  WorkerInfo.new({{mName}},{{args}}.to_a, action)
+          puts "value is : #{ {{method.annotation(Worker)[0]}} }"
+          puts "type is : #{typeof({{method.annotation(Worker)[0]}})}"
+          http_methods = [] of String;
+          {% if !args.empty? %}
+              http_methods = {{args}}.to_a
+          {% end %}
+           
+          workerInfo =  WorkerInfo.new({{mName}},http_methods, action)
           RouteHandler.addWorker({{klass}}.name, workerInfo)
           RouteHandler.addRoute({{klass}}.name, {{mName}},"/#{workerInfo.name}")
         {% end %}

@@ -14,7 +14,7 @@ module CrystalInsideFort
     include GENERIC
 
     class RequestHandler < PostHandler
-      getter query, request
+      getter query, request, route_match_info
 
       @query = {} of String => String | Int32
 

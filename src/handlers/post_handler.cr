@@ -7,44 +7,35 @@ module CrystalInsideFort
 
       @body = {} of String => JSON::Any
 
-      # protected file: FileManager;
+      file : FileManager
 
-      # private getPostRawData_(): Promise<string> {
-      #     const body = [];
-      #     return promise((res, rej) => {
-      #         this.request.on('data', (chunk) => {
-      #             body.push(chunk);
-      #         }).on('end', () => {
-      #             const bodyBuffer = Buffer.concat(body);
-      #             res(bodyBuffer.toString());
-      #         }).on("error", function (err) {
-      #             rej(err);
-      #         });
-      #     });
-      # }
+      private def parse_multi_part_data
+        # return promise((res, rej) => {
+        #     new Multiparty.Form().parse(this.request, (err, fields, files) => {
+        #         if (err) {
+        #             rej(err);
+        #         }
+        #         else {
+        #             const result: MultiPartParseResult = {
+        #                 field: {},
+        #                 file: {}
+        #             };
+        #             for (const field in fields) {
+        #                 result.field[field] = fields[field].length === 1 ? fields[field][0] : fields[field];
+        #             }
+        #             for (const file in files) {
+        #                 result.file[file] = files[file].length === 1 ? files[file][0] : files[file];
+        #             }
+        #             res(result);
+        #         }
+        #     });
+        # });
 
-      # private parseMultiPartData_(): Promise<MultiPartParseResult> {
-      #     return promise((res, rej) => {
-      #         new Multiparty.Form().parse(this.request, (err, fields, files) => {
-      #             if (err) {
-      #                 rej(err);
-      #             }
-      #             else {
-      #                 const result: MultiPartParseResult = {
-      #                     field: {},
-      #                     file: {}
-      #                 };
-      #                 for (const field in fields) {
-      #                     result.field[field] = fields[field].length === 1 ? fields[field][0] : fields[field];
-      #                 }
-      #                 for (const file in files) {
-      #                     result.file[file] = files[file].length === 1 ? files[file][0] : files[file];
-      #                 }
-      #                 res(result);
-      #             }
-      #         });
-      #     });
-      # }
+        MIME::Multipart.parse(request) do |headers, io|
+          headers["Content-Type"]
+          io.gets_to_end
+        end
+      end
 
       protected def parse_post_data_and_set_body
         # let postData;
@@ -61,7 +52,7 @@ module CrystalInsideFort
           # const result = await this.parseMultiPartData_();
           # postData = result.field;
           # this.file = new FileManager(result.file);
-
+          # @parse_multi_part_data
         else
           #     this.file = new FileManager({});
           puts "parsing body 1"
@@ -70,8 +61,8 @@ module CrystalInsideFort
             #   postData = JsonHelper.parse(bodyDataAsString);
             puts "parsing body json"
             @body = JSON.parse(@request.body.as(IO)).as_h
-            #   case MIME_TYPE.FormUrlEncoded:
-            #       postData = QueryString.parse(bodyDataAsString); break;
+          when MIME_TYPE["form_url_encoded"]
+            @body = JSON.parse(@request.body.as(IO).gets_to_end)
             #   case MIME_TYPE.Xml:
             #       postData = new (FortGlobal as any).xmlParser().parse(bodyDataAsString);
             #       break;

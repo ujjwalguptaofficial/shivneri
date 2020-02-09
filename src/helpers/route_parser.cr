@@ -18,15 +18,15 @@ module CrystalInsideFort
             if (urlPart != patternSplit[i])
               regex1 = /{(.*)}(?!.)/
               regex2 = /{(.*)}\.(\w+)(?!.)/
-              regMatch1 = patternSplit[i].scan(regex1).map(&.string)
-              regMatch2 = patternSplit[i].scan(regex2).map(&.string)
-              puts "reGMatch1 #{regMatch1.to_json}"
-              if (regMatch1.size > 0)
-                params[regMatch1[1]] = urlPart
-              elsif (regMatch2.size > 0)
+              regMatch1 = patternSplit[i].match(regex1) # patternSplit[i].scan(regex1).map(&.string)
+              regMatch2 = patternSplit[i].match(regex2)
+              if (regMatch1 != nil)
+                params[regMatch1.as(Regex::MatchData).captures[0].as(String)] = urlPart
+              elsif (regMatch2 != nil)
+                regMatch2Captures = regMatch2.as(Regex::MatchData).captures
                 splitByDot = urlPart.split(".")
-                if (splitByDot[1] === regMatch2[2])
-                  params[regMatch2[1]] = splitByDot[0]
+                if (splitByDot[1] === regMatch2Captures[1])
+                  params[regMatch2Captures[0].as(String)] = splitByDot[0]
                 else
                   isMatched = false
                 end
@@ -62,10 +62,6 @@ module CrystalInsideFort
       url = removeLastSlash(url)
       urlParts = url.split("/")
       route = RouteHandler.findControllerFromPath(urlParts)
-      # puts route
-      # if (route != nil)
-      #   puts "found" + route.as(RouteInfo).controllerName
-      # end
       return route == nil ? checkRouteInWorker(RouteHandler.defaultRoute, httpMethod, urlParts) : checkRouteInWorker(route.as(RouteInfo), httpMethod, urlParts)
     end
   end

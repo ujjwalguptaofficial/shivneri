@@ -22,8 +22,8 @@ module CrystalInsideFort
 
       def to_json
         return {
-          @allowedHttpMethod.to_json,
-          @params.to_json,
+          "allowed http methods": @allowedHttpMethod.to_json,
+          "params":               @params.to_json,
         }
       end
     end

@@ -25,6 +25,10 @@ module CrystalInsideFort
       def body
         return @context.as(RequestHandler).body
       end
+
+      def param
+        return @context.as(RequestHandler).route_match_info.params
+      end
     end
   end
 end

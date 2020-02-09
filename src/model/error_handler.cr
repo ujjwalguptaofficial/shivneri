@@ -19,6 +19,25 @@ module CrystalInsideFort
         end
         return errMessage
       end
+
+      def on_forbidden_request : String
+        errMessage = "<h1>Forbidden</h1>"
+        return errMessage
+      end
+
+      def on_not_acceptable_request : String
+        errMessage = "<h1>Not Acceptable</h1>"
+        return errMessage
+      end
+
+      def on_method_not_allowed : String
+        errMessage = "<h1>Method Not allowed.</h1>"
+        return errMessage
+      end
+
+      def on_not_found(url : String) : String
+        errMessage = "<h1>The requested resource #{url} was not found.</h1>"
+      end
     end
   end
 end

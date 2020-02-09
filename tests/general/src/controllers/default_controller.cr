@@ -18,9 +18,10 @@ module General
       return json_result(body)
     end
 
-    @[Route("/index")]
+    @[Route("/index/{value}")]
+    @[Worker]
     def index2
-      puts "hey Ujjwal"
+      return json_result(param)
     end
   end
 end

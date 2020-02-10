@@ -31,7 +31,6 @@ module CrystalInsideFort
       {% for klass in Controller.all_subclasses %}
 
       {% for method in klass.methods.select { |m| m.annotation(DefaultWorker) } %}
-        {% puts "method name is '#{method.name}' '#{method.annotation(DefaultWorker).args[0]}' " %}
         {% mName = "#{method.name}" %}
           action = -> (ctx : RequestHandler) { 
               instance = {{klass}}.new;
@@ -72,11 +71,30 @@ module CrystalInsideFort
       {% end %}
     end
 
-    private def add_controller_route
+    private def add_shield
+      puts "adding shield"
+      # {% for klass in Shield.all_subclasses %}
+      #   puts "found shield"
+      #   shield_executor = -> (ctx : RequestHandler) { 
+      #     instance = {{klass}}.new;
+      #     instance.context = ctx;
+      #     return instance;
+      #   }
+      #   RouteHandler.add_shield({{klass.name}}, shield_executor)
+      # {% end %}
+    end
+
+    private def add_controller_route_and_map_shields
       {% for klass in Controller.all_subclasses %}
-
         RouteHandler.addController({{klass.id}})
-
+        {% if shields = klass.annotation(Shields) %}
+          {% args = shields.args %}
+          {% if !args.empty? %}
+            {{args}}.each do |shield|
+              RouteHandler.add_shield_in_controller({{klass.name}}, shield)
+            end
+          {% end %}
+        {% end %}
       {% end %}
 
       isDefaultRouteExist = false
@@ -107,7 +125,8 @@ module CrystalInsideFort
     end
 
     def create
-      add_controller_route
+      add_shield
+      add_controller_route_and_map_shields
       add_actions
       add_walls
 

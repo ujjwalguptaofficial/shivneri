@@ -1,11 +1,11 @@
 module CrystalInsideFort
   module MODEL
     class RouteInfo
-      property path, workers, controllerName
+      property path, workers, controllerName, shields
       @controllerName : String
       @path : String
       # @controllerId : Controller.class
-      @shields : Array(Shield.class)
+      @shields = [] of Proc(RequestHandler, HttpResult | Nil)
 
       # @values[]
 
@@ -13,7 +13,6 @@ module CrystalInsideFort
         @controllerName = controllerClass.name
         @path = ""
         @workers = {} of String => MODEL::WorkerInfo
-        @shields = [] of Shield.class
       end
 
       def workers_as_array

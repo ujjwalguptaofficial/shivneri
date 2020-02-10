@@ -8,13 +8,26 @@ module CrystalInsideFort
   module Handlers
     class RouteHandler
       @@routerCollection = {} of String => MODEL::RouteInfo
+      @@shield_store = {} of String => Proc(RequestHandler, HttpResult | Nil)
       @@defaultRouteControllerName : String = ""
     end
 
     def RouteHandler.addController(controller)
-      # controller.new
-      puts controller.name
       @@routerCollection[controller.name] = RouteInfo.new(controller)
+    end
+
+    def RouteHandler.add_shield(shield_name, executor_proc)
+      puts "shield name : #{shield_name}"
+      @@shield_store[shield_name.split("::").last] = executor_proc
+      puts @@shield_store.to_json
+    end
+
+    def RouteHandler.add_shield_in_controller(controller_name, shield_name)
+      if (@@shield_store.has_key?(shield_name))
+        @@routerCollection[controller_name].shields.push(@@shield_store[shield_name])
+      else
+        raise "No Shield found for shield name #{shield_name}"
+      end
     end
 
     def RouteHandler.addControllerRoute(controllerName, path)
@@ -22,9 +35,7 @@ module CrystalInsideFort
 
       while (key = iterator.next.to_s)
         if (key.includes?(controllerName))
-          # puts "before path #{@@routerCollection[key].to_json}"
           @@routerCollection[key].path = path
-          # puts "path updated for controller : #{path} #{@@routerCollection[key].to_json}"
           return
         end
       end
@@ -42,7 +53,6 @@ module CrystalInsideFort
           format = removeLastSlash(format)
         end
         controllerPath = @@routerCollection[controllerName].path
-        puts "controller : #{@@routerCollection[controllerName].to_json}"
         format = controllerPath.empty? || controllerPath === "/*" ? format : "#{controllerPath}#{format}"
         @@routerCollection[controllerName].workers[methodName].pattern = format
       end
@@ -53,17 +63,11 @@ module CrystalInsideFort
     end
 
     def RouteHandler.findControllerFromPath(urlParts : Array(String))
-      # iterator = @@routerCollection.each_key
-
       @@routerCollection.to_a.each do |item|
-        # puts "controller Name" + item[0]
         isMatched = false
-        # controller = @@routerCollection[item.]
         patternSplit = item[1].path.split("/")
-        # puts "path:" + controller.path
         patternSplit.each_with_index do |patternPart, i|
           isMatched = patternPart == urlParts[i]
-          # puts "isMatched" + isMatched.to_s + "patternPart" + patternPart + "url" + urlParts[i]
           break if isMatched == false
         end
 

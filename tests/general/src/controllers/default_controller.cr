@@ -1,11 +1,11 @@
 require "../../../../src/fort"
 include CrystalInsideFort::Abstracts
 include CrystalInsideFort::Annotations
+require "../shields/authentication_shield"
 
 module General
-  @[DefaultWorker(2)]
+  @[Shields(AuthenticationShield)]
   class DefaultController < Controller
-    @store = {} of String => Proc(Nil)
     @[DefaultWorker(2)]
     def index
       # puts "hey Ujjwal"

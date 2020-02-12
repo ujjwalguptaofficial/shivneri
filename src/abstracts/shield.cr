@@ -1,5 +1,5 @@
 module CrystalInsideFort
-  module Abstracts
+  module ABSTRACT
     abstract class Shield
       property context
       @request : HTTP::Request | Nil = nil

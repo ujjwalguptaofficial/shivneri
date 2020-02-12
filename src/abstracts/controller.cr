@@ -3,7 +3,7 @@
 require "json"
 
 module CrystalInsideFort
-  module Abstracts
+  module ABSTRACT
     abstract class Controller
       property context
       @request : HTTP::Request | Nil = nil

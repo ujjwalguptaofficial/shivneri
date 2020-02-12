@@ -2,7 +2,7 @@ require "../handlers/index"
 require "../annotations/index"
 
 module CrystalInsideFort
-  module Abstracts
+  module ABSTRACT
     abstract class Wall
       include Handlers
       include Annotations

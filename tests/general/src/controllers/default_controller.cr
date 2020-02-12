@@ -1,5 +1,5 @@
 require "../../../../src/fort"
-include CrystalInsideFort::Abstracts
+include CrystalInsideFort::ABSTRACT
 include CrystalInsideFort::Annotations
 require "../shields/authentication_shield"
 
@@ -12,7 +12,7 @@ module General
       return json_result({name: "ujjwa", age: 25})
     end
 
-    @[Worker("GET", "POST")]
+    @[Worker("POST")]
     def index1
       # return json_result({"name" => "ujjwal gupta"})
       return json_result(body)

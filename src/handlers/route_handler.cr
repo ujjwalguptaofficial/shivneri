@@ -97,8 +97,9 @@ module CrystalInsideFort
       return @@routerCollection[@@defaultRouteControllerName]
     end
 
-    def RouteHandler.defaultRouteControllerName=(value : String)
-      @@defaultRouteControllerName = value
+    def RouteHandler.defaultRouteControllerName=(controller_name : String)
+      controller_name = get_class_name(controller_name)
+      @@defaultRouteControllerName = controller_name
     end
 
     def RouteHandler.get_shield_proc(shield_name)

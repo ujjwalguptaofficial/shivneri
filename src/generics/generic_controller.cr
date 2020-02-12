@@ -3,7 +3,7 @@ require "../hashes/index"
 
 module CrystalInsideFort
   module GENERIC
-    include Abstracts
+    include ABSTRACT
     include HASHES
 
     class GenericController < Controller

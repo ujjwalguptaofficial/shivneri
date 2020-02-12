@@ -2,6 +2,7 @@ require "./abstracts/index"
 require "./annotations/index"
 require "./generics/index"
 require "http/server"
+require "./helpers/index"
 
 module CrystalInsideFort
   include Annotations
@@ -73,25 +74,25 @@ module CrystalInsideFort
 
     private def add_shield
       puts "adding shield"
-      # {% for klass in Shield.all_subclasses %}
-      #   puts "found shield"
-      #   shield_executor = -> (ctx : RequestHandler) { 
-      #     instance = {{klass}}.new;
-      #     instance.context = ctx;
-      #     return instance;
-      #   }
-      #   RouteHandler.add_shield({{klass.name}}, shield_executor)
-      # {% end %}
+      {% for klass in Shield.all_subclasses %}
+        puts "found shield"
+        shield_executor = -> (ctx : RequestHandler) {
+          instance = {{klass}}.new;
+          instance.context = ctx;
+          return instance.protect
+        }
+        RouteHandler.add_shield({{klass}}.name, shield_executor)
+      {% end %}
     end
 
     private def add_controller_route_and_map_shields
       {% for klass in Controller.all_subclasses %}
-        RouteHandler.addController({{klass.id}})
+        RouteHandler.addController({{klass}})
         {% if shields = klass.annotation(Shields) %}
           {% args = shields.args %}
           {% if !args.empty? %}
             {{args}}.each do |shield|
-              RouteHandler.add_shield_in_controller({{klass.name}}, shield)
+              RouteHandler.add_shield_in_controller({{klass}}.name, shield.name)
             end
           {% end %}
         {% end %}
@@ -126,8 +127,11 @@ module CrystalInsideFort
 
     def create
       add_shield
+      puts "adding controller"
       add_controller_route_and_map_shields
+      puts "adding actions"
       add_actions
+      puts "adding wall"
       add_walls
 
       address = @server.bind_tcp @port

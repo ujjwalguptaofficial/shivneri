@@ -1,3 +1,5 @@
+require "json"
+
 module CrystalInsideFort
   module HELPER
     def json_result(value)

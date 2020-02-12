@@ -112,34 +112,39 @@ module CrystalInsideFort
             self.on_method_not_allowed(@route_match_info.allowedHttpMethod)
           end
         else
-          # let shouldExecuteNextComponent = await this.executeShieldsProtection_();
-          # if (shouldExecuteNextComponent === true)
-          shouldExecuteNextComponent = self.handle_post_data
-          #     if (shouldExecuteNextComponent === true) {
-          #         this.checkExpectedBody_();
+          should_execute_next_component = execute_shields_protection
+          if (should_execute_next_component == true)
+            should_execute_next_component = self.handle_post_data
+            #     if (should_execute_next_component === true) {
+            #         this.checkExpectedBody_();
 
-          # shouldExecuteNextComponent = await this.executeGuardsCheck_(actionInfo.guards);
-          # if (shouldExecuteNextComponent)
-          self.run_controller
-          # end
-          # }
-          # end
+            # should_execute_next_component = await this.executeGuardsCheck_(actionInfo.guards);
+            # if (should_execute_next_component)
+            self.run_controller
+            # end
+            # }
+          end
         end
+      end
+
+      private def execute_shields_protection
+        puts "hitting shield #{@route_match_info.controllerInfo.shields.size}"
+        status = true
+        @route_match_info.controllerInfo.shields.each do |shield_name|
+          shield_result = RouteHandler.get_shield_proc(shield_name).call(self)
+          puts "shield_result #{shield_result}"
+          if (shield_result != nil)
+            status = false
+            self.on_result_from_controller(shield_result)
+          end
+          break if status == false
+        end
+        puts "status from shield #{status}"
+        return status
       end
 
       private def run_controller
         puts "hitting controller"
-        # controllerObj : Controller = @route_match_info.controllerInfo.controllerId.new
-        # controllerObj.request = @request
-        # controllerObj.response = @response
-        # controllerObj.query = this.query_;
-        # controllerObj.body = this.body;
-        # controllerObj.session = this.session_;
-        # controllerObj.cookie = this.cookieManager;
-        # controllerObj.param = this.routeMatchInfo_.params;
-        # controllerObj.data = this.data_;
-        # controllerObj.file = this.file;
-
         result = @route_match_info.workerInfo.as(WorkerInfo).workerProc.call(self)
         self.on_result_from_controller(result)
       end

@@ -8,53 +8,68 @@ module CrystalInsideFort
   module Handlers
     class RouteHandler
       @@routerCollection = {} of String => MODEL::RouteInfo
-      @@shield_store = {} of String => Proc(RequestHandler, HttpResult | Nil)
+      @@shield_store = {} of String => Proc(RequestHandler, HttpResult)
       @@defaultRouteControllerName : String = ""
     end
 
     def RouteHandler.addController(controller)
-      @@routerCollection[controller.name] = RouteInfo.new(controller)
+      controller_name = get_class_name(controller.name)
+      @@routerCollection[controller_name] = RouteInfo.new(controller)
     end
 
     def RouteHandler.add_shield(shield_name, executor_proc)
       puts "shield name : #{shield_name}"
-      @@shield_store[shield_name.split("::").last] = executor_proc
-      puts @@shield_store.to_json
+      shield_name = get_class_name(shield_name)
+      if (!@@shield_store.has_key?(shield_name))
+        @@shield_store[shield_name] = executor_proc
+      end
+      # puts @@shield_store.to_json
     end
 
-    def RouteHandler.add_shield_in_controller(controller_name, shield_name)
+    # def RouteHandler.get_shield_executor(shields_name)
+    #   return @@shield_store.each_key do |shield_name|
+    #   end
+    # end
+
+    def RouteHandler.add_shield_in_controller(controller_name : String, shield_name : String)
+      shield_name = get_class_name(shield_name)
+      controller_name = get_class_name(controller_name)
       if (@@shield_store.has_key?(shield_name))
-        @@routerCollection[controller_name].shields.push(@@shield_store[shield_name])
+        # @@routerCollection[controller_name].shields.push(@@shield_store[shield_name])
+        @@routerCollection[controller_name].shields.push(shield_name)
       else
         raise "No Shield found for shield name #{shield_name}"
       end
     end
 
-    def RouteHandler.addControllerRoute(controllerName, path)
+    def RouteHandler.addControllerRoute(controller_name, path)
+      controller_name = get_class_name(controller_name)
       iterator = @@routerCollection.each_key
 
       while (key = iterator.next.to_s)
-        if (key.includes?(controllerName))
+        if (key.includes?(controller_name))
           @@routerCollection[key].path = path
           return
         end
       end
 
-      raise "No controller found for controller name #{controllerName}"
+      raise "No controller found for controller name #{controller_name}"
     end
 
-    def RouteHandler.addWorker(controllerName, workerInfo : WorkerInfo)
-      @@routerCollection[controllerName].workers[workerInfo.name] = workerInfo
+    def RouteHandler.addWorker(controller_name, workerInfo : WorkerInfo)
+      controller_name = get_class_name(controller_name)
+      @@routerCollection[controller_name].workers[workerInfo.name] = workerInfo
     end
 
-    def RouteHandler.addRoute(controllerName, methodName : String, format : String)
-      if (@@routerCollection[controllerName].workers.has_key?(methodName))
+    def RouteHandler.addRoute(controller_name, methodName : String, format : String)
+      controller_name = get_class_name(controller_name)
+      if (@@routerCollection[controller_name].workers.has_key?(methodName))
         if (format != nil)
           format = removeLastSlash(format)
         end
-        controllerPath = @@routerCollection[controllerName].path
+        controllerPath = @@routerCollection[controller_name].path
         format = controllerPath.empty? || controllerPath === "/*" ? format : "#{controllerPath}#{format}"
-        @@routerCollection[controllerName].workers[methodName].pattern = format
+        @@routerCollection[controller_name].workers[methodName].pattern = format
       end
     end
 
@@ -84,6 +99,10 @@ module CrystalInsideFort
 
     def RouteHandler.defaultRouteControllerName=(value : String)
       @@defaultRouteControllerName = value
+    end
+
+    def RouteHandler.get_shield_proc(shield_name)
+      return @@shield_store[shield_name]
     end
   end
 end

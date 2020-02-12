@@ -11,6 +11,14 @@ module CrystalInsideFort
 
       @context : RequestHandler | Nil = nil
 
+      def request
+        return @context.as(RequestHandler).request
+      end
+
+      def response
+        return @context.as(RequestHandler).response
+      end
+
       def query
         return @context.as(RequestHandler).query
       end

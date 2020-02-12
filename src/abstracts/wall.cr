@@ -18,6 +18,10 @@ module CrystalInsideFort
       def on_outgoing(*args)
       end
 
+      def request
+        return @context.as(RequestHandler).request
+      end
+
       def response
         return @context.as(RequestHandler).response
       end

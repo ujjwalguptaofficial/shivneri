@@ -5,7 +5,7 @@ module CrystalInsideFort
       @controllerName : String
       @path : String
       # @controllerId : Controller.class
-      @shields = [] of Proc(RequestHandler, HttpResult | Nil)
+      @shields = [] of String # Proc(RequestHandler, HttpResult)
 
       # @values[]
 

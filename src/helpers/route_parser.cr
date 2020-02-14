@@ -41,7 +41,7 @@ module CrystalInsideFort
           puts "checking isMatched #{isMatched} value #{matchedRoute.to_json} worker is : #{worker.to_json}"
           if (isMatched)
             if (worker.methodsAllowed.includes?(httpMethod))
-              matchedRoute.workerInfo = worker
+              matchedRoute.worker_info = worker
               matchedRoute.params = params
               break
             else
@@ -52,7 +52,7 @@ module CrystalInsideFort
         end
       end
       puts "returning value #{matchedRoute.to_json}"
-      if (matchedRoute.workerInfo == nil && matchedRoute.allowedHttpMethod.size == 0)
+      if (matchedRoute.worker_info == nil && matchedRoute.allowedHttpMethod.size == 0)
         return nil
       end
       return matchedRoute

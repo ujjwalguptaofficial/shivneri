@@ -119,8 +119,8 @@ module CrystalInsideFort
       end
 
       private def on_route_matched
-        actionInfo = @route_match_info.workerInfo
-        if (actionInfo == nil)
+        worker_info = @route_match_info.worker_info
+        if (worker_info == nil)
           if (@request.method == HTTP_METHOD["options"])
             self.on_request_options(@route_match_info.allowedHttpMethod)
           else
@@ -133,8 +133,8 @@ module CrystalInsideFort
             should_execute_next_component = self.handle_post_data
             if (should_execute_next_component == true)
               #         this.checkExpectedBody_();
-
-              # should_execute_next_component = await this.executeGuardsCheck_(actionInfo.guards);
+              execute_guards_protection
+              should_execute_next_component = @component_channel.receive
               if (should_execute_next_component)
                 self.run_controller
               end
@@ -165,12 +165,34 @@ module CrystalInsideFort
         end
       end
 
+      private def execute_guards_protection
+        spawn do
+          puts "hitting guard #{@route_match_info.worker_info.as(WorkerInfo).guards.size}"
+          status = true
+          @route_match_info.worker_info.as(WorkerInfo).guards.each do |guard_name|
+            spawn do
+              RouteHandler.get_guard_proc(guard_name).call(self)
+            end
+            Fiber.yield
+            guard_result = @result_channel.receive
+            puts "guard_result #{guard_result}"
+            if (guard_result != nil)
+              status = false
+              self.on_result_from_controller(guard_result.as(HttpResult))
+            end
+            break if status == false
+          end
+          puts "status from guard #{status}"
+          @component_channel.send(status)
+        end
+      end
+
       private def run_controller
         puts "hitting controller"
         # spawn do
         puts "executing controller"
         spawn do
-          @route_match_info.workerInfo.as(WorkerInfo).workerProc.call(self)
+          @route_match_info.worker_info.as(WorkerInfo).workerProc.call(self)
         end
         Fiber.yield
         puts "controller result received"

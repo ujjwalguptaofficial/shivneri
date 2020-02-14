@@ -1,12 +1,12 @@
 module CrystalInsideFort
   module MODEL
     class WorkerInfo
-      property pattern, methodsAllowed
+      property pattern, methodsAllowed, guards
       getter name, workerProc
 
       @pattern : String
 
-      @guards : Array(Guard.class)
+      @guards = [] of String
       @workerProc : Proc(RequestHandler, Channel(HttpResult | Nil))
 
       # values = [] of any;
@@ -17,7 +17,6 @@ module CrystalInsideFort
         @name = workerName
         @pattern = "/#{workerName}"
         @methodsAllowed = httpMethods.size == 0 ? HTTP_METHOD.values : httpMethods
-        @guards = [] of Guard.class
       end
 
       def to_json

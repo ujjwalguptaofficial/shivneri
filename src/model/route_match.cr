@@ -1,10 +1,10 @@
 module CrystalInsideFort
   module MODEL
     class RouteMatch
-      property controllerInfo, workerInfo, params, allowedHttpMethod
+      property controllerInfo, params, allowedHttpMethod, worker_info
 
       @controllerInfo : RouteInfo
-      @workerInfo : WorkerInfo | Nil = nil
+      @worker_info : WorkerInfo | Nil = nil
       @allowedHttpMethod : Array(String)
       @params : Hash(String, String | Int32)
 
@@ -12,6 +12,8 @@ module CrystalInsideFort
       #   params: Hash(String, String | Int32),
       #   allowedHttpMethod: Array(String)
       # )
+
+   
 
       def initialize(controllerInfo)
         @controllerInfo = controllerInfo

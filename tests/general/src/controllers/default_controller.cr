@@ -2,11 +2,13 @@ require "../../../../src/fort"
 include CrystalInsideFort::ABSTRACT
 include CrystalInsideFort::Annotations
 require "../shields/authentication_shield"
+require "../guards/test_guard"
 
 module General
   @[Shields(AuthenticationShield)]
   class DefaultController < Controller
     @[DefaultWorker]
+    @[Guards(TestGuard)]
     def index
       puts "hey Ujjwal"
       # return json_result({name: "ujjwa", age: 25})

@@ -28,7 +28,7 @@ module CrystalInsideFort
       end
     end
 
-    private def add_actions
+    private def add_workers
       {% for klass in Controller.all_subclasses %}
 
       {% for method in klass.methods.select { |m| m.annotation(DefaultWorker) } %}
@@ -68,6 +68,11 @@ module CrystalInsideFort
         RouteHandler.addRoute({{klass}}.name, {{mName}},{{args}}[0])
       {% end %}
 
+      {% for method in klass.methods.select { |m| m.annotation(Guards) } %}
+        {% mName = "#{method.name}" %}
+        {% args = method.annotation(Guards).args %}
+        RouteHandler.add_guard_in_worker({{klass}}.name, {{mName}},{{args}}[0].name)
+      {% end %}
 
       {% end %}
     end
@@ -82,6 +87,19 @@ module CrystalInsideFort
           return instance.protect
         }
         RouteHandler.add_shield({{klass}}.name, shield_executor)
+      {% end %}
+    end
+
+    private def add_guard
+      puts "adding guard"
+      {% for klass in Guard.all_subclasses %}
+        puts "found guard"
+        guard_executor = -> (ctx : RequestHandler) {
+          instance = {{klass}}.new;
+          instance.set_context(ctx);
+          return instance.check
+        }
+        RouteHandler.add_guard({{klass}}.name, guard_executor)
       {% end %}
     end
 
@@ -130,7 +148,8 @@ module CrystalInsideFort
       puts "adding controller"
       add_controller_route_and_map_shields
       puts "adding actions"
-      add_actions
+      add_guard
+      add_workers
       puts "adding wall"
       add_walls
 

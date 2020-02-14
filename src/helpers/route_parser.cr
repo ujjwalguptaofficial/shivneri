@@ -3,7 +3,7 @@ require "json"
 module CrystalInsideFort
   module HELPER
     def checkRouteInWorker(route : RouteInfo, httpMethod : String, urlParts : Array(String))
-      matchedRoute = RouteMatch.new(route)
+      matchedRoute = RouteMatch.new(route.controllerName, route.shields)
       urlPartLength = urlParts.size
       puts route.to_json
       route.workers.to_a.each do |item|

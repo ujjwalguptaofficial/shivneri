@@ -25,7 +25,11 @@ module CrystalInsideFort
       @request : HTTP::Request
       @response : HTTP::Server::Response
 
-      @route_match_info : RouteMatch = RouteMatch.new(RouteInfo.new(GenericController))
+      @route_match_info : RouteMatch | Nil = nil
+
+      def route_match_info
+        @route_match_info.as(RouteMatch)
+      end
 
       def initialize(request : HTTP::Request, response : HTTP::Server::Response)
         @request = request
@@ -119,12 +123,12 @@ module CrystalInsideFort
       end
 
       private def on_route_matched
-        worker_info = @route_match_info.worker_info
+        worker_info = route_match_info.worker_info
         if (worker_info == nil)
           if (@request.method == HTTP_METHOD["options"])
-            self.on_request_options(@route_match_info.allowedHttpMethod)
+            self.on_request_options(route_match_info.allowedHttpMethod)
           else
-            self.on_method_not_allowed(@route_match_info.allowedHttpMethod)
+            self.on_method_not_allowed(route_match_info.allowedHttpMethod)
           end
         else
           self.execute_shields_protection
@@ -145,9 +149,9 @@ module CrystalInsideFort
 
       private def execute_shields_protection
         spawn do
-          puts "hitting shield #{@route_match_info.controllerInfo.shields.size}"
+          puts "hitting shield #{route_match_info.shields.size}"
           status = true
-          @route_match_info.controllerInfo.shields.each do |shield_name|
+          route_match_info.shields.each do |shield_name|
             spawn do
               RouteHandler.get_shield_proc(shield_name).call(self)
             end
@@ -167,9 +171,9 @@ module CrystalInsideFort
 
       private def execute_guards_protection
         spawn do
-          puts "hitting guard #{@route_match_info.worker_info.as(WorkerInfo).guards.size}"
+          puts "hitting guard #{route_match_info.worker_info.as(WorkerInfo).guards.size}"
           status = true
-          @route_match_info.worker_info.as(WorkerInfo).guards.each do |guard_name|
+          route_match_info.worker_info.as(WorkerInfo).guards.each do |guard_name|
             spawn do
               RouteHandler.get_guard_proc(guard_name).call(self)
             end
@@ -192,7 +196,7 @@ module CrystalInsideFort
         # spawn do
         puts "executing controller"
         spawn do
-          @route_match_info.worker_info.as(WorkerInfo).workerProc.call(self)
+          route_match_info.worker_info.as(WorkerInfo).workerProc.call(self)
         end
         Fiber.yield
         puts "controller result received"

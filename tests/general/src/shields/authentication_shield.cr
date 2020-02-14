@@ -1,9 +1,8 @@
 module General
   class AuthenticationShield < Shield
     def protect
-      response.headers.add("Wall-Without-Outgoing-Wall", "*")
-      return HttpResult.new("blocked by shield", "text/plain")
-      return nil
+      # text_result("blocked by shield")
+      nil_result
     end
   end
 end

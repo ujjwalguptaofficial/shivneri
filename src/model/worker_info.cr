@@ -2,14 +2,12 @@ module CrystalInsideFort
   module MODEL
     class WorkerInfo
       property pattern, methodsAllowed
+      getter name, workerProc
+
       @pattern : String
 
       @guards : Array(Guard.class)
-      @workerProc : Proc(HttpResult)
-
-      getter name : String
-
-      getter workerProc : Proc(RequestHandler, HttpResult)
+      @workerProc : Proc(RequestHandler, Channel(HttpResult | Nil))
 
       # values = [] of any;
       # expectedQuery?: any;

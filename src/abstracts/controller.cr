@@ -1,27 +1,12 @@
 # require "../handlers/index"
 # require "../annotations/index"
-require "json"
+
+require "./base_component"
 
 module CrystalInsideFort
   module ABSTRACT
-    abstract class Controller
-      property context
-      @request : HTTP::Request | Nil = nil
-      @response : HTTP::Server::Response | Nil = nil
-
-      @context : RequestHandler | Nil = nil
-
-      def request
-        return @context.as(RequestHandler).request
-      end
-
-      def response
-        return @context.as(RequestHandler).response
-      end
-
-      def query
-        return @context.as(RequestHandler).query
-      end
+    abstract class Controller < BaseComponent
+     
 
       def body
         return @context.as(RequestHandler).body

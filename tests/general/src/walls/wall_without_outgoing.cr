@@ -3,7 +3,7 @@ module General
     def on_incoming
       response.headers.add("Wall-Without-Outgoing-Wall", "*")
       # return HttpResult.new("blocked", "text/plain")
-      return nil
+      nil_result
     end
   end
 end

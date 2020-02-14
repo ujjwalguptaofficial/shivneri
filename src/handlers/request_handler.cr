@@ -14,7 +14,11 @@ module CrystalInsideFort
     include GENERIC
 
     class RequestHandler < PostHandler
-      getter query, request, route_match_info, response
+      getter query, request, route_match_info, response, result_channel
+
+      @result_channel = Channel(HttpResult | Nil).new
+
+      @component_channel = Channel(Bool).new
 
       @query = {} of String => String | Int32
 
@@ -40,20 +44,29 @@ module CrystalInsideFort
         @response.headers["Date"] = Time.utc.to_s
       end
 
-      private def execute_wall_incoming : Bool
-        status = true
-        FortGlobal.walls.each do |create_wall_instance|
-          wall_instance = create_wall_instance.call(self)
-          self.wall_instances.push(wall_instance)
-          wall_result = wall_instance.on_incoming
-          if (wall_result != nil)
-            status = false
-            self.on_termination_from_Wall(wall_result.as(HttpResult))
+      private def execute_wall_incoming
+        spawn do
+          status = true
+          FortGlobal.walls.each do |create_wall_instance|
+            wall_instance = create_wall_instance.call(self)
+            self.wall_instances.push(wall_instance)
+            puts "executing wall"
+            spawn do
+              wall_instance.on_incoming
+            end
+            Fiber.yield
+            puts "receiving wall"
+            wall_result = @result_channel.receive
+            puts "received wall"
+            if (wall_result != nil)
+              status = false
+              self.on_termination_from_Wall(wall_result.as(HttpResult))
+            end
+            break if status == false
           end
-          break if status == false
+          puts "wall status #{status}"
+          @component_channel.send(status)
         end
-        puts "wall status #{status}"
-        return status
       end
 
       private def execute
@@ -65,7 +78,9 @@ module CrystalInsideFort
         if (shouldExecuteNextProcess)
           path_url = @request.path
           puts "url is #{path_url}"
-          shouldExecuteNextProcess = execute_wall_incoming()
+          execute_wall_incoming
+          shouldExecuteNextProcess = @component_channel.receive
+          puts "shouldExecuteNextProcess from wall #{shouldExecuteNextProcess}"
           if (shouldExecuteNextProcess == false)
             return
           end
@@ -112,41 +127,56 @@ module CrystalInsideFort
             self.on_method_not_allowed(@route_match_info.allowedHttpMethod)
           end
         else
-          should_execute_next_component = execute_shields_protection
+          self.execute_shields_protection
+          should_execute_next_component = @component_channel.receive
           if (should_execute_next_component == true)
             should_execute_next_component = self.handle_post_data
-            #     if (should_execute_next_component === true) {
-            #         this.checkExpectedBody_();
+            if (should_execute_next_component == true)
+              #         this.checkExpectedBody_();
 
-            # should_execute_next_component = await this.executeGuardsCheck_(actionInfo.guards);
-            # if (should_execute_next_component)
-            self.run_controller
-            # end
-            # }
+              # should_execute_next_component = await this.executeGuardsCheck_(actionInfo.guards);
+              if (should_execute_next_component)
+                self.run_controller
+              end
+            end
           end
         end
       end
 
       private def execute_shields_protection
-        puts "hitting shield #{@route_match_info.controllerInfo.shields.size}"
-        status = true
-        @route_match_info.controllerInfo.shields.each do |shield_name|
-          shield_result = RouteHandler.get_shield_proc(shield_name).call(self)
-          puts "shield_result #{shield_result}"
-          if (shield_result != nil)
-            status = false
-            self.on_result_from_controller(shield_result)
+        spawn do
+          puts "hitting shield #{@route_match_info.controllerInfo.shields.size}"
+          status = true
+          @route_match_info.controllerInfo.shields.each do |shield_name|
+            spawn do
+              RouteHandler.get_shield_proc(shield_name).call(self)
+            end
+            Fiber.yield
+            shield_result = @result_channel.receive
+            puts "shield_result #{shield_result}"
+            if (shield_result != nil)
+              status = false
+              self.on_result_from_controller(shield_result.as(HttpResult))
+            end
+            break if status == false
           end
-          break if status == false
+          puts "status from shield #{status}"
+          @component_channel.send(status)
         end
-        puts "status from shield #{status}"
-        return status
       end
 
       private def run_controller
         puts "hitting controller"
-        result = @route_match_info.workerInfo.as(WorkerInfo).workerProc.call(self)
+        # spawn do
+        puts "executing controller"
+        spawn do
+          @route_match_info.workerInfo.as(WorkerInfo).workerProc.call(self)
+        end
+        Fiber.yield
+        puts "controller result received"
+        result = @result_channel.receive.as(HttpResult)
         self.on_result_from_controller(result)
+        # end
       end
 
       private def parse_cookie_from_request : Bool

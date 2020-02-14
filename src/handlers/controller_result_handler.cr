@@ -28,10 +28,10 @@ module CrystalInsideFort
         @response.content_type = negotiateMimeType
         @response.status_code = @controller_result.status_code
         @response.print(@controller_result.response_data)
-       
       end
 
       protected def on_result_from_controller(result : HttpResult)
+        puts "result from controller #{result}"
         begin
           # await this.runWallOutgoing
         rescue ex
@@ -42,7 +42,7 @@ module CrystalInsideFort
       end
 
       private def handle_final_result(result : HttpResult)
-        puts result
+        puts "handle final result #{result.to_json}"
         # result = result || textResult("")
         @controller_result = result
         # ((this.cookieManager as any).responseCookie_ as string[]).forEach(value => {

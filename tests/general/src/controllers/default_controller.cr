@@ -6,10 +6,11 @@ require "../shields/authentication_shield"
 module General
   @[Shields(AuthenticationShield)]
   class DefaultController < Controller
-    @[DefaultWorker(2)]
+    @[DefaultWorker]
     def index
-      # puts "hey Ujjwal"
-      return json_result({name: "ujjwa", age: 25})
+      puts "hey Ujjwal"
+      # return json_result({name: "ujjwa", age: 25})
+      return text_result("ujjwal")
     end
 
     @[Worker("POST")]
@@ -21,7 +22,7 @@ module General
     @[Route("/index/{value}")]
     @[Worker]
     def index2
-      return json_result(param)
+      json_result(param)
     end
   end
 end

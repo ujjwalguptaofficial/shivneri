@@ -35,7 +35,7 @@ module CrystalInsideFort
         {% mName = "#{method.name}" %}
           action = -> (ctx : RequestHandler) { 
               instance = {{klass}}.new;
-              instance.context = ctx;
+              instance.set_context(ctx);
               return instance.{{method.name}}
               #  return HttpResult.new
           }
@@ -49,7 +49,7 @@ module CrystalInsideFort
         {% args = method.annotation(Worker).args %}
         action = -> (ctx : RequestHandler) { 
           instance = {{klass}}.new;
-          instance.context = ctx;
+          instance.set_context(ctx);
           return instance.{{method.name}}
         }
         http_methods = [] of String;
@@ -78,7 +78,7 @@ module CrystalInsideFort
         puts "found shield"
         shield_executor = -> (ctx : RequestHandler) {
           instance = {{klass}}.new;
-          instance.context = ctx;
+          instance.set_context(ctx);
           return instance.protect
         }
         RouteHandler.add_shield({{klass}}.name, shield_executor)
@@ -116,7 +116,7 @@ module CrystalInsideFort
       {% for klass in Wall.all_subclasses %}
         create_wall_instance = -> (ctx : RequestHandler) { 
           instance = {{klass}}.new;
-          instance.context = ctx;
+          instance.set_context(ctx);
           return instance.as(Wall);
         }
         if(!{{klass}}.name.includes?("GenericWall"))

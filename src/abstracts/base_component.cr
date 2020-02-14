@@ -3,10 +3,11 @@ require "json"
 module CrystalInsideFort
   module ABSTRACT
     class BaseComponent
-      property context
-      @request : HTTP::Request | Nil = nil
-      @response : HTTP::Server::Response | Nil = nil
       @context : RequestHandler | Nil = nil
+
+      def set_context(context)
+        @context = context
+      end
 
       def request
         return @context.as(RequestHandler).request
@@ -31,7 +32,6 @@ module CrystalInsideFort
 
       def text_result(value : String)
         result = HttpResult.new(value, MIME_TYPE["text"])
-        puts "returning text result"
         @context.as(RequestHandler).result_channel.send(result)
       end
     end

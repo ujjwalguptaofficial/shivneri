@@ -1,3 +1,5 @@
+require "./src/fort"
+
 # class MyRouter
 #   def addRoute(val)
 #     puts "className" + val.name
@@ -60,7 +62,12 @@ module MyModule1
   class MyClass
     @[MyModule::MyAnnotation(3)]
     def me
-      puts "hey"
+      channel = Channel(Int32).new
+      spawn do
+        sleep 5
+        channel.send(5)
+      end
+      return channel.receive
     end
   end
 end
@@ -82,9 +89,17 @@ end
 # #MyModule1::MyClass.call
 # ->{ %instance = {{klass.id}}.new; ->%instance.{{m.name.id}}{% if m.args.size > 0 %}({{arg_types.splat}}){% end %} }
 
-VALUES = MyModule1::MyClass.id
+# VALUES = MyModule1::MyClass.id
 
-{% for method in VALUES.methods %}
-  {% mName = "#{method.name}" %}
-  puts {{mName}}
-{% end %}
+# {% for method in VALUES.methods %}
+#   {% mName = "#{method.name}" %}
+#   puts {{mName}}
+# {% end %}
+
+instance = MyModule1::MyClass.new
+async_process = CrystalInsideFort::HELPER::Async(Int32).new(->{
+  instance.me
+})
+value = async_process.yield_await
+
+puts "value is #{value}"

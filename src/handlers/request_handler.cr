@@ -14,7 +14,7 @@ module CrystalInsideFort
     include GENERIC
 
     class RequestHandler < PostHandler
-      getter query, request, route_match_info, response, result_channel
+      getter query, request, route_match_info, response, result_channel, session_provider
 
       @result_channel = Channel(HttpResult | Nil).new
 
@@ -26,6 +26,8 @@ module CrystalInsideFort
       @response : HTTP::Server::Response
 
       @route_match_info : RouteMatch | Nil = nil
+
+      @session_provider : SessionProvider | Nil = nil
 
       def route_match_info
         @route_match_info.as(RouteMatch)
@@ -206,21 +208,23 @@ module CrystalInsideFort
       end
 
       private def parse_cookie_from_request : Bool
-        # if (FortGlobal.shouldParseCookie)
-        #   rawCookie = @request.headers[CONSTANTS.cookie] || @request.headers["cookie"]
+        if (FortGlobal.should_parse_cookie)
+          raw_cookie = @request.headers[CONSTANTS.cookie] || @request.headers["cookie"]
 
-        #   begin
-        #     parsedCookies = parse_cookie(rawCookie)
-        #     # @session_ = new FortGlobal.sessionProvider
-        #     # @session_.cookie = @cookieManager = CookieManager.new(parsedCookies)
-        #     # @session_.sessionId = parsedCookies[FortGlobal.appSessionIdentifier]
-        #   rescue ex
-        #     self.onErrorOccured(ex)
-        #     return false
-        #   end
-        # else
-        #   @cookieManager = CookieManager.new({} of String => String)
-        # end
+          begin
+            parsed_cookies = parse_cookie(raw_cookie)
+            @cookie_manager = CookieManager.new(parsed_cookies)
+            @session_provider = FortGlobal.session_provider.new(@cookie_manager.as(CookieManager))
+            # @session_provider.session_id = parsed_cookies
+            # @session_.cookie = @cookieManager = CookieManager.new(parsedCookies)
+            # @session_.sessionId = parsedCookies[FortGlobal.appSessionIdentifier]
+          rescue ex
+            self.onErrorOccured(ex)
+            return false
+          end
+        else
+          @cookieManager = CookieManager.new({} of String => String)
+        end
         return true
       end
     end

@@ -25,9 +25,9 @@ module CrystalInsideFort
       # @param {HttpCookie} cookie
       # @memberof CookieManager
       #
-      def addCookie(cookie : HttpCookie)
+      def add_cookie(cookie : HttpCookie)
         @cookie_collection[cookie.name] = cookie.value
-        @response_cookie.push(this.getCookieStringFromCookie_(cookie))
+        @response_cookie.push(get_cookie_string_from_cookie(cookie))
       end
 
       #
@@ -36,11 +36,11 @@ module CrystalInsideFort
       # @param {HttpCookie} cookie
       # @memberof CookieManager
       #
-      def removeCookie(cookie : HttpCookie)
+      def remove_cookie(cookie : HttpCookie)
         @cookie_collection[cookie.name] = null
         @cookie.expires = Time.new("Thu, 01 Jan 1970 00:00:00 GMT")
         @cookie.maxAge = -1
-        @response_cookie.push(this.getCookieStringFromCookie_(cookie))
+        @response_cookie.push(get_cookie_string_from_cookie(cookie))
       end
 
       #
@@ -49,7 +49,7 @@ module CrystalInsideFort
       # @readonly
       # @memberof CookieManager
       #
-      def cookieCollection
+      def cookie_collection
         return @cookie_collection
       end
 
@@ -60,20 +60,20 @@ module CrystalInsideFort
       # @returns
       # @memberof CookieManager
       #
-      def isExist(name : String)
-        return @cookie_collection[name] != nil
+      def is_exist(name : String)
+        return @cookie_collection.has_key?(name)
       end
 
       private def get_cookie_string_from_cookie(cookie : HttpCookie)
         cookies = ["#{cookie.name}=#{cookie.value}"]
         if (cookie.expires)
-          cookies.push("Expires=#{cookie.expires.utc.to_s}")
+          cookies.push("Expires=#{cookie.expires.to_utc.to_s}")
         end
-        if (cookie.httpOnly)
+        if (cookie.http_only)
           cookies.push("HttpOnly")
         end
-        if (cookie.maxAge != nil)
-          cookies.push("Max-Age=#{cookie.maxAge}")
+        if (cookie.max_age != nil)
+          cookies.push("Max-Age=#{cookie.max_age}")
         end
         if (cookie.path)
           cookies.push("Path=#{cookie.path}")

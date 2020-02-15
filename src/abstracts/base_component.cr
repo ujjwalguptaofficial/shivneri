@@ -34,6 +34,14 @@ module CrystalInsideFort
         result = HttpResult.new(value, MIME_TYPE["text"])
         @context.as(RequestHandler).result_channel.send(result)
       end
+
+      def cookie
+        return @context.as(RequestHandler).cookie_manager
+      end
+
+      def session
+        return @context.as(RequestHandler).session_provider
+      end
     end
   end
 end

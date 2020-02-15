@@ -1,19 +1,21 @@
 module CrystalInsideFort
   module MODEL
     class HttpCookie
+      @domain : String | Nil = nil
+      @domain : String | Nil = nil
+      getter name, value, expires, http_only, max_age, path, domain
+
       @name : String
       @value : String
 
-      # @maxAge : Int32
-      # @expires : Time
-      # @domain : String
-      # @http_only : Bool
+      @max_age : Int32 = FortGlobal.session_timeout * 60
+      @expires : Time
+      @domain : String | Nil = nil
+      @http_only : Bool
       # @secure : Bool
-      # @path : String
+      @path : String
 
-      def initialize(@name : String, @value : String)
-        # @name = name
-        # @value = value
+      def initialize(@name, @value, @http_only, @path, @expires)
       end
     end
   end

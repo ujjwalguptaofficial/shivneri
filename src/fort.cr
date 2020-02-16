@@ -3,6 +3,7 @@ require "./annotations/index"
 require "./generics/index"
 require "http/server"
 require "./helpers/index"
+require "./handlers/index"
 
 module CrystalInsideFort
   include Annotations

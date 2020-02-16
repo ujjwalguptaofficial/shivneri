@@ -1,13 +1,8 @@
-# require "../handlers/index"
-# require "../annotations/index"
-
 require "./base_component"
 
 module CrystalInsideFort
   module ABSTRACT
     abstract class Controller < BaseComponent
-     
-
       def body
         return @context.as(RequestHandler).body
       end

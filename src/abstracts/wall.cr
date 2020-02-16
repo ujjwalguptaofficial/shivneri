@@ -1,6 +1,3 @@
-require "../handlers/index"
-require "../annotations/index"
-
 module CrystalInsideFort
   module ABSTRACT
     abstract class Wall < BaseComponent

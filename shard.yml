@@ -1,16 +1,15 @@
 name: fort.cr
 version: 0.1.0
 
-# authors:
+authors:
   - name Ujjwal Gupta
 
 # description: |
 #   Short description of fort-cr
 
-# dependencies:
-#   pg:
-#     github: will/crystal-pg
-#     version: "~> 0.5"
+dependencies:
+  crinja:
+    github: straight-shoota/crinja
 
 # development_dependencies:
 #   webmock:

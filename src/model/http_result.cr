@@ -6,13 +6,17 @@ module CrystalInsideFort
 
     class HttpResult
       property status_code, response_data, content_type
-      @status_code : Int32 = 200
+      @status_code : Int32
       @response_data : String
       @content_type : String
       # file?: FileResultInfo;
       @should_redirect : Bool = false
 
       def initialize(@response_data : String, @content_type : String)
+        @status_code = 200
+      end
+
+      def initialize(@response_data : String, @content_type : String, @status_code : Int32)
       end
 
       def to_json

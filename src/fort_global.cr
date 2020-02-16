@@ -8,8 +8,9 @@ module CrystalInsideFort
     @@error_handler = ErrorHandler
     @@should_parse_post = true
     @@session_timeout : Int32 = 60
-
     @@session_provider : SessionProvider.class = PROVIDER::MemorySessionProvider.as(SessionProvider.class)
+    @@view_engine : ViewEngine = PROVIDER::CrinjaViewEngine.new
+    @@view_path = "src/views"
   end
 
   def FortGlobal.app_name
@@ -42,5 +43,13 @@ module CrystalInsideFort
 
   def FortGlobal.session_provider
     return @@session_provider
+  end
+
+  def FortGlobal.view_engine
+    @@view_engine
+  end
+
+  def FortGlobal.view_path
+    @@view_path
   end
 end

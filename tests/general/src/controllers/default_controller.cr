@@ -10,9 +10,9 @@ module General
     @[DefaultWorker]
     @[Guards(TestGuard)]
     def index
-      puts "hey Ujjwal"
-      # return json_result({name: "ujjwa", age: 25})
-      return text_result("ujjwal")
+      return view_result("default/index.html", {
+        "title" => "Fort",
+      })
     end
 
     @[Worker("POST")]

@@ -42,6 +42,28 @@ module CrystalInsideFort
       def session
         return @context.as(RequestHandler).session_provider.as(SessionProvider)
       end
+
+      def render_view(view_name : String, model)
+        return Async(String).new(->{
+          return FortGlobal.view_engine.render(ViewEngineData.new(view_name, model)).await
+        })
+        # return FortGlobal.view_engine.render({
+        #       view: viewName,
+        #       model
+        #   });
+      end
+
+      def view_result(view_name : String)
+        model = {} of String => String
+        return view_result(view_name, model)
+      end
+
+      def view_result(view_name : String, model : _)
+        view_data = render_view(view_name, model).await
+        return @context.as(RequestHandler).result_channel.send(
+          HttpResult.new(view_data, MIME_TYPE["html"])
+        )
+      end
     end
   end
 end

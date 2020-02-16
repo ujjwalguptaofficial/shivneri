@@ -209,7 +209,12 @@ module CrystalInsideFort
 
       private def parse_cookie_from_request : Bool
         if (FortGlobal.should_parse_cookie)
-          raw_cookie = @request.headers[CONSTANTS.cookie] || @request.headers["cookie"]
+          raw_cookie = ""
+          if (@request.headers.has_key?(CONSTANTS.cookie))
+            raw_cookie = @request.headers[CONSTANTS.cookie]
+          elsif (@request.headers.has_key?("cookie"))
+            raw_cookie = @request.headers["cookie"]
+          end
 
           begin
             parsed_cookies = parse_cookie(raw_cookie)

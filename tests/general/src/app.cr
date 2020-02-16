@@ -19,7 +19,7 @@ app.routes = [{
   path:           "/default",
 }, {
   controllerName: "SessionController",
-  path:           "/default",
+  path:           "/session",
 }]
 # app.walls = [WallWithoutOutgoing]
 app.create

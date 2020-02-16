@@ -3,13 +3,19 @@ require "./http_cookie"
 module CrystalInsideFort
   module MODEL
     class CookieManager
-      # property response_cookie, cookie_collection
+      property response_cookie
+      #  cookie_collection
       @response_cookie = [] of String
       @cookie_collection : Hash(String, String)
 
       def initialize(parsedValue : Hash(String, String))
         @cookie_collection = parsedValue
-        @name = ""
+        # @name = ""
+      end
+
+      def initialize
+        @cookie_collection = {} of String => String
+        # @name = ""
       end
 
       # return cookie by name

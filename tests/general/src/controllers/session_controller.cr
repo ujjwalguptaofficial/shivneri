@@ -4,7 +4,7 @@ module General
     def add
       key = self.body["key"].to_s
       value = self.body["value"]
-      session_set_result = self.session.set(key, value).await
+      self.session.set(key, value)
       return text_result("saved")
     end
 
@@ -38,10 +38,10 @@ module General
     # async get() {
     #     const key = self.query.key;
     #     self.logger.debug("key", key);
-    #     const valueFromSession = await self.session.get(key);
-    #     self.logger.debug("value from session", valueFromSession);
+    #     const value_from_session = await self.session.get(key);
+    #     self.logger.debug("value from session", value_from_session);
     #     return jsonResult({
-    #         value: valueFromSession
+    #         value: value_from_session
     #     });
     # }
 
@@ -68,10 +68,10 @@ module General
 
     @[Worker]
     def get_all
-      #   valueFromSession = self.session.get_all.await
-      #   return json_result({
-      #     value: valueFromSession,
-      #   })
+      value_from_session = self.session.get_all.await
+      return json_result({
+        value: value_from_session,
+      })
       return text_result("saved")
     end
   end

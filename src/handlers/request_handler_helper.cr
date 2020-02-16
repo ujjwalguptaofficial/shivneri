@@ -10,6 +10,14 @@ module CrystalInsideFort
     class RequestHandlerHelper
       getter wall_instances
       @wall_instances = [] of Wall
+      @cookie_manager : CookieManager | Nil = nil
+
+      protected def cookie_manager=(@cookie_manager)
+      end
+
+      protected def cookie_manager
+        return @cookie_manager
+      end
 
       protected def run_wall_out_going
         @wall_instances.reverse.each do |wall_instance|

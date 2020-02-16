@@ -40,7 +40,7 @@ module CrystalInsideFort
       end
 
       def session
-        return @context.as(RequestHandler).session_provider
+        return @context.as(RequestHandler).session_provider.as(SessionProvider)
       end
     end
   end

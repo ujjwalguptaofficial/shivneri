@@ -28,7 +28,7 @@ module CrystalInsideFort
       end
 
       def get_all
-        return Async(JSON::Any).new(->{
+        return Async(Hash(String, JSON::Any)).new(->{
           if (is_session_exist)
             return @@session_values[self.session_id]
           end
@@ -48,6 +48,7 @@ module CrystalInsideFort
               "#{key}" => val,
             }
           end
+          return nil
         })
       end
 

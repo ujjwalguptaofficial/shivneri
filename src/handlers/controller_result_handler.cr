@@ -45,9 +45,9 @@ module CrystalInsideFort
         puts "handle final result #{result.to_json}"
         # result = result || textResult("")
         @controller_result = result
-        # ((this.cookieManager as any).responseCookie_ as string[]).forEach(value => {
-        #     this.response.setHeader(__SetCookie, value);
-        # });
+        self.cookie_manager.as(CookieManager).response_cookie.each do |value|
+          self.response.headers[CONSTANTS.set_cookie] = value
+        end
 
         # if ((result as HttpResult).shouldRedirect === true) {
         #     this.handleRedirectResult_();

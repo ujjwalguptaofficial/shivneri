@@ -8,8 +8,8 @@ module CrystalInsideFort
   module Handlers
     class RouteHandler
       @@routerCollection = {} of String => MODEL::RouteInfo
-      @@shield_store = {} of String => Proc(RequestHandler, Channel(HttpResult | Nil))
-      @@guard_store = {} of String => Proc(RequestHandler, Channel(HttpResult | Nil))
+      @@shield_store = {} of String => Proc(RequestHandler, HttpResult) | Proc(RequestHandler, Nil)
+      @@guard_store = {} of String => Proc(RequestHandler, HttpResult) | Proc(RequestHandler, Nil)
       @@defaultRouteControllerName : String = ""
     end
 
@@ -23,6 +23,7 @@ module CrystalInsideFort
       shield_name = get_class_name(shield_name)
       if (!@@shield_store.has_key?(shield_name))
         @@shield_store[shield_name] = executor_proc
+        # .as(Proc(RequestHandler, (HttpResult | Nil)))
       end
     end
 
@@ -31,6 +32,7 @@ module CrystalInsideFort
       guard_name = get_class_name(guard_name)
       if (!@@shield_store.has_key?(guard_name))
         @@guard_store[guard_name] = executor_proc
+        # .as(Proc(RequestHandler, HttpResult | Nil))
       end
     end
 

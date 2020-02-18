@@ -19,8 +19,8 @@ module CrystalInsideFort
       end
 
       def yield_await
-        @yield
-        await
+        self.yield
+        self.await
       end
 
       # static class AwaitAll(T)

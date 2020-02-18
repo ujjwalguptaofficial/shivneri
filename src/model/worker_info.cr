@@ -7,7 +7,7 @@ module CrystalInsideFort
       @pattern : String
 
       @guards = [] of String
-      @workerProc : Proc(RequestHandler, Channel(HttpResult | Nil))
+      @workerProc : Proc(RequestHandler, HttpResult)
 
       # values = [] of any;
       # expectedQuery?: any;

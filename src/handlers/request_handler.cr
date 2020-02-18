@@ -57,12 +57,15 @@ module CrystalInsideFort
             wall_instance = create_wall_instance.call(self)
             self.wall_instances.push(wall_instance)
             puts "executing wall"
-            spawn do
-              wall_instance.on_incoming
-            end
-            Fiber.yield
+            # spawn do
+            #   wall_instance.on_incoming
+            # end
+            # Fiber.yield
+            wall_result = Async(HttpResult | Nil).new(->{
+              return wall_instance.on_incoming
+            }).yield_await
             puts "receiving wall"
-            wall_result = @result_channel.receive
+            # wall_result = @result_channel.receive
             puts "received wall"
             if (wall_result != nil)
               status = false
@@ -133,14 +136,15 @@ module CrystalInsideFort
             self.on_method_not_allowed(route_match_info.allowedHttpMethod)
           end
         else
-          self.execute_shields_protection
-          should_execute_next_component = @component_channel.receive
+          # self.execute_shields_protection
+          should_execute_next_component = true 
+          # @component_channel.receive
           if (should_execute_next_component == true)
             should_execute_next_component = self.handle_post_data
             if (should_execute_next_component == true)
               #         this.checkExpectedBody_();
-              execute_guards_protection
-              should_execute_next_component = @component_channel.receive
+              # execute_guards_protection
+              # should_execute_next_component = @component_channel.receive
               if (should_execute_next_component)
                 self.run_controller
               end
@@ -197,12 +201,15 @@ module CrystalInsideFort
         puts "hitting controller"
         # spawn do
         puts "executing controller"
-        spawn do
-          route_match_info.worker_info.as(WorkerInfo).workerProc.call(self)
-        end
-        Fiber.yield
+        # spawn do
+        # route_match_info.worker_info.as(WorkerInfo).workerProc.call(self)
+        # end
+        # Fiber.yield
         puts "controller result received"
-        result = @result_channel.receive.as(HttpResult)
+        # result = @result_channel.receive.as(HttpResult)
+        result = Async(HttpResult).new(->{
+          return route_match_info.worker_info.as(WorkerInfo).workerProc.call(self)
+        }).yield_await
         self.on_result_from_controller(result)
         # end
       end

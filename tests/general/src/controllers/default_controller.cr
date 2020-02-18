@@ -10,9 +10,10 @@ module General
     @[DefaultWorker]
     @[Guards(TestGuard)]
     def index
-      return view_result("default/index.html", {
-        "title" => "Fort",
-      })
+      # return view_result("default/index.html", {
+      #   "title" => "Fort",
+      # })
+      return text_result("index")
     end
 
     @[Worker("POST")]

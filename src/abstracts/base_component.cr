@@ -60,7 +60,7 @@ module CrystalInsideFort
 
       def nil_result
         # @context.as(RequestHandler).result_channel.send(nil)
-        nil
+        return nil
       end
 
       def text_result(value : String)

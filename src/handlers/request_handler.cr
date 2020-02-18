@@ -51,21 +51,17 @@ module CrystalInsideFort
       end
 
       private def execute_wall_incoming
-        spawn do
+        # spawn do
+        return Async(Bool).new(->{
           status = true
           FortGlobal.walls.each do |create_wall_instance|
             wall_instance = create_wall_instance.call(self)
             self.wall_instances.push(wall_instance)
             puts "executing wall"
-            # spawn do
-            #   wall_instance.on_incoming
-            # end
-            # Fiber.yield
             wall_result = Async(HttpResult | Nil).new(->{
-              return wall_instance.on_incoming
-            }).yield_await
-            puts "receiving wall"
-            # wall_result = @result_channel.receive
+              return wall_instance.on_incoming.as(HttpResult | Nil)
+            }).await
+            # puts "receiving wall"
             puts "received wall"
             if (wall_result != nil)
               status = false
@@ -74,8 +70,11 @@ module CrystalInsideFort
             break if status == false
           end
           puts "wall status #{status}"
-          @component_channel.send(status)
-        end
+          return status
+          # @component_channel.send(status)
+        })
+
+        # end
       end
 
       private def execute
@@ -87,8 +86,9 @@ module CrystalInsideFort
         if (shouldExecuteNextProcess)
           path_url = @request.path
           puts "url is #{path_url}"
-          execute_wall_incoming
-          shouldExecuteNextProcess = @component_channel.receive
+
+          shouldExecuteNextProcess = execute_wall_incoming.yield_await
+          #  @component_channel.receive
           puts "shouldExecuteNextProcess from wall #{shouldExecuteNextProcess}"
           if (shouldExecuteNextProcess == false)
             return
@@ -137,7 +137,7 @@ module CrystalInsideFort
           end
         else
           # self.execute_shields_protection
-          should_execute_next_component = true 
+          should_execute_next_component = true
           # @component_channel.receive
           if (should_execute_next_component == true)
             should_execute_next_component = self.handle_post_data

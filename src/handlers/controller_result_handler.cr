@@ -33,7 +33,7 @@ module CrystalInsideFort
       protected def on_result_from_controller(result : HttpResult)
         puts "result from controller #{result}"
         begin
-          # await this.runWallOutgoing
+          self.run_wall_out_going.await
         rescue ex
           self.onErrorOccured(ex)
           return
@@ -56,14 +56,12 @@ module CrystalInsideFort
         #     if ((result as HttpFormatResult).responseFormat == null) {
         #         if ((result as HttpResult).file == null) {
         contentType = result.as(HttpResult).content_type || MIME_TYPE["text"]
-        #             const negotiateMimeType = this.getContentTypeFromNegotiation(contentType) as MIME_TYPE;
-        #             if (negotiateMimeType != null) {
-        # this.endResponse_(negotiateMimeType);
-        self.endResponse_(contentType)
-        #             }
-        #             else {
-        #                 this.onNotAcceptableRequest();
-        #             }
+        negotiateMimeType = self.get_content_type_from_negotiation(contentType)
+        if (negotiateMimeType != nil)
+          self.endResponse_(negotiateMimeType.as(String))
+        else
+          self.on_not_acceptable_request
+        end
         #         }
         #         else {
         #             this.handleFileResult_();

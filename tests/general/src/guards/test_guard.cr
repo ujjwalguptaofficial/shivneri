@@ -1,8 +1,12 @@
 module General
   class TestGuard < Guard
     def check
-      # text_result("blocked by guard")
-        nil_result
+      # if (query["text"] == "as")
+        # return text_result("blocked by guard")
+      # else
+      #   return nil_result
+      # end
+      # nil_result
     end
   end
 end

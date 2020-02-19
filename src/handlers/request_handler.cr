@@ -51,7 +51,6 @@ module CrystalInsideFort
       end
 
       private def execute_wall_incoming
-        # spawn do
         return Async(Bool).new(->{
           status = true
           FortGlobal.walls.each do |create_wall_instance|
@@ -73,8 +72,6 @@ module CrystalInsideFort
           return status
           # @component_channel.send(status)
         })
-
-        # end
       end
 
       private def execute
@@ -137,13 +134,13 @@ module CrystalInsideFort
           end
         else
           # self.execute_shields_protection
-          should_execute_next_component = true
+          should_execute_next_component = self.execute_shields_protection.yield_await
           # @component_channel.receive
           if (should_execute_next_component == true)
             should_execute_next_component = self.handle_post_data
             if (should_execute_next_component == true)
               #         this.checkExpectedBody_();
-              # execute_guards_protection
+              should_execute_next_component = execute_guards_protection.yield_await
               # should_execute_next_component = @component_channel.receive
               if (should_execute_next_component)
                 self.run_controller
@@ -154,37 +151,52 @@ module CrystalInsideFort
       end
 
       private def execute_shields_protection
-        spawn do
+        # spawn do
+        return Async(Bool).new(->{
           puts "hitting shield #{route_match_info.shields.size}"
           status = true
-          route_match_info.shields.each do |shield_name|
-            spawn do
-              RouteHandler.get_shield_proc(shield_name).call(self)
-            end
-            Fiber.yield
-            shield_result = @result_channel.receive
-            puts "shield_result #{shield_result}"
-            if (shield_result != nil)
-              status = false
-              self.on_result_from_controller(shield_result.as(HttpResult))
-            end
-            break if status == false
-          end
-          puts "status from shield #{status}"
-          @component_channel.send(status)
-        end
+          my_result = RouteHandler.get_shield_proc("AuthenticationShield").call(self)
+          puts "my result type #{typeof(my_result)}"
+          # route_match_info.shields.each do |shield_name|
+          #   # spawn do
+          #   #   RouteHandler.get_shield_proc(shield_name).call(self)
+          #   # end
+          #   # Fiber.yield
+          #   # shield_result = @result_channel.receive
+          #   puts "executin shield"
+          #   my_result = RouteHandler.get_shield_proc("AuthenticationShield").call(self)
+          #   puts "my result type #{typeof(my_result)}"
+          #   shield_result = Async(HttpResult | Nil).new(->{
+          #     puts "shield name #{shield_name}"
+          #     shield_results = RouteHandler.get_shield_proc(shield_name).call(self).as(HttpResult | Nil)
+          #     puts shield_results != nil
+          #     puts "type is #{typeof(shield_results)}"
+          #     return shield_results
+          #   }).await
+          #   puts "shield_result #{shield_result.to_json}"
+          #   if (shield_result != nil)
+          #     status = false
+          #     self.on_result_from_controller(shield_result.as(HttpResult))
+          #   end
+          #   break if status == false
+          # end
+          # puts "status from shield #{status}"
+          return status
+        })
+        # end
       end
 
       private def execute_guards_protection
-        spawn do
+        # spawn do
+        return Async(Bool).new(->{
           puts "hitting guard #{route_match_info.worker_info.as(WorkerInfo).guards.size}"
           status = true
           route_match_info.worker_info.as(WorkerInfo).guards.each do |guard_name|
-            spawn do
-              RouteHandler.get_guard_proc(guard_name).call(self)
-            end
-            Fiber.yield
-            guard_result = @result_channel.receive
+            # spawn do
+            guard_result = RouteHandler.get_guard_proc(guard_name).call(self)
+            # end
+            # Fiber.yield
+            # guard_result = @result_channel.receive
             puts "guard_result #{guard_result}"
             if (guard_result != nil)
               status = false
@@ -193,8 +205,10 @@ module CrystalInsideFort
             break if status == false
           end
           puts "status from guard #{status}"
-          @component_channel.send(status)
-        end
+          # @component_channel.send(status)
+          return status
+          # end
+        })
       end
 
       private def run_controller

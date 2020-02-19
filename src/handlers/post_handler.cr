@@ -62,7 +62,7 @@ module CrystalInsideFort
             puts "parsing body json"
             @body = JSON.parse(@request.body.as(IO)).as_h
           when MIME_TYPE["form_url_encoded"]
-            @body = JSON.parse(@request.body.as(IO).gets_to_end)
+            @body = JSON.parse(@request.body.as(IO).gets_to_end).as_h
             #   case MIME_TYPE.Xml:
             #       postData = new (FortGlobal as any).xmlParser().parse(bodyDataAsString);
             #       break;

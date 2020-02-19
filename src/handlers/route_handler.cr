@@ -4,12 +4,13 @@ require "../helpers/index"
 module CrystalInsideFort
   include MODEL
   include HELPER
+  alias ComponentResult = Nil | HttpResult
 
   module Handlers
     class RouteHandler
       @@routerCollection = {} of String => MODEL::RouteInfo
       @@shield_store = {} of String => Proc(RequestHandler, HttpResult) | Proc(RequestHandler, Nil)
-      @@guard_store = {} of String => Proc(RequestHandler, HttpResult) | Proc(RequestHandler, Nil)
+      @@guard_store = {} of String => Proc(RequestHandler, ComponentResult)
       @@defaultRouteControllerName : String = ""
     end
 

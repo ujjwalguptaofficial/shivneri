@@ -85,7 +85,10 @@ module CrystalInsideFort
         shield_executor = -> (ctx : RequestHandler) {
           instance = {{klass}}.new;
           instance.set_context(ctx);
-          return instance.protect
+          # return instance.protect
+          result =  HttpResult.new("blocked by shield", MIME_TYPE["text"])
+          puts "result from add shield is #{result.to_json}"
+          return result
         }
         RouteHandler.add_shield({{klass}}.name, shield_executor)
       {% end %}
@@ -95,10 +98,15 @@ module CrystalInsideFort
       puts "adding guard"
       {% for klass in Guard.all_subclasses %}
         puts "found guard"
-        guard_executor = -> (ctx : RequestHandler) {
+        guard_executor =  -> (ctx : RequestHandler){
           instance = {{klass}}.new;
           instance.set_context(ctx);
-          return instance.check
+          if(true)
+            return instance.check
+          elsif(ctx.body.has_key?("garbage_value_test"))
+            return nil
+          end
+          return HttpResult.new("garbage result from framework", MIME_TYPE["text"])
         }
         RouteHandler.add_guard({{klass}}.name, guard_executor)
       {% end %}

@@ -86,9 +86,12 @@ module CrystalInsideFort
           instance = {{klass}}.new;
           instance.set_context(ctx);
           # return instance.protect
-          result =  HttpResult.new("blocked by shield", MIME_TYPE["text"])
-          puts "result from add shield is #{result.to_json}"
-          return result
+          if(true)
+            return instance.protect
+          elsif(ctx.body.has_key?("garbage_value_test"))
+            return nil
+          end
+          return HttpResult.new("garbage result from framework", MIME_TYPE["text"])
         }
         RouteHandler.add_shield({{klass}}.name, shield_executor)
       {% end %}

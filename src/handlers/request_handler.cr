@@ -155,32 +155,29 @@ module CrystalInsideFort
         return Async(Bool).new(->{
           puts "hitting shield #{route_match_info.shields.size}"
           status = true
-          my_result = RouteHandler.get_shield_proc("AuthenticationShield").call(self)
-          puts "my result type #{typeof(my_result)}"
-          # route_match_info.shields.each do |shield_name|
-          #   # spawn do
-          #   #   RouteHandler.get_shield_proc(shield_name).call(self)
-          #   # end
-          #   # Fiber.yield
-          #   # shield_result = @result_channel.receive
-          #   puts "executin shield"
-          #   my_result = RouteHandler.get_shield_proc("AuthenticationShield").call(self)
-          #   puts "my result type #{typeof(my_result)}"
-          #   shield_result = Async(HttpResult | Nil).new(->{
-          #     puts "shield name #{shield_name}"
-          #     shield_results = RouteHandler.get_shield_proc(shield_name).call(self).as(HttpResult | Nil)
-          #     puts shield_results != nil
-          #     puts "type is #{typeof(shield_results)}"
-          #     return shield_results
-          #   }).await
-          #   puts "shield_result #{shield_result.to_json}"
-          #   if (shield_result != nil)
-          #     status = false
-          #     self.on_result_from_controller(shield_result.as(HttpResult))
-          #   end
-          #   break if status == false
-          # end
-          # puts "status from shield #{status}"
+
+          route_match_info.shields.each do |shield_name|
+            # spawn do
+            #   RouteHandler.get_shield_proc(shield_name).call(self)
+            # end
+            # Fiber.yield
+            # shield_result = @result_channel.receive
+            puts "executin shield"
+            shield_result = Async(HttpResult | Nil).new(->{
+              puts "shield name #{shield_name}"
+              shield_results = RouteHandler.get_shield_proc(shield_name).call(self).as(HttpResult | Nil)
+              puts shield_results != nil
+              puts "type is #{typeof(shield_results)}"
+              return shield_results
+            }).await
+            puts "shield_result #{shield_result.to_json}"
+            if (shield_result != nil)
+              status = false
+              self.on_result_from_controller(shield_result.as(HttpResult))
+            end
+            break if status == false
+          end
+          puts "status from shield #{status}"
           return status
         })
         # end

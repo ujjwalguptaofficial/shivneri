@@ -9,7 +9,7 @@ module CrystalInsideFort
   module Handlers
     class RouteHandler
       @@routerCollection = {} of String => MODEL::RouteInfo
-      @@shield_store = {} of String => Proc(RequestHandler, HttpResult) | Proc(RequestHandler, Nil)
+      @@shield_store = {} of String => Proc(RequestHandler, ComponentResult)
       @@guard_store = {} of String => Proc(RequestHandler, ComponentResult)
       @@defaultRouteControllerName : String = ""
     end

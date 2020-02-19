@@ -5,6 +5,7 @@ require "../model/index"
 require "../constants"
 require "../helpers/index"
 require "../generics/index"
+require "../aliases"
 
 module CrystalInsideFort
   module Handlers
@@ -157,17 +158,12 @@ module CrystalInsideFort
           status = true
 
           route_match_info.shields.each do |shield_name|
-            # spawn do
-            #   RouteHandler.get_shield_proc(shield_name).call(self)
-            # end
-            # Fiber.yield
-            # shield_result = @result_channel.receive
             puts "executin shield"
-            shield_result = Async(HttpResult | Nil).new(->{
+            shield_result = Async(ComponentResult).new(->{
               puts "shield name #{shield_name}"
               shield_results = RouteHandler.get_shield_proc(shield_name).call(self).as(HttpResult | Nil)
-              puts shield_results != nil
-              puts "type is #{typeof(shield_results)}"
+              # puts shield_results != nil
+              # puts "type is #{typeof(shield_results)}"
               return shield_results
             }).await
             puts "shield_result #{shield_result.to_json}"
@@ -189,11 +185,10 @@ module CrystalInsideFort
           puts "hitting guard #{route_match_info.worker_info.as(WorkerInfo).guards.size}"
           status = true
           route_match_info.worker_info.as(WorkerInfo).guards.each do |guard_name|
-            # spawn do
-            guard_result = RouteHandler.get_guard_proc(guard_name).call(self)
-            # end
-            # Fiber.yield
-            # guard_result = @result_channel.receive
+            guard_result = Async(ComponentResult).new(->{
+              RouteHandler.get_guard_proc(guard_name).call(self)
+            }).await
+
             puts "guard_result #{guard_result}"
             if (guard_result != nil)
               status = false

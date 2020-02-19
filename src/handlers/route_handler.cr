@@ -1,10 +1,10 @@
 require "../model/index"
 require "../helpers/index"
+require "../aliases"
 
 module CrystalInsideFort
   include MODEL
   include HELPER
-  alias ComponentResult = Nil | HttpResult
 
   module Handlers
     class RouteHandler

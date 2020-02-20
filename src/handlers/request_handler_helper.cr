@@ -49,6 +49,16 @@ module CrystalInsideFort
         return negotiator.media_type(available_types)
       end
 
+      protected def get_content_type_from_negotiation(available_types : Array(String))
+        negotiator = Negotiator.new
+        if (request.headers.has_key?("accept"))
+          return negotiator.media_type(request.headers["accept"], available_types)
+        elsif (request.headers.has_key?("Accept"))
+          return negotiator.media_type(request.headers["Accept"], available_types)
+        end
+        return negotiator.media_type(available_types)
+      end
+
       protected def run_wall_out_going
         return Async(Nil).new(->{
           @wall_instances.reverse.each do |wall_instance|

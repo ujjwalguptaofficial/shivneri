@@ -5,18 +5,16 @@ module CrystalInsideFort
     include HASHES
 
     class HttpResult
-      property status_code, response_data, content_type
+      property status_code, response_data, content_type, response_format, should_redirect
       @status_code : Int32
       @response_data : String
       @content_type : String
       # file?: FileResultInfo;
       @should_redirect : Bool = false
 
-      def initialize(@response_data : String, @content_type : String)
-        @status_code = 200
-      end
+      @response_format : Nil | Hash(String, String) = nil
 
-      def initialize(@response_data : String, @content_type : String, @status_code : Int32)
+      def initialize(@response_data : String, @content_type : String, @status_code : Int32 = 200)
       end
 
       def to_json

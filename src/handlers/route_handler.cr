@@ -9,8 +9,8 @@ module CrystalInsideFort
   module Handlers
     class RouteHandler
       @@routerCollection = {} of String => MODEL::RouteInfo
-      @@shield_store = {} of String => Proc(RequestHandler, ComponentResult)
-      @@guard_store = {} of String => Proc(RequestHandler, ComponentResult)
+      @@shield_store = {} of String => Proc(RequestHandler, ALIAS::ComponentResult)
+      @@guard_store = {} of String => Proc(RequestHandler, ALIAS::ComponentResult)
       @@defaultRouteControllerName : String = ""
     end
 
@@ -89,7 +89,7 @@ module CrystalInsideFort
       worker_name = get_class_name(worker_name)
       if (@@routerCollection[controller_name].workers.has_key?(worker_name))
         if (format != nil)
-          format = removeLastSlash(format)
+          format = remove_last_slash(format)
         end
         controllerPath = @@routerCollection[controller_name].path
         format = controllerPath.empty? || controllerPath === "/*" ? format : "#{controllerPath}#{format}"

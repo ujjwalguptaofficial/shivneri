@@ -1,9 +1,9 @@
 require "../fort_global"
-require "./request_handler_helper"
+require "./file_handler"
 
 module CrystalInsideFort
   module Handlers
-    class ControllerResultHandler < RequestHandlerHelper
+    class ControllerResultHandler < FileHandler
       @controller_result : HttpResult = HttpResult.new("", "")
 
       private def on_termination_from_Wall(result : HttpResult | Nil)
@@ -47,30 +47,35 @@ module CrystalInsideFort
         negotiateMimeType = self.get_content_type_from_negotiation(response_format_mime_types)
         key = response_format_mime_types.find { |qry| qry == negotiateMimeType }
         if (key != nil)
-          # self.controllerResult_.responseData = (self.controllerResult_ as HttpFormatResult).responseFormat[key]();
-          # self.endResponse_(negotiateMimeType);
-          # self.handle_final_result(
-
-          # )
           self.endResponse_(response_format_result[key])
         else
           self.on_not_acceptable_request
         end
       end
 
+      private def handle_redirect_result
+        # this.response.setHeader('Location', this.controllerResult_.responseData);
+        # this.response.writeHead(this.controllerResult_.statusCode || HTTP_STATUS_CODE.Ok,
+        #     { 'Location': this.controllerResult_.responseData });
+        # this.response.end();
+
+        # @response.content_type = 302
+        @response.headers["Location"] = @controller_result.response_data
+        @response.status_code = @controller_result.status_code
+        @response.close
+      end
+
       private def handle_final_result(result : HttpResult)
         puts "handle final result #{result.to_json}"
-        # result = result || textResult("")
+        result = result || HttpResult.new("", MIME_TYPE["text"])
         @controller_result = result
         self.cookie_manager.as(CookieManager).response_cookie.each do |value|
           self.response.headers[CONSTANTS.set_cookie] = value
         end
 
-        # if ((result as HttpResult).shouldRedirect === true) {
-        #     self.handleRedirectResult_();
-        # }
-        # else {
-        if (result.response_format == nil)
+        if (result.should_redirect == true)
+          self.handle_redirect_result
+        elsif (result.response_format == nil)
           #         if ((result as HttpResult).file == null) {
           contentType = result.as(HttpResult).content_type || MIME_TYPE["text"]
           negotiateMimeType = self.get_content_type_from_negotiation(contentType)
@@ -87,7 +92,6 @@ module CrystalInsideFort
         else
           self.handle_format_result
         end
-        # }
       end
     end
   end

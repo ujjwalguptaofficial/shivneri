@@ -22,4 +22,10 @@ app.routes = [{
   path:           "/session",
 }]
 # app.walls = [WallWithoutOutgoing]
-app.create
+app_option = AppOption.new
+app_option.folders = [{
+  path_alias: "static",
+  path:       File.join(Dir.current, "static"),
+}]
+# puts "curent dir #{Dir.current}"
+app.create(app_option)

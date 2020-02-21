@@ -1,6 +1,6 @@
 module CrystalInsideFort
   module HELPER
-    def removeLastSlash(value : String)
+    def remove_last_slash(value : String)
       valueLength = value.size
       # removing / from value;
       if (value[valueLength - 1] == "/")

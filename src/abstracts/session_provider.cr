@@ -42,7 +42,7 @@ module CrystalInsideFort
       end
 
       private def create_session_from_id(session_id)
-        now = Time.now
+        now = Time.utc
         @session_id = session_id
         cookie = HttpCookie.new(FortGlobal.app_session_identifier, session_id, true, "/", now + FortGlobal.session_timeout.minutes)
         @cookie.add_cookie(cookie)

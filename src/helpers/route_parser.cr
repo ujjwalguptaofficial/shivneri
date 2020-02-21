@@ -59,7 +59,7 @@ module CrystalInsideFort
     end
 
     def parseRoute?(url : String, httpMethod : String) : RouteMatch | Nil
-      url = removeLastSlash(url)
+      url = remove_last_slash(url)
       urlParts = url.split("/")
       route = RouteHandler.findControllerFromPath(urlParts)
       return route == nil ? checkRouteInWorker(RouteHandler.defaultRoute, httpMethod, urlParts) : checkRouteInWorker(route.as(RouteInfo), httpMethod, urlParts)

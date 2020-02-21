@@ -21,7 +21,7 @@ module CrystalInsideFort
 
       @component_channel = Channel(Bool).new
 
-      @query = {} of String => String | Int32
+      @query = {} of String => String
 
       @request : HTTP::Request
       @response : HTTP::Server::Response
@@ -96,7 +96,7 @@ module CrystalInsideFort
             route_match_info = parseRoute?(path_url.downcase, requestMethod)
             if (route_match_info == nil) # no route matched
               # it may be a file or folder then
-              # @handleFileRequest(pathUrl);
+              self.handle_file_request(path_url)
               puts "url not matched"
             else
               puts "url matched"
@@ -159,7 +159,7 @@ module CrystalInsideFort
 
           route_match_info.shields.each do |shield_name|
             puts "executin shield"
-            shield_result = Async(ComponentResult).new(->{
+            shield_result = Async(ALIAS::ComponentResult).new(->{
               puts "shield name #{shield_name}"
               shield_results = RouteHandler.get_shield_proc(shield_name).call(self).as(HttpResult | Nil)
               # puts shield_results != nil
@@ -185,7 +185,7 @@ module CrystalInsideFort
           puts "hitting guard #{route_match_info.worker_info.as(WorkerInfo).guards.size}"
           status = true
           route_match_info.worker_info.as(WorkerInfo).guards.each do |guard_name|
-            guard_result = Async(ComponentResult).new(->{
+            guard_result = Async(ALIAS::ComponentResult).new(->{
               RouteHandler.get_guard_proc(guard_name).call(self)
             }).await
 

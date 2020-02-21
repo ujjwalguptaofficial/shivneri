@@ -4,11 +4,13 @@ require "./generics/index"
 require "http/server"
 require "./helpers/index"
 require "./handlers/index"
+require "./structs/index"
 
 module CrystalInsideFort
   include Annotations
   include Handlers
   include GENERIC
+  include STRUCT
 
   # include Enums
 
@@ -130,7 +132,7 @@ module CrystalInsideFort
 
       isDefaultRouteExist = false
       @routes.each do |route|
-        RouteHandler.addControllerRoute(route[:controllerName], removeLastSlash(route[:path]))
+        RouteHandler.addControllerRoute(route[:controllerName], remove_last_slash(route[:path]))
         if (route[:path] === "/*")
           RouteHandler.defaultRouteControllerName = route[:controllerName]
           isDefaultRouteExist = true
@@ -155,7 +157,19 @@ module CrystalInsideFort
       {% end %}
     end
 
-    def create
+    # def create
+    #   app_option = AppOption.new;
+    #   app_option.folders = [{
+
+    #   }]
+    #   self.create()
+    # end
+
+    private def save_option(option : AppOption)
+      FortGlobal.folders = option.folders
+    end
+
+    def create(option : AppOption = AppOption.new)
       add_shield
       puts "adding controller"
       add_controller_route_and_map_shields
@@ -165,6 +179,7 @@ module CrystalInsideFort
       puts "adding wall"
       add_walls
 
+      save_option(option)
       address = @server.bind_tcp @port
       puts "Your fort is available on http://#{address}"
       @server.listen

@@ -135,6 +135,19 @@ module CrystalInsideFort
         @response.status = HTTP::Status::METHOD_NOT_ALLOWED
         @response.print(errMessage)
       end
+
+      protected def on_not_found
+        errMessage = ""
+        begin
+          self.run_wall_out_going
+          errMessage = FortGlobal.error_handler.new.on_not_found(@request.path)
+        rescue ex
+          return self.onErrorOccured(ex)
+        end
+        @response.content_type = MIME_TYPE["html"]
+        @response.status = HTTP::Status::NOT_FOUND
+        @response.print(errMessage)
+      end
     end
   end
 end

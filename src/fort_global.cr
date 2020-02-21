@@ -11,6 +11,13 @@ module CrystalInsideFort
     @@session_provider : SessionProvider.class = PROVIDER::MemorySessionProvider.as(SessionProvider.class)
     @@view_engine : ViewEngine = PROVIDER::CrinjaViewEngine.new
     @@view_path = "src/views"
+    @@is_production : Bool = false # ENV["CRYSTAL_ENV"] == "production" # FortGlobal.is_env_production
+    @@folders = [] of ALIAS::FolderMap
+  end
+
+  def FortGlobal.is_env_production
+    env = ENV["CRYSTAL_ENV"].downcase
+    return env == "production" ? true : false
   end
 
   def FortGlobal.app_name
@@ -51,5 +58,17 @@ module CrystalInsideFort
 
   def FortGlobal.view_path
     @@view_path
+  end
+
+  def FortGlobal.is_production
+    return @@is_production
+  end
+
+  def FortGlobal.folders
+    return @@folders
+  end
+
+  def FortGlobal.folders=(folders)
+    @@folders = folders
   end
 end

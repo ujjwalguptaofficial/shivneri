@@ -9,11 +9,13 @@ module General
   class DefaultController < Controller
     @[DefaultWorker]
     @[Guards(TestGuard)]
-    def index
+    @[Inject("Welcome to fort")]
+    def index(title : String)
       # return view_result("default/index.html", {
       #   "title" => "Fort",
       # })
-      return text_result("index")
+      # return text_result("index")
+      return text_result(title)
     end
 
     @[Worker("POST")]

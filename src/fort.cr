@@ -32,23 +32,35 @@ module CrystalInsideFort
     end
 
     private def add_workers
+      puts "adding workers"
       {% for klass in Controller.all_subclasses %}
 
-      {% for method in klass.methods.select { |m| m.annotation(DefaultWorker) } %}
-        {% mName = "#{method.name}" %}
-          action = -> (ctx : RequestHandler) { 
+        {% for method in klass.methods.select { |m| m.annotation(DefaultWorker) } %}
+          {% method_name = "#{method.name}" %}
+          {% inject_annotation = method.annotation(Inject) %}
+          {% if inject_annotation %}
+              action = -> (ctx : RequestHandler) { 
+                instance = {{klass}}.new;
+                instance.set_context(ctx);
+                return instance.{{method.name}}(*{{inject_annotation.args}})
+              }
+          {% elsif method.args.size > 0 %}
+              raise "method " + {{method_name}} + " in controller #{ {{klass.name}} } expects some arguments, use Inject for passing arguments value."
+              return;
+          {% else %}
+            action = -> (ctx : RequestHandler) { 
               instance = {{klass}}.new;
               instance.set_context(ctx);
               return instance.{{method.name}}
-              #  return HttpResult.new
-          }
-          workerInfo =  WorkerInfo.new({{mName}},["GET"], action)
-          RouteHandler.addWorker({{klass}}.name, workerInfo)
-          RouteHandler.addRoute({{klass}}.name, {{mName}},"/")
+            }
+          {% end %}
+            workerInfo =  WorkerInfo.new({{method_name}},["GET"], action)
+            RouteHandler.addWorker({{klass}}.name, workerInfo)
+            RouteHandler.addRoute({{klass}}.name, {{method_name}},"/")
         {% end %}
 
       {% for method in klass.methods.select { |m| m.annotation(Worker) } %}
-        {% mName = "#{method.name}" %}
+        {% method_name = "#{method.name}" %}
         {% args = method.annotation(Worker).args %}
         action = -> (ctx : RequestHandler) { 
           instance = {{klass}}.new;
@@ -60,22 +72,29 @@ module CrystalInsideFort
             http_methods = {{args}}.to_a
         {% end %}
          
-        workerInfo =  WorkerInfo.new({{mName}},http_methods, action)
+        workerInfo =  WorkerInfo.new({{method_name}},http_methods, action)
         RouteHandler.addWorker({{klass}}.name, workerInfo)
-        RouteHandler.addRoute({{klass}}.name, {{mName}},"/#{workerInfo.name}")
+        RouteHandler.addRoute({{klass}}.name, {{method_name}},"/#{workerInfo.name}")
       {% end %}
 
       {% for method in klass.methods.select { |m| m.annotation(Route) } %}
-        {% mName = "#{method.name}" %}
+        {% method_name = "#{method.name}" %}
         {% args = method.annotation(Route).args %}
-        RouteHandler.addRoute({{klass}}.name, {{mName}},{{args}}[0])
+        RouteHandler.addRoute({{klass}}.name, {{method_name}},{{args}}[0])
       {% end %}
 
       {% for method in klass.methods.select { |m| m.annotation(Guards) } %}
-        {% mName = "#{method.name}" %}
+        {% method_name = "#{method.name}" %}
         {% args = method.annotation(Guards).args %}
-        RouteHandler.add_guard_in_worker({{klass}}.name, {{mName}},{{args}}[0].name)
+        RouteHandler.add_guard_in_worker({{klass}}.name, {{method_name}},{{args}}[0].name)
       {% end %}
+
+      {% for method in klass.methods.select { |m| m.annotation(Inject) } %}
+        {% method_name = "#{method.name}" %}
+        {% args = method.annotation(Guards).args %}
+        RouteHandler.add_worker_dependency_value({{klass}}.name, {{method_name}},{{args}})
+      {% end %}
+
 
       {% end %}
     end

@@ -133,5 +133,9 @@ module CrystalInsideFort
     def RouteHandler.get_guard_proc(guard_name)
       return @@guard_store[guard_name]
     end
+
+    def RouteHandler.add_worker_dependency_value(controller_name, worker_name : String, args)
+      
+    end
   end
 end

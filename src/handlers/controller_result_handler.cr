@@ -20,7 +20,7 @@ module CrystalInsideFort
           #     }
           # );
         rescue ex
-          self.onErrorOccured(ex)
+          self.on_error_occured(ex)
           return
         end
         puts "result is #{@controller_result.to_json}"
@@ -35,7 +35,7 @@ module CrystalInsideFort
         begin
           self.run_wall_out_going.await
         rescue ex
-          self.onErrorOccured(ex)
+          self.on_error_occured(ex)
           return
         end
         self.handle_final_result(result)

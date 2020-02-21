@@ -82,7 +82,7 @@ module CrystalInsideFort
             end
           end
         rescue exception
-          self.onErrorOccured(exception)
+          self.on_error_occured(exception)
         end
       end
 
@@ -99,7 +99,7 @@ module CrystalInsideFort
           self.run_wall_out_going
           self.send_file_as_response(file_path, self.get_mime_type_from_file_type(file_type))
         rescue exception
-          self.onErrorOccured(exception)
+          self.on_error_occured(exception)
         end
       end
     end

@@ -71,7 +71,7 @@ module CrystalInsideFort
         })
       end
 
-      protected def onErrorOccured(error : Exception)
+      protected def on_error_occured(error : Exception)
         errMessage : String = ""
         begin
           self.run_wall_out_going
@@ -90,7 +90,7 @@ module CrystalInsideFort
           self.run_wall_out_going
           errMessage = FortGlobal.error_handler.new.on_bad_request(error)
         rescue ex
-          return self.onErrorOccured(ex)
+          return self.on_error_occured(ex)
         end
         @response.content_type = MIME_TYPE["html"]
         @response.status = HTTP::Status::BAD_REQUEST
@@ -101,7 +101,7 @@ module CrystalInsideFort
         begin
           self.run_wall_out_going.await
         rescue ex
-          return self.onErrorOccured(ex)
+          return self.on_error_occured(ex)
         end
         @response.headers.add("Allow", allowedMethods.join(","))
         @response.content_type = MIME_TYPE["html"]
@@ -115,7 +115,7 @@ module CrystalInsideFort
           self.run_wall_out_going
           errMessage = FortGlobal.error_handler.new.on_not_acceptable_request
         rescue ex
-          return self.onErrorOccured(ex)
+          return self.on_error_occured(ex)
         end
         @response.content_type = MIME_TYPE["html"]
         @response.status = HTTP::Status::METHOD_NOT_ALLOWED
@@ -128,7 +128,7 @@ module CrystalInsideFort
           self.run_wall_out_going
           errMessage = FortGlobal.error_handler.new.on_method_not_allowed
         rescue ex
-          return self.onErrorOccured(ex)
+          return self.on_error_occured(ex)
         end
         @response.headers.add("Allow", allowedMethods.join(","))
         @response.content_type = MIME_TYPE["html"]
@@ -142,7 +142,7 @@ module CrystalInsideFort
           self.run_wall_out_going
           errMessage = FortGlobal.error_handler.new.on_not_found(@request.path)
         rescue ex
-          return self.onErrorOccured(ex)
+          return self.on_error_occured(ex)
         end
         @response.content_type = MIME_TYPE["html"]
         @response.status = HTTP::Status::NOT_FOUND

@@ -105,7 +105,7 @@ module CrystalInsideFort
             end
           rescue ex
             puts "exception #{ex.message} #{ex.callstack.as(CallStack).printable_backtrace}"
-            self.onErrorOccured(ex)
+            self.on_error_occured(ex)
           end
         end
       end
@@ -237,7 +237,7 @@ module CrystalInsideFort
             # @session_.cookie = @cookieManager = CookieManager.new(parsedCookies)
             # @session_.sessionId = parsedCookies[FortGlobal.appSessionIdentifier]
           rescue ex
-            self.onErrorOccured(ex)
+            self.on_error_occured(ex)
             return false
           end
         else

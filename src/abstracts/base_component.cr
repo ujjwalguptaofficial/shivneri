@@ -30,13 +30,7 @@ module CrystalInsideFort
       end
 
       def render_view(view_name : String, model)
-        # return Async(String).new(->{
-        return FortGlobal.view_engine.render(ViewEngineData.new(view_name, model)).await
-        # })
-        # return FortGlobal.view_engine.render({
-        #       view: viewName,
-        #       model
-        #   });
+        return FortGlobal.view_engine.render(ViewEngineData.new(view_name, model))
       end
 
       def view_result(view_name : String)

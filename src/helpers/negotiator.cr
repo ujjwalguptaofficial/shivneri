@@ -25,12 +25,15 @@ module CrystalInsideFort
           else
             mime_type_store.push({
               mime_type: type,
-              weight:    semi_colon_splits[1].strip.to_f,
+              weight:    semi_colon_splits.last.strip.split("=").last.to_f,
             })
           end
         end
         mime_type_store.sort! { |x, y| y[:weight] <=> x[:weight] }
         mime_type_store.each do |mime_type_with_weight|
+          if (mime_type_with_weight[:mime_type] == "*/*")
+            return available[0]
+          end
           index = available.index { |type| mime_type_with_weight[:mime_type] == type }
           if (index != nil)
             return available[index.as(Int32)]

@@ -10,7 +10,7 @@ module CrystalInsideFort
         handle_final_result(result)
       end
 
-      private def endResponse_(negotiateMimeType : String)
+      private def end_response(negotiateMimeType : String)
         # let data
         begin
           # data = getResultBasedOnMiMe(negotiateMimeType,
@@ -47,7 +47,7 @@ module CrystalInsideFort
         negotiateMimeType = self.get_content_type_from_negotiation(response_format_mime_types)
         key = response_format_mime_types.find { |qry| qry == negotiateMimeType }
         if (key != nil)
-          self.endResponse_(response_format_result[key])
+          self.end_response(response_format_result[key])
         else
           self.on_not_acceptable_request
         end
@@ -66,7 +66,6 @@ module CrystalInsideFort
       end
 
       private def handle_final_result(result : HttpResult)
-        puts "handle final result #{result.to_json}"
         result = result || HttpResult.new("", MIME_TYPE["text"])
         @controller_result = result
         self.cookie_manager.as(CookieManager).response_cookie.each do |value|
@@ -80,7 +79,7 @@ module CrystalInsideFort
           contentType = result.as(HttpResult).content_type || MIME_TYPE["text"]
           negotiateMimeType = self.get_content_type_from_negotiation(contentType)
           if (negotiateMimeType != nil)
-            self.endResponse_(negotiateMimeType.as(String))
+            self.end_response(negotiateMimeType.as(String))
           else
             self.on_not_acceptable_request
           end

@@ -62,11 +62,24 @@ module CrystalInsideFort
       {% for method in klass.methods.select { |m| m.annotation(Worker) } %}
         {% method_name = "#{method.name}" %}
         {% args = method.annotation(Worker).args %}
-        action = -> (ctx : RequestHandler) { 
-          instance = {{klass}}.new;
-          instance.set_context(ctx);
-          return instance.{{method.name}}
-        }
+
+       {% inject_annotation = method.annotation(Inject) %}
+          {% if inject_annotation %}
+              action = -> (ctx : RequestHandler) { 
+                instance = {{klass}}.new;
+                instance.set_context(ctx);
+                return instance.{{method.name}}(*{{inject_annotation.args}})
+              }
+          {% elsif method.args.size > 0 %}
+              raise "method " + {{method_name}} + " in controller #{ {{klass.name}} } expects some arguments, use Inject for passing arguments value."
+              return;
+          {% else %}
+            action = -> (ctx : RequestHandler) { 
+              instance = {{klass}}.new;
+              instance.set_context(ctx);
+              return instance.{{method.name}}
+            }
+          {% end %}
         http_methods = [] of String;
         {% if !args.empty? %}
             http_methods = {{args}}.to_a
@@ -88,13 +101,6 @@ module CrystalInsideFort
         {% args = method.annotation(Guards).args %}
         RouteHandler.add_guard_in_worker({{klass}}.name, {{method_name}},{{args}}[0].name)
       {% end %}
-
-      {% for method in klass.methods.select { |m| m.annotation(Inject) } %}
-        {% method_name = "#{method.name}" %}
-        {% args = method.annotation(Guards).args %}
-        RouteHandler.add_worker_dependency_value({{klass}}.name, {{method_name}},{{args}})
-      {% end %}
-
 
       {% end %}
     end

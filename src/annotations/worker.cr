@@ -1,5 +1,5 @@
 module CrystalInsideFort
-  module Annotations
+  module ANNOTATION
     annotation Worker
     end
   end

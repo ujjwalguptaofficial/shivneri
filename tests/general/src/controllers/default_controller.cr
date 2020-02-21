@@ -1,6 +1,6 @@
 require "../../../../src/fort"
 include CrystalInsideFort::ABSTRACT
-include CrystalInsideFort::Annotations
+include CrystalInsideFort::ANNOTATION
 require "../shields/authentication_shield"
 require "../guards/test_guard"
 

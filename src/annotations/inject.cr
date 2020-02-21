@@ -1,6 +1,6 @@
 module CrystalInsideFort
   module ANNOTATION
-    annotation Shields
+    annotation Inject
     end
   end
 end

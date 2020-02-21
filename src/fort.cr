@@ -7,7 +7,7 @@ require "./handlers/index"
 require "./structs/index"
 
 module CrystalInsideFort
-  include Annotations
+  include ANNOTATION
   include Handlers
   include GENERIC
   include STRUCT

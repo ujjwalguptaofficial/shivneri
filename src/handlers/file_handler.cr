@@ -48,8 +48,8 @@ module CrystalInsideFort
       end
 
       protected def handle_file_request_from_absolute_path(absolute_path : String, file_type : String)
-        file_info = File.info(absolute_path)
-        if (file_info != nil)
+        if (File.exists?(absolute_path))
+          file_info = File.info(absolute_path)
           if (file_info.directory?)
             self.handle_file_request_for_folder_path(absolute_path)
           else
@@ -91,9 +91,6 @@ module CrystalInsideFort
           return MIME.from_extension(file_type)
         end
         return file_type
-        # file_type = file_type[0] == "." ? MIME.from_extension(file_type) : file_type
-        # puts "index at #{file_type[0]} file type is #{MIME.from_extension(file_type)}"
-        # return file_type
       end
 
       private def send_file(file_path : String, file_type : String, file_info : File::Info)

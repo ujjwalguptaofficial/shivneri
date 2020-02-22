@@ -3,6 +3,7 @@ include CrystalInsideFort::ABSTRACT
 include CrystalInsideFort::ANNOTATION
 require "../shields/authentication_shield"
 require "../guards/test_guard"
+require "../extras/my_singleton"
 
 module General
   @[Shields(AuthenticationShield)]

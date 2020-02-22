@@ -1,0 +1,3 @@
+class MySingleton
+  @props = ""
+end

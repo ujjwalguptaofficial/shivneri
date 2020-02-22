@@ -13,17 +13,24 @@ module CrystalInsideFort
         return is_session_created && @@session_values.has_key?(@session_id)
       end
 
+      def get?(key : String)
+        return Async(JSON::Any | Nil).new(->{
+          if (is_exist(key))
+            return @@session_values[self.session_id][key]
+          end
+          return nil
+        })
+      end
+
       def get(key : String)
         return Async(JSON::Any).new(->{
-          saved_session = session_values[self.session_id]
-          return savedSession != nil ? savedSession[key] : nil
+          return @@session_values[self.session_id][key]
         })
       end
 
       def is_exist(key : String)
         return Async(Bool).new(->{
-          saved_value = session_values[self.session_id]
-          return saved_value == nil ? false : saved_value[key] != nil
+          return is_session_created && @@session_values[self.session_id].has_key?(key)
         })
       end
 
@@ -41,8 +48,6 @@ module CrystalInsideFort
           if (is_session_exist)
             @@session_values[self.session_id][key] = val
           else
-            # saved_value = session_values[self.session_id]
-            #   if (saved_value == nil)
             self.create_session
             @@session_values[self.session_id] = {
               "#{key}" => val,
@@ -52,17 +57,20 @@ module CrystalInsideFort
         })
       end
 
+      def set(key : JSON::Any, val)
+        return self.set(key.to_s, val)
+      end
+
       def set_many(values)
         return Async(Nil).await_many(values.map { |key, value| self.set(key, value) })
       end
 
-      def remove(key : String)
-        if (is_session_created)
-          saved_value = session_values[self.session_id]
-          if (saved_value.has_key(key))
-            saved_value.delete(key)
+      def remove?(key : String)
+        return Async(Nil).new(->{
+          if (is_exist(key))
+            
           end
-        end
+        })
       end
 
       def clear

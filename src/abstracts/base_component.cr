@@ -29,6 +29,10 @@ module CrystalInsideFort
         return @context.as(RequestHandler).session_provider.as(SessionProvider)
       end
 
+      def logger
+        return @context.as(RequestHandler).logger
+      end
+
       def render_view(view_name : String, model)
         return FortGlobal.view_engine.render(ViewEngineData.new(view_name, model))
       end

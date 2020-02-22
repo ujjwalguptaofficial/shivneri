@@ -38,7 +38,7 @@ module CrystalInsideFort
       # end
 
       def Async.await_many(task_list : Array(Async))
-        return Async(T).new (->{
+        return Async(Array(T)).new (->{
           results = [] of T
           task_list.each do |task|
             results.push(task.await)

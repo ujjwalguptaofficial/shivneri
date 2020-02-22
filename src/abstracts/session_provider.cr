@@ -20,11 +20,12 @@ module CrystalInsideFort
       end
 
       abstract def is_session_exist : Async(Bool)
-      abstract def get(key : String) : Async(Bool)
+      abstract def get(key : String) : Async(JSON::Any)
+      abstract def get?(key : String) : Async(JSON::Any | Nil)
       abstract def is_exist(key : String) : Async(Bool)
       abstract def get_all : Async(Hash(String, JSON::Any))
       abstract def set(key : String, val : JSON::Any) : Async(Nil)
-      abstract def set_many(values : NamedTuple(String, JSON::Any)) : Async(Nil)
+      abstract def set_many(values : Hash(String, JSON::Any)) : Async(Nil)
       abstract def remove(key : String) : Async(Nil)
       abstract def clear : Async(Nil)
 

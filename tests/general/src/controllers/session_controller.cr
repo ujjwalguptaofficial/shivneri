@@ -4,67 +4,65 @@ module General
     def add
       key = self.body["key"].to_s
       value = self.body["value"]
-      self.session.set(key, value)
+      self.session.set(key, value).await
       return text_result("saved")
     end
 
-    # @Worker()
-    # @Route("/add-many")
-    # async addMany() {
-    #     const key1 = self.body.key1;
-    #     const value1 = self.body.value1;
-    #     const key2 = self.body.key2;
-    #     const value2 = self.body.value2;
-    #     await self.session.setMany({
-    #         [key1]: value1,
-    #         [key2]: value2
-    #     })
-    #     return textResult("saved");
-    # }
+    @[Worker]
+    @[Route("/add-many")]
+    def add_many
+      key1 = body["key1"]
+      value1 = body["value1"]
+      key2 = body["key2"]
+      value2 = body["value2"]
+      self.session.set_many({
+        key1 => value1,
+        key2 => value2,
+      }).await
+      return text_result("saved")
+    end
 
-    # @Worker()
-    # async exist() {
-    #     const key = self.query.key;
-    #     if (await self.session.isExist(key)) {
-    #         return textResult('key is found');
-    #     }
-    #     else {
-    #         return textResult("key is not found");
-    #     }
+    @[Worker]
+    def exist
+      key = self.query["key"]
+      if (self.session.is_exist(key).await)
+        return text_result("key is found")
+      else
+        return text_result("key is not found")
+      end
+    end
 
-    # }
+    @[Worker]
+    def get
+      key = self.query["key"]
+      self.logger.debug("key", key)
+      value_from_session = self.session.get(key).await
+      self.logger.debug("value from session", value_from_session)
+      return json_result({
+        value: value_from_session,
+      })
+    end
 
-    # @Worker()
-    # async get() {
-    #     const key = self.query.key;
-    #     self.logger.debug("key", key);
-    #     const value_from_session = await self.session.get(key);
-    #     self.logger.debug("value from session", value_from_session);
-    #     return jsonResult({
-    #         value: value_from_session
-    #     });
-    # }
+    @[Worker]
+    def update
+      key = self.body["key"]
+      value = self.body["value"]
+      self.session.set(key, value).await
+      return text_result("updated")
+    end
 
-    # @Worker()
-    # async update() {
-    #     const key = self.body.key;
-    #     const value = self.body.value;
-    #     await self.session.set(key, value);
-    #     return textResult("updated");
-    # }
+    @[Worker]
+    def remove
+      key = self.query["key"]
+      self.session.remove(key).await
+      return text_result("removed")
+    end
 
-    # @Worker()
-    # async remove() {
-    #     const key = self.query.key;
-    #     await self.session.remove(key);
-    #     return textResult("removed");
-    # }
-
-    # @Worker()
-    # async clear() {
-    #     await self.session.clear();
-    #     return textResult("cleared");
-    # }
+    @[Worker]
+    def clear
+      self.session.clear.await
+      return text_result("cleared")
+    end
 
     @[Worker]
     def get_all
@@ -72,7 +70,6 @@ module General
       return json_result({
         value: value_from_session,
       })
-      return text_result("saved")
     end
   end
 end

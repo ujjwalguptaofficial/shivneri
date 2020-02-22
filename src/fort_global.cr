@@ -13,6 +13,7 @@ module CrystalInsideFort
     @@view_path = "src/views"
     @@is_production : Bool = false # ENV["CRYSTAL_ENV"] == "production" # FortGlobal.is_env_production
     @@folders = [] of ALIAS::FolderMap
+    @@logger = FortLogger.new
   end
 
   def FortGlobal.is_env_production
@@ -70,5 +71,9 @@ module CrystalInsideFort
 
   def FortGlobal.folders=(folders)
     @@folders = folders
+  end
+
+  def FortGlobal.logger
+    return @@logger
   end
 end

@@ -30,6 +30,10 @@ module CrystalInsideFort
 
       @session_provider : SessionProvider | Nil = nil
 
+      def logger
+        return FortGlobal.logger
+      end
+
       def route_match_info
         @route_match_info.as(RouteMatch)
       end

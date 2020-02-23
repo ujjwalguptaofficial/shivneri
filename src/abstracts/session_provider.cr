@@ -19,17 +19,16 @@ module CrystalInsideFort
         return @cookie
       end
 
-      abstract def is_session_exist : Async(Bool)
-      abstract def get(key : String) : Async(JSON::Any)
-      abstract def get?(key : String) : Async(JSON::Any | Nil)
-      abstract def is_exist(key : String) : Async(Bool)
-      abstract def get_all : Async(Hash(String, JSON::Any))
-      abstract def set(key : String, val : JSON::Any) : Async(Nil)
-      abstract def set_many(values : Hash(String, JSON::Any)) : Async(Nil)
-      abstract def remove(key : String) : Async(Nil)
-      abstract def remove?(key : String) : Async(Nil)
+      abstract def is_session_exist : Bool
+      abstract def [](key : String) : JSON::Any
+      abstract def is_exist(key : String) : Bool
+      abstract def get_all : Hash(String, JSON::Any)
+      abstract def []=(key : String, val : JSON::Any) : Nil
+      abstract def set_many(values : Hash(String, JSON::Any)) : Nil
+      abstract def remove(key : String) : Nil
+      abstract def remove?(key : String) : Nil
 
-      abstract def clear : Async(Nil)
+      abstract def clear : Nil
 
       def is_session_created
         session_id != nil
@@ -57,8 +56,6 @@ module CrystalInsideFort
         cookie.path = "/"
         self.cookie.remove_cookie(cookie)
       end
-
-     
     end
   end
 end

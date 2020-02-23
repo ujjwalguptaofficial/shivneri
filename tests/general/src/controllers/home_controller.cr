@@ -16,9 +16,9 @@ module General
         if (users.size > 0)
           user = users[0]
           if (user != nil && user.password == pwd)
-            self.session.set("user_id", user.id)
-            self.session.set("email_id", JSON::Any.new(email_id))
-            return text_result(`Authenticated`)
+            self.session["user_id"] = user.id
+            self.session["email_id"] = email_id
+            return text_result("Authenticated")
           else
             result = text_result("Invalid credential")
             return result

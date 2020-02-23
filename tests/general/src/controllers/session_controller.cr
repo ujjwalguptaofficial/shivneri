@@ -4,7 +4,7 @@ module General
     def add
       key = self.body["key"].to_s
       value = self.body["value"]
-      self.session.set(key, value).await
+      self.session[key] = value
       return text_result("saved")
     end
 
@@ -18,14 +18,14 @@ module General
       self.session.set_many({
         key1 => value1,
         key2 => value2,
-      }).await
+      })
       return text_result("saved")
     end
 
     @[Worker]
     def exist
       key = self.query["key"]
-      if (self.session.is_exist(key).await)
+      if (self.session.is_exist(key))
         return text_result("key is found")
       else
         return text_result("key is not found")
@@ -36,7 +36,7 @@ module General
     def get
       key = self.query["key"]
       self.logger.debug("key", key)
-      value_from_session = self.session.get(key).await
+      value_from_session = self.session[key]
       self.logger.debug("value from session", value_from_session)
       return json_result({
         value: value_from_session,
@@ -47,26 +47,26 @@ module General
     def update
       key = self.body["key"]
       value = self.body["value"]
-      self.session.set(key, value).await
+      self.session[key] = value
       return text_result("updated")
     end
 
     @[Worker]
     def remove
       key = self.query["key"]
-      self.session.remove(key).await
+      self.session.remove(key)
       return text_result("removed")
     end
 
     @[Worker]
     def clear
-      self.session.clear.await
+      self.session.clear
       return text_result("cleared")
     end
 
     @[Worker]
     def get_all
-      value_from_session = self.session.get_all.await
+      value_from_session = self.session.get_all
       return json_result({
         value: value_from_session,
       })

@@ -209,18 +209,9 @@ module CrystalInsideFort
 
       private def run_controller
         puts "hitting controller"
-        # spawn do
-        puts "executing controller"
-        # spawn do
-        # route_match_info.worker_info.as(WorkerInfo).workerProc.call(self)
-        # end
-        # Fiber.yield
-        puts "controller result received"
-        # result = @result_channel.receive.as(HttpResult)
-        result = Async(HttpResult).new(->{
-          return route_match_info.worker_info.as(WorkerInfo).workerProc.call(self)
-        }).yield_await
-        self.on_result_from_controller(result)
+        self.on_result_from_controller(
+          route_match_info.worker_info.as(WorkerInfo).workerProc.call(self)
+        )
         # end
       end
 

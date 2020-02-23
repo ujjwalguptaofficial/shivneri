@@ -3,11 +3,11 @@ require "./controller_result_handler"
 module CrystalInsideFort
   module Handlers
     class PostHandler < ControllerResultHandler
-      getter body
+      getter body, file
 
       @body = {} of String => JSON::Any
 
-      file : FileManager
+      @file : FileManager = FileManager.new
 
       private def parse_multi_part_data
         # return promise((res, rej) => {
@@ -31,9 +31,35 @@ module CrystalInsideFort
         #     });
         # });
 
-        MIME::Multipart.parse(request) do |headers, io|
-          headers["Content-Type"]
-          io.gets_to_end
+        # MIME::Multipart.parse(request) do |headers, io|
+        #   headers["Content-Type"]
+        #   puts io.gets_to_end
+        # end
+
+        HTTP::FormData.parse(@request) do |part|
+          puts "part name #{part.name}, type : #{typeof(part)}"
+          case part.headers["Content-Type"]
+          when MIME_TYPE["json"]
+            @body.merge!(JSON.parse(part.body).as_h)
+          when MIME_TYPE["form_url_encoded"]
+            HTTP::Params.parse(part.body.gets_to_end).each do |key, val|
+              @body[key] = JSON::Any.new(val)
+            end
+          else
+            if (part.filename == nil || part.filename.as(String).empty?)
+              return
+            end
+            # tmp_file = File.tempfile(part.name)
+            # File.open(tmp_file.path, "w") do |file|
+            #   IO.copy(part.body, file)
+            # end
+
+            @file.add_file(HttpFile.new(part, ""))
+            # do |file|
+            #   IO.copy(part.body, file)
+            # end
+            # puts "file found #{file.path}"
+          end
         end
       end
 
@@ -49,28 +75,22 @@ module CrystalInsideFort
         contentType = parse_content_type(contentType)
         puts "parsing body #{contentType}"
         if (contentType == MIME_TYPE["form_multi_part"])
-          # const result = await this.parseMultiPartData_();
-          # postData = result.field;
-          # this.file = new FileManager(result.file);
-          # @parse_multi_part_data
+          self.parse_multi_part_data
         else
-          #     this.file = new FileManager({});
           puts "parsing body 1"
           case contentType
           when MIME_TYPE["json"]
-            #   postData = JsonHelper.parse(bodyDataAsString);
             puts "parsing body json"
             @body = JSON.parse(@request.body.as(IO)).as_h
           when MIME_TYPE["form_url_encoded"]
-            @body = JSON.parse(@request.body.as(IO).gets_to_end).as_h
+            HTTP::Params.parse(@request.body.as(IO).gets_to_end).each do |key, val|
+              @body[key] = JSON::Any.new(val)
+            end
             #   case MIME_TYPE.Xml:
             #       postData = new (FortGlobal as any).xmlParser().parse(bodyDataAsString);
             #       break;
           end
         end
-
-        # return postData;
-
       end
     end
   end

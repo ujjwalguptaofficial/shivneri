@@ -7,6 +7,14 @@ module CrystalInsideFort
         @files = value
       end
 
+      def initialize
+        @files = {} of String => HttpFile
+      end
+
+      def add_file(file : HttpFile)
+        @files[file.field_name] = file
+      end
+
       #
       # **
       # * get total no of files

@@ -23,7 +23,7 @@ module CrystalInsideFort
       # @returns HttpCookie
       # @memberof CookieManager
       def get_cookie(name : String) : HttpCookie
-        return HttpCookie.new(name, @cookie_collection[name])
+        return HttpCookie.new(name, @cookie_collection[name], false, "", Time.utc)
       end
 
       # add cookie
@@ -43,9 +43,9 @@ module CrystalInsideFort
       # @memberof CookieManager
       #
       def remove_cookie(cookie : HttpCookie)
-        @cookie_collection[cookie.name] = null
-        @cookie.expires = Time.new("Thu, 01 Jan 1970 00:00:00 GMT")
-        @cookie.maxAge = -1
+        @cookie_collection.delete(cookie.name)
+        cookie.expires = Time.utc(1900, 1, 1) # Time.new("Thu, 01 Jan 1970 00:00:00 GMT")
+        cookie.max_age = -1
         @response_cookie.push(get_cookie_string_from_cookie(cookie))
       end
 

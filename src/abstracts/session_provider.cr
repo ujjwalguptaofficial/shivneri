@@ -27,6 +27,8 @@ module CrystalInsideFort
       abstract def set(key : String, val : JSON::Any) : Async(Nil)
       abstract def set_many(values : Hash(String, JSON::Any)) : Async(Nil)
       abstract def remove(key : String) : Async(Nil)
+      abstract def remove?(key : String) : Async(Nil)
+
       abstract def clear : Async(Nil)
 
       def is_session_created
@@ -50,10 +52,10 @@ module CrystalInsideFort
       end
 
       protected def destroy_session
-        cookie = this.cookie.getCookie(FortGlobal.appsession_identifier)
+        cookie = self.cookie.get_cookie(FortGlobal.app_session_identifier)
         cookie.http_only = true
         cookie.path = "/"
-        this.cookie.remove_cookie(cookie)
+        self.cookie.remove_cookie(cookie)
       end
     end
   end

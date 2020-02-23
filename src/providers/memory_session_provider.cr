@@ -68,16 +68,36 @@ module CrystalInsideFort
       def remove?(key : String)
         return Async(Nil).new(->{
           if (is_exist(key))
-            
+            @@session_values[self.session_id].delete(key)
           end
+          return nil
+        })
+      end
+
+      def remove(key : String)
+        return Async(Nil).new(->{
+          @@session_values[self.session_id].delete(key)
+          return nil
+        })
+      end
+
+      def clear?
+        return Async(Nil).new(->{
+          if (is_session_exist)
+            self.clear.await
+          end
+          return nil
         })
       end
 
       def clear
-        #    remove session values
-        session_values[self.session_id].clear
-        # expire cookie in browser
-        self.destroy_session.await
+        return Async(Nil).new(->{
+          #    remove session values
+          @@session_values[self.session_id].clear
+          # expire cookie in browser
+          self.destroy_session
+          return nil
+        })
       end
     end
   end

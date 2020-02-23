@@ -33,6 +33,29 @@ module General
       })
     end
 
+    @[Worker("POST")]
+    @[Route("/upload")]
+    def upload_file
+      pathToSave = File.join(Dir.current, "../upload.png")
+      logger.debug("count", self.file.count)
+      result = {
+        count: self.file.count,
+      }
+      # if (self.file.count > 0)
+      #   result = {
+      #     ...result,
+      #     ...self.file.files[0],
+      #   }
+      # end
+      # if (self.file.is_exist("jsstore") == true)
+      #   self.file.save_to("jsstore", pathToSave).await
+      #   result.responseText = "file saved"
+      # else
+      #   result.responseText = "file not saved"
+      # end
+      return json_result(result)
+    end
+
     # @[Worker("POST")]
     # def index1
     #   # return json_result({"name" => "ujjwal gupta"})

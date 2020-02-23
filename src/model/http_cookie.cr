@@ -1,9 +1,7 @@
 module CrystalInsideFort
   module MODEL
     class HttpCookie
-      @domain : String | Nil = nil
-      @domain : String | Nil = nil
-      getter name, value, expires, http_only, max_age, path, domain
+      property name, value, expires, http_only, max_age, path, domain
 
       @name : String
       @value : String

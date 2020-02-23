@@ -33,6 +33,10 @@ module CrystalInsideFort
         return @context.as(RequestHandler).logger
       end
 
+      def file
+        return @context.as(RequestHandler).file
+      end
+
       def render_view(view_name : String, model)
         return FortGlobal.view_engine.render(ViewEngineData.new(view_name, model))
       end

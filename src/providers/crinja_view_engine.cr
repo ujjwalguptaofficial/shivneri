@@ -1,6 +1,5 @@
 require "crinja"
-
-# require "../abstracts/index"
+require "../abstracts/index"
 
 module CrystalInsideFort
   module PROVIDER

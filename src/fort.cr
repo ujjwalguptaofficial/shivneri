@@ -1,3 +1,4 @@
+require "./fort_global"
 require "./abstracts/index"
 require "./annotations/index"
 require "./generics/index"

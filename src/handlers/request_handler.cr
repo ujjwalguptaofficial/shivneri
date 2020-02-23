@@ -15,13 +15,14 @@ module CrystalInsideFort
     include GENERIC
 
     class RequestHandler < PostHandler
-      getter query, request, route_match_info, response, result_channel, session_provider
+      getter query, request, route_match_info, response, result_channel, session_provider, component_data
 
       @result_channel = Channel(HttpResult | Nil).new
 
       @component_channel = Channel(Bool).new
 
       @query = {} of String => String
+      @component_data = {} of String => JSON::Any
 
       @request : HTTP::Request
       @response : HTTP::Server::Response

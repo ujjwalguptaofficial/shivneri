@@ -21,6 +21,10 @@ module CrystalInsideFort
         return @context.as(RequestHandler).query
       end
 
+      def data
+        return @context.as(RequestHandler).component_data
+      end
+
       def cookie
         return @context.as(RequestHandler).cookie_manager
       end
@@ -53,6 +57,10 @@ module CrystalInsideFort
 
       def json_result(value, status_code = 200)
         return HttpResult.new(value.to_json, MIME_TYPE["json"], status_code)
+      end
+
+      def json_result(value : String, status_code = 200)
+        return HttpResult.new(value, MIME_TYPE["json"], status_code)
       end
 
       def nil_result

@@ -1,5 +1,6 @@
 module MODEL
   class User
+    include JSON::Serializable
     property id, name, gender, password, email, address
 
     def initialize(body_data : Hash(String, JSON::Any))

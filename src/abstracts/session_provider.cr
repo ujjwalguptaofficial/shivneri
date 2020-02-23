@@ -57,6 +57,8 @@ module CrystalInsideFort
         cookie.path = "/"
         self.cookie.remove_cookie(cookie)
       end
+
+     
     end
   end
 end

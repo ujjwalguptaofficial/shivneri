@@ -61,6 +61,10 @@ module CrystalInsideFort
         return self.set(key.to_s, val)
       end
 
+      def set(key : String, value : Int32) # Int32 is not part of JSON::Any
+        return self.set(key, JSON::Any.new(value.to_i64))
+      end
+
       def set_many(values)
         return Async(Nil).await_many(values.map { |key, value| self.set(key, value) })
       end

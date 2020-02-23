@@ -70,6 +70,18 @@ module CrystalInsideFort
       def html_result(value : String, status_code = 200)
         return HttpResult.new(value, MIME_TYPE["html"], status_code)
       end
+
+      def file_result(path : String, should_download = false)
+        http_result = HttpResult.new("", "")
+        http_result.file = FileResultInfo.new(path, should_download, File.basename(path))
+        return http_result
+      end
+
+      def file_result(path : String, file_name_with_extension : String, should_download = false)
+        http_result = HttpResult.new("", "")
+        http_result.file = FileResultInfo.new(path, should_download, file_name)
+        return http_result
+      end
     end
   end
 end

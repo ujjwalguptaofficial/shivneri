@@ -2,6 +2,7 @@ require "../../../src/fort"
 require "./controllers/default_controller"
 require "./controllers/session_controller"
 require "./controllers/home_controller"
+require "./controllers/random_controller"
 include CrystalInsideFort
 include General
 VERSION = "0.1.0"
@@ -24,6 +25,9 @@ app.routes = [{
 }, {
   controller_name: "HomeController",
   path:            "/home",
+}, {
+  controller_name: "RandomController",
+  path:            "/random",
 }]
 # app.walls = [WallWithoutOutgoing]
 app_option = AppOption.new

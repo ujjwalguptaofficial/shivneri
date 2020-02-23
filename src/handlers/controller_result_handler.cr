@@ -33,7 +33,7 @@ module CrystalInsideFort
       protected def on_result_from_controller(result : HttpResult)
         puts "result from controller #{result}"
         begin
-          self.run_wall_out_going.await
+          self.run_wall_out_going
         rescue ex
           self.on_error_occured(ex)
           return
@@ -54,15 +54,18 @@ module CrystalInsideFort
       end
 
       private def handle_redirect_result
-        # this.response.setHeader('Location', this.controllerResult_.responseData);
-        # this.response.writeHead(this.controllerResult_.statusCode || HTTP_STATUS_CODE.Ok,
-        #     { 'Location': this.controllerResult_.responseData });
-        # this.response.end();
-
-        # @response.content_type = 302
         @response.headers["Location"] = @controller_result.response_data
         @response.status_code = @controller_result.status_code
         @response.close
+      end
+
+      private def handle_file_result
+        file_result = @controller_result.file.as(FileResultInfo)
+        file_path = file_result.path
+        if (file_result.should_download == true)
+          @response.headers["Content-Disposition"] = "attachment;filename=#{file_result.name}"
+        end
+        self.handle_file_request_from_absolute_path(file_path, MIME.from_filename(file_path))
       end
 
       private def handle_final_result(result : HttpResult)
@@ -75,19 +78,17 @@ module CrystalInsideFort
         if (result.should_redirect == true)
           self.handle_redirect_result
         elsif (result.response_format == nil)
-          #         if ((result as HttpResult).file == null) {
-          contentType = result.as(HttpResult).content_type || MIME_TYPE["text"]
-          negotiateMimeType = self.get_content_type_from_negotiation(contentType)
-          if (negotiateMimeType != nil)
-            self.end_response(negotiateMimeType.as(String))
+          if (result.file == nil)
+            contentType = result.as(HttpResult).content_type || MIME_TYPE["text"]
+            negotiateMimeType = self.get_content_type_from_negotiation(contentType)
+            if (negotiateMimeType != nil)
+              self.end_response(negotiateMimeType.as(String))
+            else
+              self.on_not_acceptable_request
+            end
           else
-            self.on_not_acceptable_request
+            self.handle_file_result
           end
-          #         }
-          #         else {
-          #             self.handleFileResult_();
-          #         }
-          #     }
         else
           self.handle_format_result
         end

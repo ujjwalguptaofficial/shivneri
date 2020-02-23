@@ -5,11 +5,11 @@ module CrystalInsideFort
     include HASHES
 
     class HttpResult
-      property status_code, response_data, content_type, response_format, should_redirect
+      property status_code, response_data, content_type, response_format, should_redirect, file
       @status_code : Int32
       @response_data : String
       @content_type : String
-      # file?: FileResultInfo;
+      @file : FileResultInfo | Nil = nil
       @should_redirect : Bool = false
 
       @response_format : Nil | Hash(String, String) = nil

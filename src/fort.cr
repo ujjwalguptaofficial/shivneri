@@ -19,7 +19,7 @@ module CrystalInsideFort
     @error_handler : MODEL::ErrorHandler.class = ErrorHandler
     @walls = [] of Wall.class
     setter port : Int32 = 4000
-    setter routes = [] of NamedTuple(controllerName: String, path: String)
+    setter routes = [] of NamedTuple(controller_name: String, path: String)
 
     setter error_handler, walls
 
@@ -157,9 +157,9 @@ module CrystalInsideFort
 
       isDefaultRouteExist = false
       @routes.each do |route|
-        RouteHandler.addControllerRoute(route[:controllerName], remove_last_slash(route[:path]))
+        RouteHandler.addControllerRoute(route[:controller_name], remove_last_slash(route[:path]))
         if (route[:path] === "/*")
-          RouteHandler.defaultRouteControllerName = route[:controllerName]
+          RouteHandler.defaultRouteControllerName = route[:controller_name]
           isDefaultRouteExist = true
         end
       end
@@ -218,7 +218,7 @@ end
 
 # app = Fort.new
 # app.routes = [{
-#   controllerName: "DefaultController",
+#   controller_name: "DefaultController",
 #   path:           "/default",
 # }]
 # # app.routes = ["as"]

@@ -17,6 +17,10 @@ module CrystalInsideFort
       def initialize(@response_data : String, @content_type : String, @status_code : Int32 = 200)
       end
 
+      def initialize(@response_data : String, @content_type : String, @should_redirect)
+        @status_code = 302
+      end
+
       def to_json
         return {
           "status Code":   @status_code,

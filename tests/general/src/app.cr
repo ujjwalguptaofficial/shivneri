@@ -1,6 +1,7 @@
 require "../../../src/fort"
 require "./controllers/default_controller"
 require "./controllers/session_controller"
+require "./controllers/home_controller"
 include CrystalInsideFort
 include General
 VERSION = "0.1.0"
@@ -15,11 +16,14 @@ end
 
 app = App.new
 app.routes = [{
-  controllerName: "DefaultController",
-  path:           "/default",
+  controller_name: "DefaultController",
+  path:            "/default",
 }, {
-  controllerName: "SessionController",
-  path:           "/session",
+  controller_name: "SessionController",
+  path:            "/session",
+}, {
+  controller_name: "HomeController",
+  path:            "/home",
 }]
 # app.walls = [WallWithoutOutgoing]
 app_option = AppOption.new

@@ -49,26 +49,26 @@ module CrystalInsideFort
       def view_result(view_name : String, model : _)
         view_data = render_view(view_name, model).await
         return HttpResult.new(view_data, MIME_TYPE["html"])
-        # return @context.as(RequestHandler).result_channel.send(
-        #   HttpResult.new(view_data, MIME_TYPE["html"])
-        # )
       end
 
-      def json_result(value)
-        # result = HttpResult.new(value.to_json, MIME_TYPE["json"])
-        # @context.as(RequestHandler).result_channel.send(result)
-        return HttpResult.new(value.to_json, MIME_TYPE["json"])
+      def json_result(value, status_code = 200)
+        return HttpResult.new(value.to_json, MIME_TYPE["json"], status_code)
       end
 
       def nil_result
-        # @context.as(RequestHandler).result_channel.send(nil)
         return nil
       end
 
-      def text_result(value : String)
-        # result = HttpResult.new(value, MIME_TYPE["text"])
-        # @context.as(RequestHandler).result_channel.send(result)
-        return HttpResult.new(value, MIME_TYPE["text"])
+      def text_result(value : String, status_code = 200)
+        return HttpResult.new(value, MIME_TYPE["text"], status_code)
+      end
+
+      def redirect_result(url : String)
+        return HttpResult.new(url, MIME_TYPE["text"], true)
+      end
+
+      def html_result(value : String, status_code = 200)
+        return HttpResult.new(value, MIME_TYPE["html"], status_code)
       end
     end
   end

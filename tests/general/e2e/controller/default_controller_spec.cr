@@ -1,7 +1,7 @@
 require "../spec_helper.cr"
 require "../../src/controllers/default_controller"
 describe "DefaultController" do
-  app = init_app()
+
   http_client = HttpClient.new
 
   Spec.before_suite do
@@ -53,7 +53,7 @@ describe "DefaultController" do
     response.body.should eq "<h1>Method Not allowed.</h1>"
   end
 
-  Spec.after_suite do
-    app.destroy
-  end
+  # Spec.after_suite do
+  #   app.destroy
+  # end
 end

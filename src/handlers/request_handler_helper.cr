@@ -118,7 +118,7 @@ module CrystalInsideFort
           return self.on_error_occured(ex)
         end
         @response.content_type = MIME_TYPE["html"]
-        @response.status = HTTP::Status::METHOD_NOT_ALLOWED
+        @response.status = HTTP::Status::NOT_ACCEPTABLE
         @response.print(errMessage)
       end
 

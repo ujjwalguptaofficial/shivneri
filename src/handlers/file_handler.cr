@@ -93,15 +93,29 @@ module CrystalInsideFort
         return file_type
       end
 
-      
-      private def send_file(file_path : String, file_type : String, file_info : File::Info)
-        begin
-          self.run_wall_out_going
-          self.send_file_as_response(file_path, self.get_mime_type_from_file_type(file_type))
-        rescue exception
-          self.on_error_occured(exception)
-        end
+      macro is_env_production
+        return true
       end
+
+      {% if true %}
+        private def send_file(file_path : String, file_type : String, file_info : File::Info)
+          begin
+            self.run_wall_out_going
+            self.send_file_as_response(file_path, self.get_mime_type_from_file_type(file_type))
+          rescue exception
+            self.on_error_occured(exception)
+          end
+        end
+      {% else %}
+        private def send_file(file_path : String, file_type : String, file_info : File::Info)
+          begin
+            self.run_wall_out_going
+            self.send_file_as_response(file_path, self.get_mime_type_from_file_type(file_type))
+          rescue exception
+            self.on_error_occured(exception)
+          end
+        end
+      {% end %}
     end
   end
 end

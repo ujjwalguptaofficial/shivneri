@@ -56,17 +56,5 @@ module General
       # end
       return json_result(result)
     end
-
-    # @[Worker("POST")]
-    # def index1
-    #   # return json_result({"name" => "ujjwal gupta"})
-    #   return json_result(body)
-    # end
-
-    # @[Route("/index/{value}")]
-    # @[Worker]
-    # def index2
-    #   json_result(param)
-    # end
   end
 end

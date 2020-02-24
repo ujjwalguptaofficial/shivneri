@@ -71,4 +71,8 @@ module CrystalInsideFort
   def FortGlobal.logger
     return @@logger
   end
+
+  macro FortGlobal.is_env_production
+    return @@is_env_production
+  end
 end

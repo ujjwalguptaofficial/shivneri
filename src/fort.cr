@@ -16,10 +16,11 @@ module CrystalInsideFort
   # include Enums
 
   class Fort
+    property port
     # @server = nil;
     @error_handler : MODEL::ErrorHandler.class = ErrorHandler
     @walls = [] of Wall.class
-    setter port : Int32 = 4000
+    @port : Int32 = 4000
     setter routes = [] of NamedTuple(controller_name: String, path: String)
 
     setter error_handler, walls
@@ -207,12 +208,17 @@ module CrystalInsideFort
 
       save_option(option)
       address = @server.bind_tcp @port
-      puts "Your fort is available on http://#{address}"
-      @server.listen
+      spawn do
+        @server.listen
+      end
+    end
+
+    def destroy
+      @server.close
     end
 
     def finalize
-      @server.close
+      destroy
     end
   end
 end

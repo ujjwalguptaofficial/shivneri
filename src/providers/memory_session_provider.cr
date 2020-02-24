@@ -13,29 +13,29 @@ module CrystalInsideFort
         return is_session_created && @@session_values.has_key?(@session_id)
       end
 
-      def []?(key : String)
+      def []?(key : String) : JSON::Any
         if (is_exist(key))
           return @@session_values[self.session_id][key]
         end
         return nil
       end
 
-      def [](key : String)
+      def [](key : String) : JSON::Any
         return @@session_values[self.session_id][key]
       end
 
-      def is_exist(key : String)
-        return is_session_created && @@session_values[self.session_id].has_key?(key)
+      def is_exist(key : String) : Bool
+        return is_session_exist && @@session_values[self.session_id].has_key?(key)
       end
 
-      def get_all
+      def get_all : Hash(String, JSON::Any)
         if (is_session_exist)
           return @@session_values[self.session_id]
         end
         return {} of String => JSON::Any
       end
 
-      def []=(key : String, val)
+      def []=(key : String, val) : Nil
         if (is_session_exist)
           @@session_values[self.session_id][key] = val
         else
@@ -47,43 +47,43 @@ module CrystalInsideFort
         return nil
       end
 
-      def []=(key : JSON::Any, val)
+      def []=(key : JSON::Any, val) : Nil
         return self[key.to_s] = val
       end
 
-      def []=(key : String, value : String | Int64)
+      def []=(key : String, value : String | Int64) : Nil
         return self[key] = JSON::Any.new(value)
       end
 
-      def []=(key : String, value : Int32)
+      def []=(key : String, value : Int32) : Nil
         return self[key] = value.to_i64
       end
 
-      def set_many(values)
+      def set_many(values) : Nil
         values.map { |key, value| self[key] = value }
         return nil
       end
 
-      def remove?(key : String)
+      def remove?(key : String) : Nil
         if (is_exist(key))
           @@session_values[self.session_id].delete(key)
         end
         return nil
       end
 
-      def remove(key : String)
+      def remove(key : String) : Nil
         @@session_values[self.session_id].delete(key)
         return nil
       end
 
-      def clear?
+      def clear? : Nil
         if (is_session_exist)
           self.clear
         end
         return nil
       end
 
-      def clear
+      def clear : Nil
         #    remove session values
         @@session_values[self.session_id].clear
         # expire cookie in browser

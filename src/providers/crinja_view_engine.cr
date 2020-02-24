@@ -4,7 +4,7 @@ require "../abstracts/index"
 module CrystalInsideFort
   module PROVIDER
     class CrinjaViewEngine < ABSTRACT::ViewEngine
-      def render(value : ViewEngineData)
+      def render(value : ViewEngineData) : Async(String)
         return Async(String).new (->{
           # view_data = get_view_from_file({
           #   file_location: value.view,

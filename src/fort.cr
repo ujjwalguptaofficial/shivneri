@@ -26,6 +26,9 @@ module CrystalInsideFort
     setter error_handler, walls
 
     def initialize
+      if (ENV.has_key?("CRYSTAL_ENV") == false)
+        ENV["CRYSTAL_ENV"] = "development"
+      end
       @server = HTTP::Server.new do |context|
         RequestHandler.new(context.request, context.response).handle
         # context.response.content_type = "text/plain"
@@ -208,9 +211,14 @@ module CrystalInsideFort
 
       save_option(option)
       address = @server.bind_tcp @port
+      # env = ENV["CRYSTAL_ENV"]
+      # if (env.downcase == "test")
       spawn do
         @server.listen
       end
+      # else
+      #   @server.listen
+      # end
     end
 
     def destroy

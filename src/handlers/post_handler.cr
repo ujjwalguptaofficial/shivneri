@@ -10,32 +10,6 @@ module CrystalInsideFort
       @file : FileManager = FileManager.new
 
       private def parse_multi_part_data
-        # return promise((res, rej) => {
-        #     new Multiparty.Form().parse(this.request, (err, fields, files) => {
-        #         if (err) {
-        #             rej(err);
-        #         }
-        #         else {
-        #             const result: MultiPartParseResult = {
-        #                 field: {},
-        #                 file: {}
-        #             };
-        #             for (const field in fields) {
-        #                 result.field[field] = fields[field].length === 1 ? fields[field][0] : fields[field];
-        #             }
-        #             for (const file in files) {
-        #                 result.file[file] = files[file].length === 1 ? files[file][0] : files[file];
-        #             }
-        #             res(result);
-        #         }
-        #     });
-        # });
-
-        # MIME::Multipart.parse(request) do |headers, io|
-        #   headers["Content-Type"]
-        #   puts io.gets_to_end
-        # end
-
         HTTP::FormData.parse(@request) do |part|
           puts "part name #{part.name}, type : #{typeof(part)}"
           case part.headers["Content-Type"]
@@ -82,6 +56,9 @@ module CrystalInsideFort
           when MIME_TYPE["json"]
             puts "parsing body json"
             @body = JSON.parse(@request.body.as(IO)).as_h
+          when MIME_TYPE["xml"]
+            puts "parsing body xml"
+            # @body = XML.parse(@request.body.as(IO)).as_h
           when MIME_TYPE["form_url_encoded"]
             HTTP::Params.parse(@request.body.as(IO).gets_to_end).each do |key, val|
               @body[key] = JSON::Any.new(val)

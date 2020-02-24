@@ -30,7 +30,7 @@ def init_app
     controller_name: "RandomController",
     path:            "/random",
   }]
-  # app.walls = [WallWithoutOutgoing]
+  app.walls = [WallWithoutOutgoing.as(Wall.class)]
   app_option = AppOption.new
   app_option.folders = [{
     path_alias: "static",
@@ -43,7 +43,6 @@ def init_app
   return app
 end
 
-puts "ENV is - #{ENV["CRYSTAL_ENV"]}"
 if (ENV["CRYSTAL_ENV"]? != "TEST")
   init_app
   puts "Your fort is located at address - #{ENV["APP_URL"]}"

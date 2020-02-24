@@ -49,7 +49,7 @@ module General
       html_result("<h1>hey there i am html</h1>")
     end
 
-    @[Worker]
+    @[Worker("POST")]
     def post
       json_result(body)
     end
@@ -81,7 +81,7 @@ module General
     end
 
     # @[Worker]
-    # def get_students() 
+    # def get_students()
     #     return jsonResult(self.studentService.getAll());
     # end
 

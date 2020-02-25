@@ -21,9 +21,13 @@ module CrystalInsideFort
     @error_handler : MODEL::ErrorHandler.class = ErrorHandler
     @walls = [] of Wall.class
     @port : Int32 = 4000
-    setter routes = [] of NamedTuple(controller_name: String, path: String)
+    @routes = [] of NamedTuple(controller_name: String, path: String)
 
     setter error_handler, walls
+
+    def register_controller(controller, path : String)
+      @routes.push({controller_name: controller.name, path: path})
+    end
 
     def initialize
       if (ENV.has_key?("CRYSTAL_ENV") == false)
@@ -31,13 +35,10 @@ module CrystalInsideFort
       end
       @server = HTTP::Server.new do |context|
         RequestHandler.new(context.request, context.response).handle
-        # context.response.content_type = "text/plain"
-        # context.response.print "Hello world! The time is #{Time.local}"
       end
     end
 
     private def add_workers
-      puts "adding workers"
       {% for klass in Controller.all_subclasses %}
 
         {% for method in klass.methods.select { |m| m.annotation(DefaultWorker) } %}
@@ -111,13 +112,10 @@ module CrystalInsideFort
     end
 
     private def add_shield
-      puts "adding shield"
       {% for klass in Shield.all_subclasses %}
-        puts "found shield"
         shield_executor = -> (ctx : RequestHandler) {
           instance = {{klass}}.new;
           instance.set_context(ctx);
-          # return instance.protect
           if(true)
             return instance.protect
           elsif(ctx.body.has_key?("garbage_value_test"))
@@ -130,9 +128,7 @@ module CrystalInsideFort
     end
 
     private def add_guard
-      puts "adding guard"
       {% for klass in Guard.all_subclasses %}
-        puts "found guard"
         guard_executor =  -> (ctx : RequestHandler){
           instance = {{klass}}.new;
           instance.set_context(ctx);
@@ -201,12 +197,9 @@ module CrystalInsideFort
 
     def create(option : AppOption = AppOption.new)
       add_shield
-      puts "adding controller"
       add_controller_route_and_map_shields
-      puts "adding actions"
       add_guard
       add_workers
-      puts "adding wall"
       add_walls
 
       save_option(option)

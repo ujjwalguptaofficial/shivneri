@@ -23,15 +23,12 @@ module CrystalInsideFort
           self.on_error_occured(ex)
           return
         end
-        puts "result is #{@controller_result.to_json}"
-        # @response.headers[CONSTANTS.content_type] = negotiateMimeType
         @response.content_type = negotiateMimeType
         @response.status_code = @controller_result.status_code
         @response.print(@controller_result.response_data)
       end
 
       protected def on_result_from_controller(result : HttpResult)
-        puts "result from controller #{result}"
         begin
           self.run_wall_out_going
         rescue ex

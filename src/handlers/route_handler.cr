@@ -8,7 +8,7 @@ module CrystalInsideFort
 
   module Handlers
     class RouteHandler
-      @@routerCollection = {} of String => MODEL::RouteInfo
+      @@route_collection = {} of String => MODEL::RouteInfo
       @@shield_store = {} of String => Proc(RequestHandler, ALIAS::ComponentResult)
       @@guard_store = {} of String => Proc(RequestHandler, ALIAS::ComponentResult)
       @@defaultRouteControllerName : String = ""
@@ -16,7 +16,7 @@ module CrystalInsideFort
 
     def RouteHandler.addController(controller)
       controller_name = get_class_name(controller.name)
-      @@routerCollection[controller_name] = RouteInfo.new(controller)
+      @@route_collection[controller_name] = RouteInfo.new(controller)
     end
 
     def RouteHandler.add_shield(shield_name, executor_proc)
@@ -46,8 +46,8 @@ module CrystalInsideFort
       shield_name = get_class_name(shield_name)
       controller_name = get_class_name(controller_name)
       if (@@shield_store.has_key?(shield_name))
-        # @@routerCollection[controller_name].shields.push(@@shield_store[shield_name])
-        @@routerCollection[controller_name].shields.push(shield_name)
+        # @@route_collection[controller_name].shields.push(@@shield_store[shield_name])
+        @@route_collection[controller_name].shields.push(shield_name)
       else
         raise "No Shield found for shield name #{shield_name}"
       end
@@ -57,8 +57,8 @@ module CrystalInsideFort
       guard_name = get_class_name(guard_name)
       controller_name = get_class_name(controller_name)
       if (@@guard_store.has_key?(guard_name))
-        # @@routerCollection[controller_name].shields.push(@@shield_store[shield_name])
-        @@routerCollection[controller_name].workers[worker_name].guards.push(guard_name)
+        # @@route_collection[controller_name].shields.push(@@shield_store[shield_name])
+        @@route_collection[controller_name].workers[worker_name].guards.push(guard_name)
       else
         raise "No Guard found with name #{guard_name}"
       end
@@ -66,11 +66,11 @@ module CrystalInsideFort
 
     def RouteHandler.addControllerRoute(controller_name, path)
       controller_name = get_class_name(controller_name)
-      iterator = @@routerCollection.each_key
+      iterator = @@route_collection.each_key
 
       while (key = iterator.next.to_s)
         if (key.includes?(controller_name))
-          @@routerCollection[key].path = path
+          @@route_collection[key].path = path
           return
         end
       end
@@ -81,28 +81,28 @@ module CrystalInsideFort
     def RouteHandler.addWorker(controller_name, workerInfo : WorkerInfo)
       controller_name = get_class_name(controller_name)
       worker_name = get_class_name(workerInfo.name)
-      @@routerCollection[controller_name].workers[worker_name] = workerInfo
+      @@route_collection[controller_name].workers[worker_name] = workerInfo
     end
 
     def RouteHandler.addRoute(controller_name, worker_name : String, format : String)
       controller_name = get_class_name(controller_name)
       worker_name = get_class_name(worker_name)
-      if (@@routerCollection[controller_name].workers.has_key?(worker_name))
-        if (format != nil)
-          format = remove_last_slash(format)
-        end
-        controllerPath = @@routerCollection[controller_name].path
+      if (@@route_collection[controller_name].workers.has_key?(worker_name))
+        # if (format != nil)
+        format = remove_last_slash(format)
+        # end
+        controllerPath = @@route_collection[controller_name].path
         format = controllerPath.empty? || controllerPath === "/*" ? format : "#{controllerPath}#{format}"
-        @@routerCollection[controller_name].workers[worker_name].pattern = format
+        @@route_collection[controller_name].workers[worker_name].pattern = format
       end
     end
 
     def RouteHandler.getRouteValues
-      return @@routerCollection.values
+      return @@route_collection.values
     end
 
     def RouteHandler.findControllerFromPath(urlParts : Array(String))
-      @@routerCollection.to_a.each do |item|
+      @@route_collection.to_a.each do |item|
         isMatched = false
         patternSplit = item[1].path.split("/")
         patternSplit.each_with_index do |patternPart, i|
@@ -118,7 +118,7 @@ module CrystalInsideFort
     end
 
     def RouteHandler.defaultRoute
-      return @@routerCollection[@@defaultRouteControllerName]
+      return @@route_collection[@@defaultRouteControllerName]
     end
 
     def RouteHandler.defaultRouteControllerName=(controller_name : String)
@@ -133,6 +133,5 @@ module CrystalInsideFort
     def RouteHandler.get_guard_proc(guard_name)
       return @@guard_store[guard_name]
     end
-
   end
 end

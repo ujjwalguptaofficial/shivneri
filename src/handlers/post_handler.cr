@@ -11,7 +11,7 @@ module CrystalInsideFort
 
       private def parse_multi_part_data
         HTTP::FormData.parse(@request) do |part|
-          puts "part name #{part.name}, type : #{typeof(part)}"
+          # puts "part name #{part.name}, type : #{typeof(part)}"
           case part.headers["Content-Type"]
           when MIME_TYPE["json"]
             @body.merge!(JSON.parse(part.body).as_h)
@@ -47,14 +47,11 @@ module CrystalInsideFort
           contentType = @request.headers["content_type"]
         end
         contentType = parse_content_type(contentType)
-        puts "parsing body #{contentType}"
         if (contentType == MIME_TYPE["form_multi_part"])
           self.parse_multi_part_data
         else
-          puts "parsing body 1"
           case contentType
           when MIME_TYPE["json"]
-            puts "parsing body json"
             @body = JSON.parse(@request.body.as(IO)).as_h
           when MIME_TYPE["xml"]
             puts "parsing body xml"

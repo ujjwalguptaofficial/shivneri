@@ -40,15 +40,14 @@ module CrystalInsideFort
       def initialize(request : HTTP::Request, response : HTTP::Server::Response)
         @request = request
         @response = response
-        # @route_match_info = RouteMatch.new
       end
 
       def handle
-        setPreHeader
+        set_pre_header
         execute
       end
 
-      private def setPreHeader
+      private def set_pre_header
         @response.headers["X-Powered-By"] = FortGlobal.app_name
         @response.headers["Vary"] = "Accept-Encoding"
         @response.headers["Date"] = Time.utc.to_s
@@ -66,7 +65,6 @@ module CrystalInsideFort
           end
           break if status == false
         end
-
         return status
       end
 
@@ -77,19 +75,21 @@ module CrystalInsideFort
 
         shouldExecuteNextProcess : Bool = self.parse_cookie_from_request
         if (shouldExecuteNextProcess)
-          path_url = @request.path
-          puts "url is #{path_url}"
-
+          url = @request.path
+          puts "url is #{url}"
+          # if (url[-1] != '/')
+          #   url += '/'
+          # end
           shouldExecuteNextProcess = execute_wall_incoming
           if (shouldExecuteNextProcess == false)
             return
           end
           requestMethod = @request.method
           begin
-            route_match_info = parseRoute?(path_url.downcase, requestMethod)
+            route_match_info = parseRoute?(url.downcase, requestMethod)
             if (route_match_info == nil) # no route matched
               # it may be a file or folder then
-              self.handle_file_request(path_url)
+              self.handle_file_request(url)
             else
               @route_match_info = route_match_info.as(RouteMatch)
               self.on_route_matched

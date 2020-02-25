@@ -18,22 +18,25 @@ end
 
 def init_app
   app = App.new
-  app.routes = [{
-    controller_name: "DefaultController",
-    path:            "/default",
+  routes = [{
+    controller: DefaultController,
+    path:       "/default",
   }, {
-    controller_name: "SessionController",
-    path:            "/session",
+    controller: SessionController,
+    path:       "/session",
   }, {
-    controller_name: "HomeController",
-    path:            "/home",
+    controller: HomeController,
+    path:       "/home",
   }, {
-    controller_name: "RandomController",
-    path:            "/random",
+    controller: RandomController,
+    path:       "/random",
   }, {
-    controller_name: "UserController",
-    path:            "/user",
+    controller: UserController,
+    path:       "/user",
   }]
+  routes.each do |route|
+    app.register_controller(route[:controller], route[:path])
+  end
   app.walls = [WallWithoutOutgoing.as(Wall.class)]
   app_option = AppOption.new
   app_option.folders = [{

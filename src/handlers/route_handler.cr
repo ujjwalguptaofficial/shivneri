@@ -20,20 +20,16 @@ module CrystalInsideFort
     end
 
     def RouteHandler.add_shield(shield_name, executor_proc)
-      puts "shield name : #{shield_name}"
       shield_name = get_class_name(shield_name)
       if (!@@shield_store.has_key?(shield_name))
         @@shield_store[shield_name] = executor_proc
-        # .as(Proc(RequestHandler, (HttpResult | Nil)))
       end
     end
 
     def RouteHandler.add_guard(guard_name, executor_proc)
-      puts "shield name : #{guard_name}"
       guard_name = get_class_name(guard_name)
       if (!@@shield_store.has_key?(guard_name))
         @@guard_store[guard_name] = executor_proc
-        # .as(Proc(RequestHandler, HttpResult | Nil))
       end
     end
 
@@ -88,9 +84,7 @@ module CrystalInsideFort
       controller_name = get_class_name(controller_name)
       worker_name = get_class_name(worker_name)
       if (@@route_collection[controller_name].workers.has_key?(worker_name))
-        # if (format != nil)
         format = remove_last_slash(format)
-        # end
         controllerPath = @@route_collection[controller_name].path
         format = controllerPath.empty? || controllerPath === "/*" ? format : "#{controllerPath}#{format}"
         @@route_collection[controller_name].workers[worker_name].pattern = format

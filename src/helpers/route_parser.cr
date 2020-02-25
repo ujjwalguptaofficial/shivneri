@@ -5,15 +5,12 @@ module CrystalInsideFort
     def checkRouteInWorker(route : RouteInfo, httpMethod : String, urlParts : Array(String))
       matchedRoute = RouteMatch.new(route.controllerName, route.shields)
       urlPartLength = urlParts.size
-      puts route.to_json
       route.workers.to_a.each do |item|
         worker = item[1]
         patternSplit = worker.pattern.split("/")
-        puts "step -1, pattern : #{worker.pattern} patternSplit : #{patternSplit.to_json}, urlParts: #{urlParts.to_json}"
         if (urlPartLength == patternSplit.size)
           params = {} of String => String | Int32
           isMatched = true
-          puts "step -2"
           urlParts.each_with_index do |urlPart, i|
             if (urlPart != patternSplit[i])
               regex1 = /{(.*)}(?!.)/
@@ -34,11 +31,7 @@ module CrystalInsideFort
                 isMatched = false
               end
             end
-            puts "step -4 #{isMatched}"
-            # break if isMatched == false
-            puts "step -5 #{isMatched}"
           end
-          puts "checking isMatched #{isMatched} value #{matchedRoute.to_json} worker is : #{worker.to_json}"
           if (isMatched)
             if (worker.methodsAllowed.includes?(httpMethod))
               matchedRoute.worker_info = worker
@@ -51,7 +44,6 @@ module CrystalInsideFort
           end
         end
       end
-      puts "returning value #{matchedRoute.to_json}"
       if (matchedRoute.worker_info == nil && matchedRoute.allowedHttpMethod.size == 0)
         return nil
       end

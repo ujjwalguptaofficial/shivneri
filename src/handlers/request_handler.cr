@@ -76,10 +76,6 @@ module CrystalInsideFort
         shouldExecuteNextProcess : Bool = self.parse_cookie_from_request
         if (shouldExecuteNextProcess)
           url = @request.path
-          puts "url is #{url}"
-          # if (url[-1] != '/')
-          #   url += '/'
-          # end
           shouldExecuteNextProcess = execute_wall_incoming
           if (shouldExecuteNextProcess == false)
             return

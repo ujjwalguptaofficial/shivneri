@@ -27,17 +27,17 @@ describe "DefaultController" do
     {"key" => "hello", "value" => "world"}.should eq JSON.parse(response.body)
   end
 
-#   it "/json with http:option" do
-#     response = http_client.option("/json", HTTP::Headers{
-#       "Accept"       => "application/json",
-#       "Content-Type" => "application/json",
-#     }, {
-#       key: "hello",
-#     }.to_json)
-#     response.status_code.should eq 200
-#     # response.headers["allow"]?.should eq "POST"
-#     response.body.should eq ""
-#   end
+  #   it "/json with http:option" do
+  #     response = http_client.option("/json", HTTP::Headers{
+  #       "Accept"       => "application/json",
+  #       "Content-Type" => "application/json",
+  #     }, {
+  #       key: "hello",
+  #     }.to_json)
+  #     response.status_code.should eq 200
+  #     # response.headers["allow"]?.should eq "POST"
+  #     response.body.should eq ""
+  #   end
 
   it "/json with text/plain" do
     response = http_client.get("/json", HTTP::Headers{
@@ -152,5 +152,24 @@ describe "DefaultController" do
     response.status_code.should eq 200
     response.headers["allow"]?.should eq "POST"
     response.body.should eq ""
+  end
+
+  it "/redirect" do
+    response = http_client.get("/redirect")
+    response.status_code.should eq 302
+    response.headers["custom-header-from-outgoing-wall"]?.should eq "*"
+    response.headers["location"]?.should eq "html"
+    response.body.should eq ""
+  end
+
+  it "/login" do
+    response = http_client.post("/login", HTTP::Headers{
+      "Content-Type" => "application/json",
+    }, {
+      email:    "ujjwal@mg.com",
+      password: "admin",
+    }.to_json)
+    response.status_code.should eq 200
+    response.body.should eq "Authenticated"
   end
 end

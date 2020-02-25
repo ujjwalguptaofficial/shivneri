@@ -35,6 +35,10 @@ module CrystalInsideFort
         return FortGlobal.logger
       end
 
+      def worker_name
+        return @route_match_info.as(RouteMatch).worker_info.as(WorkerInfo).name
+      end
+
       def route_match_info
         @route_match_info.as(RouteMatch)
       end

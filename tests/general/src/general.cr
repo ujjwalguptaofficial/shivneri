@@ -3,6 +3,7 @@ require "./controllers/default_controller"
 require "./controllers/session_controller"
 require "./controllers/home_controller"
 require "./controllers/random_controller"
+require "./controllers/user_controller"
 include CrystalInsideFort
 include General
 VERSION = "0.1.0"
@@ -29,6 +30,9 @@ def init_app
   }, {
     controller_name: "RandomController",
     path:            "/random",
+  }, {
+    controller_name: "UserController",
+    path:            "/user",
   }]
   app.walls = [WallWithoutOutgoing.as(Wall.class)]
   app_option = AppOption.new

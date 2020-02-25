@@ -61,7 +61,7 @@ module General
 
     @[Worker]
     def get_data
-      json_result(self.data)
+      json_result(self.component_data)
     end
 
     @[Worker]

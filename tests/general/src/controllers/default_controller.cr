@@ -6,7 +6,7 @@ require "../guards/test_guard"
 require "../extras/my_singleton"
 
 module General
-  @[Shields(AuthenticationShield)]
+  
   class DefaultController < Controller
     @[DefaultWorker]
     @[Guards(TestGuard)]

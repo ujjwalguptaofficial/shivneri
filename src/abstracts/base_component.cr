@@ -21,8 +21,24 @@ module CrystalInsideFort
         return @context.as(RequestHandler).query
       end
 
-      def data
+      def component_data
         return @context.as(RequestHandler).component_data
+      end
+
+      def [](key : String)
+        return component_data[key]
+      end
+
+      def []=(key : String, value : Int64 | String)
+        component_data[key] = JSON::Any.new(value)
+      end
+
+      def []=(key : String, value : Int32)
+        self[key] = value.to_i64
+      end
+
+      def worker_name
+        return @context.as(RequestHandler).worker_name
       end
 
       def cookie

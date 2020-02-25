@@ -172,4 +172,12 @@ describe "DefaultController" do
     response.status_code.should eq 200
     response.body.should eq "Authenticated"
   end
+
+  it "/get_users" do
+    response = http_client.get("/get_users", HTTP::Headers{
+      "Accept" => "application/json",
+    })
+    response.status_code.should eq 200
+    response.headers.has_key?("allow").should eq false
+  end
 end

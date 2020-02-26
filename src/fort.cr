@@ -23,10 +23,26 @@ module CrystalInsideFort
     @port : Int32 = 4000
     @routes = [] of NamedTuple(controller_name: String, path: String)
 
-    setter error_handler, walls
+    setter error_handler
 
     def register_controller(controller, path : String)
       @routes.push({controller_name: controller.name, path: path})
+    end
+
+    def routes=(routes)
+      routes.each do |route|
+        register_controller(route[:controller], route[:path])
+      end
+    end
+
+    def add_wall(wall)
+      @walls.push(wall)
+    end
+
+    def walls=(walls)
+      walls.each do |wall|
+        add_wall(wall)
+      end
     end
 
     def initialize

@@ -34,10 +34,11 @@ def init_app
     controller: UserController,
     path:       "/user",
   }]
-  routes.each do |route|
-    app.register_controller(route[:controller], route[:path])
-  end
-  app.walls = [WallWithoutOutgoing.as(Wall.class)]
+  # routes.each do |route|
+  #   app.register_controller(route[:controller], route[:path])
+  # end
+  app.routes = routes
+  app.walls = [WallWithoutOutgoing]
   app_option = AppOption.new
   app_option.folders = [{
     path_alias: "static",

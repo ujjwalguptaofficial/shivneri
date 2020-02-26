@@ -20,7 +20,7 @@ def init_app
   app = App.new
   routes = [{
     controller: DefaultController,
-    path:       "/default",
+    path:       "/*",
   }, {
     controller: SessionController,
     path:       "/session",

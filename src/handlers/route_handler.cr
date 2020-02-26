@@ -14,6 +14,10 @@ module CrystalInsideFort
       @@defaultRouteControllerName : String = ""
     end
 
+    def RouteHandler.route_collection
+      return @@route_collection
+    end
+
     def RouteHandler.addController(controller)
       controller_name = get_class_name(controller.name)
       @@route_collection[controller_name] = RouteInfo.new(controller)
@@ -100,7 +104,7 @@ module CrystalInsideFort
         isMatched = false
         patternSplit = item[1].path.split("/")
         patternSplit.each_with_index do |patternPart, i|
-          isMatched = patternPart == urlParts[i]
+          isMatched = i < urlParts.size ? patternPart == urlParts[i] : false
           break if isMatched == false
         end
 
@@ -118,6 +122,10 @@ module CrystalInsideFort
     def RouteHandler.defaultRouteControllerName=(controller_name : String)
       controller_name = get_class_name(controller_name)
       @@defaultRouteControllerName = controller_name
+    end
+
+    def RouteHandler.defaultRouteControllerName
+      @@defaultRouteControllerName
     end
 
     def RouteHandler.get_shield_proc(shield_name)

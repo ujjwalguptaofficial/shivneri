@@ -61,8 +61,16 @@ module CrystalInsideFort
       # * @returns
       # * @memberof FileManager
       # *
-      def saveTo(field_name : String, path_to_save : String)
+      def save_to(field_name : String, path_to_save : String)
         # return Fs.copy(this.files_[field_name].path, path_to_save)
+        new_file = File.new(path_to_save, "w")
+        File.open(@files[field_name].path, "r") do |file|
+          bytes_read = 1
+          while bytes_read > 0
+            bytes_read = IO.copy(file, new_file, 16384) # 16kb at a time
+            Fiber.yield
+          end
+        end
       end
     end
   end

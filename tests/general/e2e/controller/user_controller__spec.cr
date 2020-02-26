@@ -1,7 +1,7 @@
 require "../spec_helper.cr"
 require "../../src/controllers/default_controller"
 
-describe "DefaultController" do
+describe "UserController" do
   http_client = HttpClient.new(ENV["APP_URL"] + "/user")
 
   it "/allow me without login" do

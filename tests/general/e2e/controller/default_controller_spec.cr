@@ -1,11 +1,10 @@
 require "../spec_helper.cr"
 require "../../src/controllers/default_controller"
 describe "DefaultController" do
-
   http_client = HttpClient.new
 
   Spec.before_suite do
-    http_client = HttpClient.new(ENV["APP_URL"] + "/default")
+    http_client = HttpClient.new(ENV["APP_URL"])
   end
 
   it "/" do

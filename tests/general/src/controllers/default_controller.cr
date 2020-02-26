@@ -6,7 +6,6 @@ require "../guards/test_guard"
 require "../extras/my_singleton"
 
 module General
-  
   class DefaultController < Controller
     @[DefaultWorker]
     @[Guards(TestGuard)]
@@ -37,7 +36,7 @@ module General
     @[Worker("POST")]
     @[Route("/upload")]
     def upload_file
-      pathToSave = File.join(Dir.current, "../upload.png")
+      pathToSave = File.join(Dir.current, "upload/upload.png")
       logger.debug("count", self.file.count)
       result = {
         count: self.file.count,
@@ -49,7 +48,7 @@ module General
       #   }
       # end
       # if (self.file.is_exist("jsstore") == true)
-      #   self.file.save_to("jsstore", pathToSave).await
+      self.file.save_to("jsstore", pathToSave)
       #   result.responseText = "file saved"
       # else
       #   result.responseText = "file not saved"

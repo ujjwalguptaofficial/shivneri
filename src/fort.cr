@@ -159,15 +159,18 @@ module CrystalInsideFort
       isDefaultRouteExist = false
       @routes.each do |route|
         RouteHandler.addControllerRoute(route[:controller_name], remove_last_slash(route[:path]))
-        if (route[:path] === "/*")
+        if (route[:path] == "/*")
           RouteHandler.defaultRouteControllerName = route[:controller_name]
           isDefaultRouteExist = true
         end
       end
-      if (!isDefaultRouteExist)
-        RouteHandler.defaultRouteControllerName = GenericController.name
-        RouteHandler.addControllerRoute(GenericController.name, "/*")
-      end
+      # if (!isDefaultRouteExist)
+      #   puts "inside isdefault exist"
+      #   RouteHandler.defaultRouteControllerName = GenericController.name
+      #   RouteHandler.addControllerRoute(GenericController.name, "/*")
+      # end
+
+      # puts "routes are #{RouteHandler.route_collection.to_json}"
     end
 
     private def add_walls
@@ -182,14 +185,6 @@ module CrystalInsideFort
       end
       {% end %}
     end
-
-    # def create
-    #   app_option = AppOption.new;
-    #   app_option.folders = [{
-
-    #   }]
-    #   self.create()
-    # end
 
     private def save_option(option : AppOption)
       FortGlobal.folders = option.folders

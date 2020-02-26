@@ -11,7 +11,6 @@ module CrystalInsideFort
 
       private def parse_multi_part_data
         HTTP::FormData.parse(@request) do |part|
-          # puts "part name #{part.name}, type : #{typeof(part)}"
           case part.headers["Content-Type"]
           when MIME_TYPE["json"]
             @body.merge!(JSON.parse(part.body).as_h)
@@ -23,23 +22,16 @@ module CrystalInsideFort
             if (part.filename == nil || part.filename.as(String).empty?)
               return
             end
-            # tmp_file = File.tempfile(part.name)
-            # File.open(tmp_file.path, "w") do |file|
-            #   IO.copy(part.body, file)
-            # end
-
-            @file.add_file(HttpFile.new(part, ""))
-            # do |file|
-            #   IO.copy(part.body, file)
-            # end
-            # puts "file found #{file.path}"
+            tmp_file = File.tempfile(part.name)
+            File.open(tmp_file.path, "w") do |file|
+              IO.copy(part.body, file)
+            end
+            @file.add_file(HttpFile.new(part, tmp_file.path))
           end
         end
       end
 
       protected def parse_post_data_and_set_body
-        # let postData;
-
         contentType = ""
         if (@request.headers.has_key?(CONSTANTS.content_type))
           contentType = @request.headers[CONSTANTS.content_type]

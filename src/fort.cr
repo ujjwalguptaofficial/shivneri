@@ -180,11 +180,13 @@ module CrystalInsideFort
           isDefaultRouteExist = true
         end
       end
-      # if (!isDefaultRouteExist)
-      #   puts "inside isdefault exist"
-      #   RouteHandler.defaultRouteControllerName = GenericController.name
-      #   RouteHandler.addControllerRoute(GenericController.name, "/*")
-      # end
+      if (isDefaultRouteExist)
+        puts "remove generic"
+        puts RouteHandler.remove_controller_route(GenericController.name)
+      else
+        RouteHandler.defaultRouteControllerName = GenericController.name
+        RouteHandler.addControllerRoute(GenericController.name, "/*")
+      end
 
       # puts "routes are #{RouteHandler.route_collection.to_json}"
     end

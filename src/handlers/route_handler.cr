@@ -78,6 +78,10 @@ module CrystalInsideFort
       raise "No controller found for controller name #{controller_name}"
     end
 
+    def RouteHandler.remove_controller_route(controller_name)
+      return @@route_collection.delete(get_class_name(controller_name))
+    end
+
     def RouteHandler.addWorker(controller_name, workerInfo : WorkerInfo)
       controller_name = get_class_name(controller_name)
       worker_name = get_class_name(workerInfo.name)

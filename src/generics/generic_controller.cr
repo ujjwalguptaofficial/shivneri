@@ -6,7 +6,7 @@ module CrystalInsideFort
     include ABSTRACT
     include HASHES
 
-    # class GenericController < Controller
-    # end
+    class GenericController < Controller
+    end
   end
 end

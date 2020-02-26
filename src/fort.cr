@@ -15,6 +15,10 @@ module CrystalInsideFort
 
   # include Enums
 
+  if (ENV.has_key?("CRYSTAL_ENV") == false)
+    ENV["CRYSTAL_ENV"] = "development"
+  end
+
   class Fort
     property port
     # @server = nil;
@@ -46,9 +50,6 @@ module CrystalInsideFort
     end
 
     def initialize
-      if (ENV.has_key?("CRYSTAL_ENV") == false)
-        ENV["CRYSTAL_ENV"] = "development"
-      end
       @server = HTTP::Server.new do |context|
         RequestHandler.new(context.request, context.response).handle
       end
@@ -181,8 +182,7 @@ module CrystalInsideFort
         end
       end
       if (isDefaultRouteExist)
-        puts "remove generic"
-        puts RouteHandler.remove_controller_route(GenericController.name)
+        RouteHandler.remove_controller_route(GenericController.name)
       else
         RouteHandler.defaultRouteControllerName = GenericController.name
         RouteHandler.addControllerRoute(GenericController.name, "/*")
@@ -208,7 +208,11 @@ module CrystalInsideFort
       FortGlobal.folders = option.folders
     end
 
-    def create(option : AppOption = AppOption.new)
+    def create(option : AppOption = AppOption.new, on_success = nil)
+      create(option)
+    end
+
+    def create(option : AppOption = AppOption.new, on_success : Proc(Nil) = ->{})
       add_shield
       add_controller_route_and_map_shields
       add_guard
@@ -217,14 +221,15 @@ module CrystalInsideFort
 
       save_option(option)
       address = @server.bind_tcp @port
-      # env = ENV["CRYSTAL_ENV"]
-      # if (env.downcase == "test")
-      spawn do
+      env = ENV["CRYSTAL_ENV"]
+      if (env.downcase == "test")
+        spawn do
+          @server.listen
+        end
+      else
+        on_success.call
         @server.listen
       end
-      # else
-      #   @server.listen
-      # end
     end
 
     def destroy

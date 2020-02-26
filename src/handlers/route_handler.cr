@@ -57,7 +57,6 @@ module CrystalInsideFort
       guard_name = get_class_name(guard_name)
       controller_name = get_class_name(controller_name)
       if (@@guard_store.has_key?(guard_name))
-        # @@route_collection[controller_name].shields.push(@@shield_store[shield_name])
         @@route_collection[controller_name].workers[worker_name].guards.push(guard_name)
       else
         raise "No Guard found with name #{guard_name}"

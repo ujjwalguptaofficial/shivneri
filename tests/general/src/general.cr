@@ -16,7 +16,7 @@ class App < Fort
   end
 end
 
-def init_app
+def init_app(on_success = nil)
   app = App.new
   routes = [{
     controller: DefaultController,
@@ -44,15 +44,14 @@ def init_app
     path_alias: "static",
     path:       File.join(Dir.current, "static"),
   }]
-  app.create(app_option)
-  puts "app started"
   ENV["APP_URL"] = "http://localhost:#{app.port}"
-  # puts "curent dir #{Dir.current}"
+  app.create(app_option, on_success)
   return app
 end
 
 if (ENV["CRYSTAL_ENV"]? != "TEST")
-  init_app
-  puts "Your fort is located at address - #{ENV["APP_URL"]}"
-  puts "ENV is - #{ENV["CRYSTAL_ENV"]}"
+  init_app(->{
+    puts "Your fort is located at address - #{ENV["APP_URL"]}"
+    puts "ENV is - #{ENV["CRYSTAL_ENV"]}"
+  })
 end

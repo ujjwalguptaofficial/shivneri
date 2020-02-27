@@ -1,10 +1,13 @@
-require "../services/user_service"
+require "../services/index"
 
 module General
   # Include SERVICE
+  @[Inject(instance(SERVICE::UserService), instance(SERVICE::StudentService), instance(SERVICE::EmployeeService))]
   class HomeController < Controller
-    def initialize
-      @user_service = SERVICE::UserService.new
+    def initialize(@user_service : SERVICE::UserService,
+                   @student_service : SERVICE::StudentService,
+                   @employee_service : SERVICE::EmployeeService)
+      # @user_service = SERVICE::UserService.new
     end
 
     @[Worker("POST")]
@@ -80,15 +83,15 @@ module General
       return json_result(@user_service.get_users)
     end
 
-    # @[Worker]
-    # def get_students()
-    #     return jsonResult(self.studentService.getAll());
-    # end
+    @[Worker]
+    def get_students
+      return json_result(@student_service.get_all)
+    end
 
-    # @Worker()
-    # async getEmployees() {
-    #     return jsonResult(this.employeeService.getAll());
-    # }
+    @[Worker]
+    def get_employees
+      return json_result(@employee_service.get_all)
+    end
 
     # @Worker()
     # async getAllFromServices(@Singleton(UserService) userService,

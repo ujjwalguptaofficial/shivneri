@@ -180,4 +180,20 @@ describe "HomeController" do
     response.status_code.should eq 200
     response.headers.has_key?("allow").should eq false
   end
+
+  it "/get_students" do
+    response = http_client.get("/get_students", HTTP::Headers{
+      "Accept" => "application/json",
+    })
+    response.status_code.should eq 200
+    response.body.should eq "[{\"id\":1,\"name\":\"ujjwal\",\"type\":\"student\"}]"
+  end
+
+  it "/get_employees" do
+    response = http_client.get("/get_employees", HTTP::Headers{
+      "Accept" => "application/json",
+    })
+    response.status_code.should eq 200
+    response.body.should eq "[{\"id\":1,\"name\":\"ujjwal\",\"type\":\"employee\"}]"
+  end
 end

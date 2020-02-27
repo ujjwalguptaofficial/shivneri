@@ -55,63 +55,61 @@ module CrystalInsideFort
       end
     end
 
+    macro get_default_args
+      return Tuple.new
+    end
+
     private def add_workers
       {% for klass in Controller.all_subclasses %}
-
-        {% for method in klass.methods.select { |m| m.annotation(DefaultWorker) } %}
+     
+      {% default_empty_args = GenericController.methods.select { |m| m.name == "generic_method" }[0].args %}
+        {% if klass_inject = klass.annotation(Inject) %}
+          {% klass_inject_args = klass_inject.args %}
+          {% is_klass_has_args = true %}
+        {% else %}
+          {% is_klass_has_args = false %}
+        {% end %}
+        {% for method in klass.methods.select { |m| m.annotation(DefaultWorker) || m.annotation(Worker) } %}
           {% method_name = "#{method.name}" %}
           {% inject_annotation = method.annotation(Inject) %}
           {% if inject_annotation %}
-              action = -> (ctx : RequestHandler) { 
-                instance = {{klass}}.new;
-                instance.set_context(ctx);
-                return instance.{{method.name}}(*{{inject_annotation.args}})
-              }
+              {% worker_inject_args = inject_annotation.args %}
+              {% is_worker_has_args = true %}
           {% elsif method.args.size > 0 %}
               raise "method " + {{method_name}} + " in controller #{ {{klass.name}} } expects some arguments, use Inject for passing arguments value."
               return;
           {% else %}
-            action = -> (ctx : RequestHandler) { 
-              instance = {{klass}}.new;
-              instance.set_context(ctx);
-              return instance.{{method.name}}
-            }
+            {% is_worker_has_args = false %}
           {% end %}
-            workerInfo =  WorkerInfo.new({{method_name}},["GET"], action)
+            action = -> (ctx : RequestHandler) { 
+              {% if is_klass_has_args == true %}
+                instance = {{klass}}.new(*{{klass_inject_args}})
+              {% else %}
+                instance = {{klass}}.new
+              {% end %}
+              instance.set_context(ctx);
+              {% if is_worker_has_args == true %}
+                return instance.{{method.name}}(*{{worker_inject_args}})
+              {% else %}
+                return instance.{{method.name}}
+              {% end %}
+            }
+            {% if method.annotation(Worker) %}
+              {% worker_route = "/" + method_name %}
+              {% worker_args = method.annotation(Worker).args %}
+              {% if worker_args.empty? %}
+                http_methods = [] of String
+              {% else %}
+                http_methods = {{worker_args}}.to_a;  
+              {% end %}
+           {% else %}
+              {% worker_route = "/" %}
+              http_methods = ["GET"]
+           {% end %}
+            workerInfo =  WorkerInfo.new({{method_name}},http_methods, action)
             RouteHandler.addWorker({{klass}}.name, workerInfo)
-            RouteHandler.addRoute({{klass}}.name, {{method_name}},"/")
+            RouteHandler.addRoute({{klass}}.name, {{method_name}}, {{worker_route}})
         {% end %}
-
-      {% for method in klass.methods.select { |m| m.annotation(Worker) } %}
-        {% method_name = "#{method.name}" %}
-        {% args = method.annotation(Worker).args %}
-
-       {% inject_annotation = method.annotation(Inject) %}
-          {% if inject_annotation %}
-              action = -> (ctx : RequestHandler) { 
-                instance = {{klass}}.new;
-                instance.set_context(ctx);
-                return instance.{{method.name}}(*{{inject_annotation.args}})
-              }
-          {% elsif method.args.size > 0 %}
-              raise "method " + {{method_name}} + " in controller #{ {{klass.name}} } expects some arguments, use Inject for passing arguments value."
-              return;
-          {% else %}
-            action = -> (ctx : RequestHandler) { 
-              instance = {{klass}}.new;
-              instance.set_context(ctx);
-              return instance.{{method.name}}
-            }
-          {% end %}
-        http_methods = [] of String;
-        {% if !args.empty? %}
-            http_methods = {{args}}.to_a
-        {% end %}
-         
-        workerInfo =  WorkerInfo.new({{method_name}},http_methods, action)
-        RouteHandler.addWorker({{klass}}.name, workerInfo)
-        RouteHandler.addRoute({{klass}}.name, {{method_name}},"/#{workerInfo.name}")
-      {% end %}
 
       {% for method in klass.methods.select { |m| m.annotation(Route) } %}
         {% method_name = "#{method.name}" %}
@@ -187,8 +185,6 @@ module CrystalInsideFort
         RouteHandler.defaultRouteControllerName = GenericController.name
         RouteHandler.addControllerRoute(GenericController.name, "/*")
       end
-
-      # puts "routes are #{RouteHandler.route_collection.to_json}"
     end
 
     private def add_walls

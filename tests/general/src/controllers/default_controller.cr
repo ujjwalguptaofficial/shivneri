@@ -6,7 +6,11 @@ require "../guards/test_guard"
 require "../extras/my_singleton"
 
 module General
+  @[Inject("Welcome to fort")]
   class DefaultController < Controller
+    def initialize(val : String)
+    end
+
     @[DefaultWorker]
     @[Guards(TestGuard)]
     @[Inject("Welcome to fort")]

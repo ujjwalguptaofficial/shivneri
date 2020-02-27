@@ -7,6 +7,9 @@ module CrystalInsideFort
     include HASHES
 
     class GenericController < Controller
+      def generic_method
+        text_result("")
+      end
     end
   end
 end

@@ -1,6 +1,6 @@
 require "./controller_result_handler"
 
-module CrystalInsideFort
+module Shivneri
   module Handlers
     class PostHandler < ControllerResultHandler
       getter body, file

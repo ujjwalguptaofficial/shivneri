@@ -1,4 +1,4 @@
-module CrystalInsideFort
+module Shivneri
   module MODEL
     class ViewReadOption
       getter file_location

@@ -1,4 +1,4 @@
-module CrystalInsideFort
+module Shivneri
   module CONSTANTS
     def self.cookie
       return "Cookie"

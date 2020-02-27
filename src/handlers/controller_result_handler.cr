@@ -1,7 +1,7 @@
 require "../fort_global"
 require "./file_handler"
 
-module CrystalInsideFort
+module Shivneri
   module Handlers
     class ControllerResultHandler < FileHandler
       @controller_result : HttpResult = HttpResult.new("", "")

@@ -1,6 +1,6 @@
 require "./request_handler_helper"
 
-module CrystalInsideFort
+module Shivneri
   module Handlers
     class FileHandler < RequestHandlerHelper
       private def get_file_info_from_url(url_path : String)

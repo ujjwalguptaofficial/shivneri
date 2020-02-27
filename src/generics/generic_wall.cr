@@ -2,7 +2,7 @@ require "../abstracts/wall"
 
 # require "../hashes/index"
 
-module CrystalInsideFort
+module Shivneri
   module GENERIC
     # include Abstracts
 

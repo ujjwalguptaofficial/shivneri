@@ -1,6 +1,6 @@
 require "uri"
 
-module CrystalInsideFort
+module Shivneri
   module HELPER
     def parse_cookie(cookie : String) : Hash(String, String)
       value = {} of String => String

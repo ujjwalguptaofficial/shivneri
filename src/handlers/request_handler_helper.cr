@@ -3,7 +3,7 @@ require "../constants"
 require "../hashes/index"
 require "http"
 
-module CrystalInsideFort
+module Shivneri
   module Handlers
     include HASHES
 

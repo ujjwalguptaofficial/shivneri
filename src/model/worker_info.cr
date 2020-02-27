@@ -1,4 +1,4 @@
-module CrystalInsideFort
+module Shivneri
   module MODEL
     class WorkerInfo
       property pattern, methodsAllowed, guards

@@ -1,6 +1,6 @@
 require "../hashes/index"
 
-module CrystalInsideFort
+module Shivneri
   module MODEL
     include HASHES
 

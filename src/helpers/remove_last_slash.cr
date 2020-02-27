@@ -1,4 +1,4 @@
-module CrystalInsideFort
+module Shivneri
   module HELPER
     def remove_last_slash(value : String)
       valueLength = value.size

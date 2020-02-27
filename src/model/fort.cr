@@ -1,13 +1,13 @@
-require "./fort_global"
-require "./abstracts/index"
-require "./annotations/index"
-require "./generics/index"
+require "../fort_global"
+require "../abstracts/index"
+require "../annotations/index"
+require "../generics/index"
 require "http/server"
-require "./helpers/index"
-require "./handlers/index"
-require "./structs/index"
+require "../helpers/index"
+require "../handlers/index"
+require "../structs/index"
 
-module CrystalInsideFort
+module Shivneri
   include ANNOTATION
   include Handlers
   include GENERIC
@@ -53,10 +53,6 @@ module CrystalInsideFort
       @server = HTTP::Server.new do |context|
         RequestHandler.new(context.request, context.response).handle
       end
-    end
-
-    macro get_default_args
-      return Tuple.new
     end
 
     private def add_workers
@@ -237,12 +233,3 @@ module CrystalInsideFort
     end
   end
 end
-
-# app = Fort.new
-# app.routes = [{
-#   controller_name: "DefaultController",
-#   path:           "/default",
-# }]
-# # app.routes = ["as"]
-# app.port = 3000
-# app.create

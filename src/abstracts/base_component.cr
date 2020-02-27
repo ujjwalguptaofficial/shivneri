@@ -1,6 +1,6 @@
 require "json"
 
-module CrystalInsideFort
+module Shivneri
   module ABSTRACT
     class BaseComponent
       @context : RequestHandler | Nil = nil

@@ -1,6 +1,6 @@
 require "./providers/index"
 
-module CrystalInsideFort
+module Shivneri
   class FortGlobal
     @@app_name = "fort"
     @@should_parse_cookie = true

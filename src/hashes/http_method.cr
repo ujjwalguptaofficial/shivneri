@@ -1,4 +1,4 @@
-module CrystalInsideFort
+module Shivneri
   module HASHES
     HTTP_METHOD = {
       "get"     => "GET",

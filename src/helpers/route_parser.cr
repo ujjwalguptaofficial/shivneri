@@ -1,6 +1,6 @@
 require "json"
 
-module CrystalInsideFort
+module Shivneri
   module HELPER
     def checkRouteInWorker(route : RouteInfo, httpMethod : String, urlParts : Array(String))
       matchedRoute = RouteMatch.new(route.controllerName, route.shields)

@@ -1,4 +1,4 @@
-module CrystalInsideFort
+module Shivneri
   module MODEL
     class ErrorHandler
       def on_server_error(ex : Exception) : String

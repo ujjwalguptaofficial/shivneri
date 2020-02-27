@@ -1,6 +1,6 @@
 require "uri"
 
-module CrystalInsideFort
+module Shivneri
   module HELPER
     def parse_content_type(value : String)
       splitted_value = value.split(";")

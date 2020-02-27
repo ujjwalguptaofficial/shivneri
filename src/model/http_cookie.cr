@@ -1,4 +1,4 @@
-module CrystalInsideFort
+module Shivneri
   module MODEL
     class HttpCookie
       property name, value, expires, http_only, max_age, path, domain

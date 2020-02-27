@@ -1,4 +1,4 @@
-module CrystalInsideFort
+module Shivneri
   module HASHES
     MIME_TYPE = {
       "text"             => "text/plain",

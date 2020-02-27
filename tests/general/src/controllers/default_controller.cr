@@ -1,9 +1,9 @@
-require "../../../../src/fort"
-include CrystalInsideFort::ABSTRACT
-include CrystalInsideFort::ANNOTATION
 require "../shields/authentication_shield"
 require "../guards/test_guard"
 require "../extras/my_singleton"
+
+include Shivneri::ABSTRACT
+include Shivneri::ANNOTATION
 
 module General
   @[Inject("Welcome to fort")]

@@ -1,6 +1,6 @@
 require "../abstracts/session_provider"
 
-module CrystalInsideFort
+module Shivneri
   module PROVIDER
     class MemorySessionProvider < ABSTRACT::SessionProvider
       # def initialize(cookie)

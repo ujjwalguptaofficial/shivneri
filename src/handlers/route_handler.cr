@@ -2,7 +2,7 @@ require "../model/index"
 require "../helpers/index"
 require "../aliases"
 
-module CrystalInsideFort
+module Shivneri
   include MODEL
   include HELPER
 

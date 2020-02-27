@@ -1,4 +1,4 @@
-module CrystalInsideFort
+module Shivneri
   module HELPER
     class Async(T)
       @channel = Channel(T).new

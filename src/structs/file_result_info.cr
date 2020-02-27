@@ -1,4 +1,4 @@
-module CrystalInsideFort
+module Shivneri
   module STRUCT
     struct FileResultInfo
       property path, should_download, name

@@ -1,4 +1,4 @@
-module CrystalInsideFort
+module Shivneri
   module ENUM
     # HttpMethod  = NamedTuple(Get: String)
     enum HttpStatus

@@ -1,4 +1,4 @@
-module CrystalInsideFort
+module Shivneri
   module MODEL
     class ViewEngineData(T)
       getter view, model

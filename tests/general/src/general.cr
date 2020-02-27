@@ -1,10 +1,10 @@
-require "../../../src/fort"
+require "../../../src/shivneri"
 require "./controllers/default_controller"
 require "./controllers/session_controller"
 require "./controllers/home_controller"
 require "./controllers/random_controller"
 require "./controllers/user_controller"
-include CrystalInsideFort
+include Shivneri
 include General
 VERSION = "0.1.0"
 require "./walls/wall_without_outgoing"

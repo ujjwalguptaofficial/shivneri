@@ -1,4 +1,4 @@
-module CrystalInsideFort
+module Shivneri
   module Handlers
     # class Injector(T)
     #   def initialize(value : T)

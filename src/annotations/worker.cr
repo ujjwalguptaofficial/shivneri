@@ -1,4 +1,4 @@
-module CrystalInsideFort
+module Shivneri
   module ANNOTATION
     annotation Worker
     end

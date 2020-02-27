@@ -1,6 +1,6 @@
 require "json"
 
-module CrystalInsideFort
+module Shivneri
   module HELPER
     class Negotiator
       def media_type(available : Array(String))

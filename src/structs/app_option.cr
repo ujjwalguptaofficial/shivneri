@@ -1,6 +1,6 @@
 require "../aliases"
 
-module CrystalInsideFort
+module Shivneri
   module STRUCT
     struct AppOption
       property folders

@@ -7,7 +7,7 @@ require "../helpers/index"
 require "../generics/index"
 require "../aliases"
 
-module CrystalInsideFort
+module Shivneri
   module Handlers
     include CONSTANTS
     include HELPER

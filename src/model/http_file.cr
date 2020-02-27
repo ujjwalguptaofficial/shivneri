@@ -1,4 +1,4 @@
-module CrystalInsideFort
+module Shivneri
   module MODEL
     class HttpFile
       getter field_name, original_file_name, path, headers, size

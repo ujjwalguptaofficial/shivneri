@@ -1,6 +1,6 @@
 require "uuid"
 
-module CrystalInsideFort
+module Shivneri
   module ABSTRACT
     abstract class SessionProvider
       getter session_id

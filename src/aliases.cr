@@ -1,4 +1,4 @@
-module CrystalInsideFort
+module Shivneri
   module ALIAS
     alias ComponentResult = Nil | HttpResult
     alias FolderMap = NamedTuple(path_alias: String, path: String)

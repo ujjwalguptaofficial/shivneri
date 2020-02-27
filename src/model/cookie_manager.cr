@@ -1,6 +1,6 @@
 require "./http_cookie"
 
-module CrystalInsideFort
+module Shivneri
   module MODEL
     class CookieManager
       property response_cookie

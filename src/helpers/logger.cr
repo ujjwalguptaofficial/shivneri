@@ -1,4 +1,4 @@
-module CrystalInsideFort
+module Shivneri
   module HELPER
     class FortLogger
       @console = Logger.new(STDOUT)

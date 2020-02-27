@@ -1,4 +1,4 @@
-module CrystalInsideFort
+module Shivneri
   module HELPER
     def instance(value)
       return value.new

@@ -1,7 +1,7 @@
 require "crinja"
 require "../abstracts/index"
 
-module CrystalInsideFort
+module Shivneri
   module PROVIDER
     class CrinjaViewEngine < ABSTRACT::ViewEngine
       def render(value : ViewEngineData) : Async(String)

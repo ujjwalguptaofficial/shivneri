@@ -1,6 +1,6 @@
 require "./base_component"
 
-module CrystalInsideFort
+module Shivneri
   module ABSTRACT
     abstract class Controller < BaseComponent
       def body

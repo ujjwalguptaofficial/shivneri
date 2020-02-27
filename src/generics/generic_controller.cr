@@ -1,7 +1,7 @@
 require "../abstracts/index"
 require "../hashes/index"
 
-module CrystalInsideFort
+module Shivneri
   module GENERIC
     include ABSTRACT
     include HASHES

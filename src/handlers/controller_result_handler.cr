@@ -10,20 +10,20 @@ module Shivneri
         handle_final_result(result)
       end
 
-      private def end_response(negotiateMimeType : String)
+      private def end_response(negotaited_mime_type : String)
         # let data
         begin
-          # data = getResultBasedOnMiMe(negotiateMimeType,
+          # data = getResultBasedOnMiMe(negotaited_mime_type,
           #     self.controllerResult_.responseData
           #     , (type: MIME_TYPE) => {
-          #         negotiateMimeType = type;
+          #         negotaited_mime_type = type;
           #     }
           # );
         rescue ex
           self.on_error_occured(ex)
           return
         end
-        @response.content_type = negotiateMimeType
+        @response.content_type = negotaited_mime_type
         @response.status_code = @controller_result.status_code
         @response.print(@controller_result.response_data)
       end
@@ -41,10 +41,11 @@ module Shivneri
       private def handle_format_result
         response_format_result = @controller_result.response_format.as(Hash(String, String))
         response_format_mime_types = response_format_result.keys
-        negotiateMimeType = self.get_content_type_from_negotiation(response_format_mime_types)
-        key = response_format_mime_types.find { |qry| qry == negotiateMimeType }
+        negotaited_mime_type = self.get_content_type_from_negotiation(response_format_mime_types)
+        key = response_format_mime_types.find { |qry| qry == negotaited_mime_type }
         if (key != nil)
-          self.end_response(response_format_result[key])
+          @controller_result.response_data = response_format_result[key]
+          self.end_response(key.as(String))
         else
           self.on_not_acceptable_request
         end
@@ -77,9 +78,9 @@ module Shivneri
         elsif (result.response_format == nil)
           if (result.file == nil)
             contentType = result.as(HttpResult).content_type || MIME_TYPE["text"]
-            negotiateMimeType = self.get_content_type_from_negotiation(contentType)
-            if (negotiateMimeType != nil)
-              self.end_response(negotiateMimeType.as(String))
+            negotaited_mime_type = self.get_content_type_from_negotiation(contentType)
+            if (negotaited_mime_type != nil)
+              self.end_response(negotaited_mime_type.as(String))
             else
               self.on_not_acceptable_request
             end

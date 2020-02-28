@@ -106,6 +106,10 @@ module Shivneri
         http_result.file = FileResultInfo.new(path, should_download, file_name)
         return http_result
       end
+
+      def format_result(value : Hash(String, String), status_code = 200)
+        HttpResult.new(value, status_code)
+      end
     end
   end
 end

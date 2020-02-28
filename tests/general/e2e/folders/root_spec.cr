@@ -33,4 +33,10 @@ describe "UserController" do
     response = http_client.get("/assets/scripts/bundle.js")
     response.status_code.should eq 404
   end
+
+  it "/index.html" do
+    response = http_client.get("/index.html")
+    response.status_code.should eq 200
+    response.content_type.should eq "text/html"
+  end
 end

@@ -45,9 +45,13 @@ def init_app(on_success = nil)
   app.routes = routes
   app.walls = [WallWithoutOutgoing]
   app_option = AppOption.new
+  path_of_static_folder = File.join(Dir.current, "static")
   app_option.folders = [{
     path_alias: "static",
-    path:       File.join(Dir.current, "static"),
+    path:       path_of_static_folder,
+  }, {
+    path_alias: "/",
+    path:       path_of_static_folder,
   }]
   ENV["APP_URL"] = "http://localhost:#{app.port}"
   app.create(app_option, on_success)

@@ -37,4 +37,19 @@ describe "UserController" do
     })
     response.status_code.should eq 406
   end
+
+  it "/form with post" do
+    response = http_client.post("/form", HTTP::Headers{
+      "content-type" => "application/x-www-form-urlencoded",
+    }, HTTP::Params.encode({"hello" => "world"}))
+    response.status_code.should eq 200
+    response.body.should eq "{\"body\":{\"hello\":\"world\"},\"query\":{}}"
+  end
+
+  it "/form with get" do
+    response = http_client.get("/form?" + HTTP::Params.encode({"hello" => "world"}))
+    response.status_code.should eq 200
+    response.body.should eq "{\"body\":{},\"query\":{\"hello\":\"world\"}}"
+  end
+  
 end

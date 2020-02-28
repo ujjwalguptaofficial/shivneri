@@ -51,5 +51,25 @@ describe "UserController" do
     response.status_code.should eq 200
     response.body.should eq "{\"body\":{},\"query\":{\"hello\":\"world\"}}"
   end
-  
+
+  it "/error" do
+    response = http_client.get("/error")
+    response.status_code.should eq 500
+    status = (response.body.includes? "Missing hash key: \"test_key\"") == true
+    status.should eq true
+  end
+
+  it "/download with get" do
+    response = http_client.get("/download")
+    response.status_code.should eq 200
+    response.content_type.should eq "text/html"
+    response.headers["content-disposition"].should eq "attachment;filename=index.html"
+  end
+
+  it "/download with post" do
+    response = http_client.post("/download")
+    response.status_code.should eq 200
+    response.content_type.should eq "text/html"
+    response.headers["content-disposition"].should eq "attachment;filename=alias.html"
+  end
 end

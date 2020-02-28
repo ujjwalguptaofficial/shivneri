@@ -25,9 +25,24 @@ module General
       })
     end
 
-    #   @[Worker]
-    #   def redirect
-    #     redirect_result("html")
-    #   end
+    @[Worker]
+    def error
+      query["test_key"]
+      return text_result("OK")
+    end
+
+    @[Worker("GET")]
+    @[Route("/download")]
+    def download
+      path_location = File.join(Dir.current, "contents/index.html")
+      return download_result(path_location)
+    end
+
+    @[Worker("POST")]
+    @[Route("/download")]
+    def download_with_alias
+      path_location = File.join(Dir.current, "contents/index.html")
+      return download_result(path_location, "alias.html")
+    end
   end
 end

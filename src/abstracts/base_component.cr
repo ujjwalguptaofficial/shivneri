@@ -95,15 +95,27 @@ module Shivneri
         return HttpResult.new(value, MIME_TYPE["html"], status_code)
       end
 
-      def file_result(path : String, should_download = false)
+      def download_result(path : String)
         http_result = HttpResult.new("", "")
-        http_result.file = FileResultInfo.new(path, should_download, File.basename(path))
+        http_result.file = FileResultInfo.new(path, true, File.basename(path))
         return http_result
       end
 
-      def file_result(path : String, file_name_with_extension : String, should_download = false)
+      def download_result(path : String, file_name_with_extension : String)
         http_result = HttpResult.new("", "")
-        http_result.file = FileResultInfo.new(path, should_download, file_name)
+        http_result.file = FileResultInfo.new(path, true, file_name_with_extension)
+        return http_result
+      end
+
+      def file_result(path : String)
+        http_result = HttpResult.new("", "")
+        http_result.file = FileResultInfo.new(path, File.basename(path))
+        return http_result
+      end
+
+      def file_result(path : String, file_name_with_extension : String)
+        http_result = HttpResult.new("", "")
+        http_result.file = FileResultInfo.new(path, file_name)
         return http_result
       end
 

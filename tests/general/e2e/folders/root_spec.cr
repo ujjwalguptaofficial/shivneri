@@ -21,4 +21,16 @@ describe "UserController" do
     response.status_code.should eq 200
     response.content_type.should eq "text/html"
   end
+
+  it "/scripts/bundle.js" do
+    response = http_client.get("/scripts/bundle.js")
+    response.status_code.should eq 200
+    response.content_type.should eq "application/javascript"
+    response.body.should eq "var sayHi = () => {\n  alert('say hi');\n}"
+  end
+
+  it "/assets/scripts/bundle.js" do
+    response = http_client.get("/assets/scripts/bundle.js")
+    response.status_code.should eq 404
+  end
 end

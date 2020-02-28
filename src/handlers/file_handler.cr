@@ -37,9 +37,7 @@ module Shivneri
 
       protected def handle_file_request(url_path : String)
         extension = File.extname(url_path)
-        puts "extension is #{extension}"
         abs_file_path = self.check_for_folder_allow_and_return_path(url_path)
-        puts "abs path is #{abs_file_path}"
         if (abs_file_path != nil)
           self.handle_file_request_from_absolute_path(abs_file_path.as(String), extension)
         else

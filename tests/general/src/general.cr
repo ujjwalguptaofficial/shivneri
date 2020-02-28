@@ -4,6 +4,8 @@ require "./controllers/session_controller"
 require "./controllers/home_controller"
 require "./controllers/random_controller"
 require "./controllers/user_controller"
+require "./controllers/file_controller"
+
 include Shivneri
 include General
 VERSION = "0.1.0"
@@ -33,6 +35,9 @@ def init_app(on_success = nil)
   }, {
     controller: UserController,
     path:       "/user",
+  }, {
+    controller: FileController,
+    path:       "/file",
   }]
   # routes.each do |route|
   #   app.register_controller(route[:controller], route[:path])

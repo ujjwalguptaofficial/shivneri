@@ -27,7 +27,7 @@ module Shivneri
         return @files.size
       end
 
-      def files
+      def all
         return @files.each_value
       end
 
@@ -38,19 +38,12 @@ module Shivneri
       #  * @returns
       #  * @memberof FileManager
       #  *
-      def isExist(fieldName : String)
-        return @files.has_key(fieldName)
+      def is_exist(fieldName : String)
+        return @files.has_key?(fieldName)
       end
 
-      # **
-      # * return the file
-      # *
-      # * @param {string} fieldName
-      # * @returns
-      # * @memberof FileManager
-      # *
-      def getFile(fieldName : String)
-        return @files[fieldName]
+      def [](field_name : String)
+        return @files[field_name]
       end
 
       # **

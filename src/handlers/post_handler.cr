@@ -45,16 +45,13 @@ module Shivneri
           case contentType
           when MIME_TYPE["json"]
             @body = JSON.parse(@request.body.as(IO)).as_h
-          when MIME_TYPE["xml"]
-            puts "parsing body xml"
-            # @body = XML.parse(@request.body.as(IO)).as_h
           when MIME_TYPE["form_url_encoded"]
             HTTP::Params.parse(@request.body.as(IO).gets_to_end).each do |key, val|
               @body[key] = JSON::Any.new(val)
             end
-            #   case MIME_TYPE.Xml:
-            #       postData = new (FortGlobal as any).xmlParser().parse(bodyDataAsString);
-            #       break;
+          when MIME_TYPE["xml"]
+            puts "parsing body xml"
+            # @body = XML.parse(@request.body.as(IO)).as_h
           end
         end
       end

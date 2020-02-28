@@ -22,7 +22,7 @@ module Shivneri
               elsif (regMatch2 != nil)
                 regMatch2Captures = regMatch2.as(Regex::MatchData).captures
                 splitByDot = urlPart.split(".")
-                if (splitByDot[1] === regMatch2Captures[1])
+                if (splitByDot[1] == regMatch2Captures[1])
                   params[regMatch2Captures[0].as(String)] = splitByDot[0]
                 else
                   isMatched = false

@@ -9,13 +9,13 @@ module Shivneri
         worker = item[1]
         patternSplit = worker.pattern.split("/")
         if (urlPartLength == patternSplit.size)
-          params = {} of String => String | Int32
+          params = {} of String => String
           isMatched = true
           urlParts.each_with_index do |urlPart, i|
             if (urlPart != patternSplit[i])
               regex1 = /{(.*)}(?!.)/
               regex2 = /{(.*)}\.(\w+)(?!.)/
-              regMatch1 = patternSplit[i].match(regex1) # patternSplit[i].scan(regex1).map(&.string)
+              regMatch1 = patternSplit[i].match(regex1)
               regMatch2 = patternSplit[i].match(regex2)
               if (regMatch1 != nil)
                 params[regMatch1.as(Regex::MatchData).captures[0].as(String)] = urlPart
@@ -42,7 +42,7 @@ module Shivneri
               matchedRoute.params = params
               break
             else
-              matchedRoute.allowedHttpMethod.concat(matchedRoute.allowedHttpMethod)
+              # matchedRoute.allowedHttpMethod.concat(matchedRoute.allowedHttpMethod)
               matchedRoute.allowedHttpMethod.concat(worker.methodsAllowed)
             end
           end

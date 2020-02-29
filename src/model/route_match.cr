@@ -6,7 +6,7 @@ module Shivneri
       # @controllerInfo : RouteInfo
       @worker_info : WorkerInfo | Nil = nil
       @allowedHttpMethod : Array(String)
-      @params : Hash(String, String | Int32)
+      @params : Hash(String, String)
       @controller_name : String
       @shields : Array(String)
 
@@ -17,7 +17,7 @@ module Shivneri
 
       def initialize(@controller_name, @shields)
         @allowedHttpMethod = [] of String
-        @params = {} of String => String | Int32
+        @params = {} of String => String
         # @workerInfo = WorkerInfo.new("", [] of String, -> { 1 })
       end
 

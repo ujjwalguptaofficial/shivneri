@@ -14,6 +14,10 @@ class HttpClient
     @base_url = ""
   end
 
+  # def before_each(&callback : HTTP::Request ->)
+
+  # end
+
   def get(url : String)
     if (url.includes?("http") == false)
       url = @base_url + url
@@ -52,6 +56,14 @@ class HttpClient
     end
 
     return HTTP::Client.post(url, headers)
+  end
+
+  def put(url : String, headers : HTTP::Headers, body)
+    if (url.includes?("http") == false)
+      url = @base_url + url
+    end
+
+    return HTTP::Client.put(url, headers, body)
   end
 
   def post(url : String, headers, body)

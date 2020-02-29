@@ -4,7 +4,7 @@ module Shivneri
   module MODEL
     class CookieManager
       property response_cookie
-      #  cookie_collection
+      getter cookie_collection
       @response_cookie = [] of String
       @cookie_collection : Hash(String, String)
 

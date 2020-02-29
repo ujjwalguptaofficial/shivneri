@@ -92,7 +92,6 @@ describe "CookieController" do
     response.status_code.should eq 200
     cookie_string = response.headers["Set-Cookie"]
     cookies = HTTP::Cookies.from_headers(response.headers)
-    puts "cookies #{cookie_string}"
     cookies[cookie_name]?.as(HTTP::Cookie).path.should eq "/"
     cookies[cookie_name]?.as(HTTP::Cookie).secure.should eq false
     cookies[cookie_name]?.as(HTTP::Cookie).http_only.should eq false

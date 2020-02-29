@@ -31,7 +31,7 @@ module Shivneri
       abstract def clear : Nil
 
       def is_session_created
-        session_id != nil
+        session_id != ""
       end
 
       protected def create_session

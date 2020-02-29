@@ -10,10 +10,10 @@ module Shivneri
       @@session_values = {} of String => Hash(String, JSON::Any)
 
       def is_session_exist : Bool
-        return is_session_created && @@session_values.has_key?(@session_id)
+        return is_session_created && @@session_values.has_key?(self.session_id)
       end
 
-      def []?(key : String) : JSON::Any
+      def []?(key : String) : JSON::Any | Nil
         if (is_exist(key))
           return @@session_values[self.session_id][key]
         end
@@ -37,8 +37,10 @@ module Shivneri
 
       def []=(key : String, val) : Nil
         if (is_session_exist)
+          puts "key is #{key}, val is #{val} #{@@session_values[self.session_id].to_json}"
           @@session_values[self.session_id][key] = val
         else
+          puts "key is #{key}"
           self.create_session
           @@session_values[self.session_id] = {
             "#{key}" => val,

@@ -14,7 +14,7 @@ module General
     @[Worker("POST")]
     @[Route("/{cookie_name}")]
     def set_cookie
-      puts "body is #{body.to_json}"
+      # puts "body is #{body.to_json}"
       cookie_name = param["cookie_name"]
       cookie_value = body["cookie_value"]
       cookie_obj = HttpCookie.new(cookie_name, cookie_value.to_s)
@@ -26,7 +26,7 @@ module General
     @[Worker("PUT")]
     @[Route("/{cookie_name}")]
     def update_cookie
-      puts "body update is #{body.to_json}"
+      # puts "body update is #{body.to_json}"
       cookie_name = param["cookie_name"]
       cookie_value = body["cookie_value"]
       cookie_obj = HttpCookie.new(cookie_name.to_s, cookie_value.to_s)

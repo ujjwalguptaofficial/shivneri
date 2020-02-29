@@ -25,6 +25,7 @@ module General
     @[Worker]
     def exist
       key = self.query["key"]
+      # puts "key in exist #{key} "
       if (self.session.is_exist(key))
         return text_result("key is found")
       else
@@ -36,7 +37,7 @@ module General
     def get
       key = self.query["key"]
       self.logger.debug("key", key)
-      value_from_session = self.session[key]
+      value_from_session = self.session[key]?
       self.logger.debug("value from session", value_from_session)
       return json_result({
         value: value_from_session,

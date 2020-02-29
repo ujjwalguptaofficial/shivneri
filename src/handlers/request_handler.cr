@@ -97,7 +97,7 @@ module Shivneri
       end
 
       private def handle_post_data
-        if (@request.method != HTTP_METHOD["get"] && @request.body != nil && FortGlobal.should_parse_post == true)
+        if (FortGlobal.should_parse_post == true && @request.method != HTTP_METHOD["get"] && @request.body != nil)
           begin
             self.parse_post_data_and_set_body
           rescue ex

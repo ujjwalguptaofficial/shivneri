@@ -53,7 +53,7 @@ module Shivneri
         cookie = self.cookie.get(FortGlobal.app_session_identifier)
         cookie.http_only = true
         cookie.path = "/"
-        self.cookie.remove(cookie)
+        self.cookie.delete(cookie)
       end
     end
   end

@@ -34,6 +34,14 @@ class HttpClient
     return HTTP::Client.get(url, headers)
   end
 
+  def delete(url : String, headers)
+    if (url.includes?("http") == false)
+      url = @base_url + url
+    end
+
+    return HTTP::Client.delete(url, headers)
+  end
+
   def post(url : String)
     if (url.includes?("http") == false)
       url = @base_url + url

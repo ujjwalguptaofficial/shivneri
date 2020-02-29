@@ -4,7 +4,7 @@ module Shivneri
   module MODEL
     class CookieManager
       property response_cookie
-      getter cookie_collection
+      # getter cookie_collection
       @response_cookie = [] of String
       @cookie_collection : Hash(String, String)
 
@@ -46,20 +46,20 @@ module Shivneri
       # @param {HttpCookie} cookie
       # @memberof CookieManager
       #
-      def remove(cookie : HttpCookie)
+      def delete(cookie : HttpCookie)
         @cookie_collection.delete(cookie.name)
         cookie.expires = Time.utc(1900, 1, 1) # Time.new("Thu, 01 Jan 1970 00:00:00 GMT")
         cookie.max_age = -1
         @response_cookie.push(get_cookie_string_from_cookie(cookie))
       end
 
-      def remove(cookie_name : String)
-        remove(@cookie_collection[cookie_name])
+      def delete(cookie_name : String)
+        delete(HttpCookie.new(cookie_name, ""))
       end
 
-      def remove?(cookie_name : String)
+      def delete?(cookie_name : String)
         if (is_exist(cookie_name))
-          remove(cookie_name)
+          delete(cookie_name)
         end
       end
 

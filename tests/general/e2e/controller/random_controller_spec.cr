@@ -55,7 +55,7 @@ describe "UserController" do
   it "/error" do
     response = http_client.get("/error")
     response.status_code.should eq 500
-    status = (response.body.includes? "Missing hash key: \"test_key\"") == true
+    status = (response.body.includes? "Missing hash key: \"test_key\"") #== true
     status.should eq true
   end
 

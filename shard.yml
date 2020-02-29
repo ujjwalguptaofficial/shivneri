@@ -2,7 +2,7 @@ name: Shivneri
 version: 0.1.0
 
 authors:
-  - name Ujjwal Gupta
+  - name Ujjwal Gupta <ujjwalkumargupta44@gmail.com>
 
 description: |
   Component based MVC framework based on fort architecture.

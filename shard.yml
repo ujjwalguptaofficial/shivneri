@@ -1,11 +1,11 @@
-name: fort.cr
+name: Shivneri
 version: 0.1.0
 
 authors:
   - name Ujjwal Gupta
 
-# description: |
-#   Short description of fort-cr
+description: |
+  Component based MVC framework based on fort architecture.
 
 dependencies:
   crinja:

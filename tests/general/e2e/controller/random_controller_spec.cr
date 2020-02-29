@@ -72,4 +72,11 @@ describe "UserController" do
     response.content_type.should eq "text/html"
     response.headers["content-disposition"].should eq "attachment;filename=alias.html"
   end
+
+  it "/file" do
+    response = http_client.post("/file")
+    response.status_code.should eq 200
+    response.content_type.should eq "image/png"
+    response.headers.has_key?("content-disposition").should eq false
+  end
 end

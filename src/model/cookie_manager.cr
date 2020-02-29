@@ -22,7 +22,11 @@ module Shivneri
       # @param {string} name
       # @returns HttpCookie
       # @memberof CookieManager
-      def get_cookie(name : String) : HttpCookie
+      def [](name : String) : HttpCookie
+        return get(name)
+      end
+
+      def get(name : String) : HttpCookie
         return HttpCookie.new(name, @cookie_collection[name], false, "", Time.utc)
       end
 
@@ -31,7 +35,7 @@ module Shivneri
       # @param {HttpCookie} cookie
       # @memberof CookieManager
       #
-      def add_cookie(cookie : HttpCookie)
+      def add(cookie : HttpCookie)
         @cookie_collection[cookie.name] = cookie.value
         @response_cookie.push(get_cookie_string_from_cookie(cookie))
       end
@@ -42,11 +46,21 @@ module Shivneri
       # @param {HttpCookie} cookie
       # @memberof CookieManager
       #
-      def remove_cookie(cookie : HttpCookie)
+      def remove(cookie : HttpCookie)
         @cookie_collection.delete(cookie.name)
         cookie.expires = Time.utc(1900, 1, 1) # Time.new("Thu, 01 Jan 1970 00:00:00 GMT")
         cookie.max_age = -1
         @response_cookie.push(get_cookie_string_from_cookie(cookie))
+      end
+
+      def remove(cookie_name : String)
+        remove(@cookie_collection[cookie_name])
+      end
+
+      def remove?(cookie_name : String)
+        if (is_exist(cookie_name))
+          remove(cookie_name)
+        end
       end
 
       #

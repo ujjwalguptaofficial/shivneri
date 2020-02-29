@@ -44,17 +44,16 @@ module Shivneri
       end
 
       private def create_session_from_id(session_id)
-        now = Time.utc
         @session_id = session_id
-        cookie = HttpCookie.new(FortGlobal.app_session_identifier, session_id, true, "/", now + FortGlobal.session_timeout.minutes)
-        @cookie.add_cookie(cookie)
+        cookie = HttpCookie.new(FortGlobal.app_session_identifier, session_id, true, "/")
+        @cookie.add(cookie)
       end
 
       protected def destroy_session
-        cookie = self.cookie.get_cookie(FortGlobal.app_session_identifier)
+        cookie = self.cookie.get(FortGlobal.app_session_identifier)
         cookie.http_only = true
         cookie.path = "/"
-        self.cookie.remove_cookie(cookie)
+        self.cookie.remove(cookie)
       end
     end
   end

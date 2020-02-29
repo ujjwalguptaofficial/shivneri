@@ -38,7 +38,15 @@ class HttpClient
     return HTTP::Client.post url
   end
 
-  def post(url : String, headers)
+  def post(url : String, body)
+    if (url.includes?("http") == false)
+      url = @base_url + url
+    end
+
+    return HTTP::Client.post(url, nil, body)
+  end
+
+  def post(url : String, headers : HTTP::Headers)
     if (url.includes?("http") == false)
       url = @base_url + url
     end

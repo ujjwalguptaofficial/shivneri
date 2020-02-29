@@ -44,5 +44,12 @@ module General
       path_location = File.join(Dir.current, "contents/index.html")
       return download_result(path_location, "alias.html")
     end
+
+    @[Worker]
+    @[Route("/file")]
+    def get_file
+      path_location = File.join(Dir.current, "contents/JsStore_16_16.png")
+      return file_result(path_location)
+    end
   end
 end

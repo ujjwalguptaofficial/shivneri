@@ -108,7 +108,7 @@ describe "HomeController" do
     response = http_client.post("/post", HTTP::Headers{
       "Accept"       => "application/json",
       "Content-Type" => "application/json",
-    }, nil)
+    }, ({} of String => String).to_json)
     response.status_code.should eq 200
     response.body.should eq "{}"
   end

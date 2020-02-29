@@ -42,7 +42,7 @@ module Shivneri
       end
 
       def cookie
-        return @context.as(RequestHandler).cookie_manager
+        return @context.as(RequestHandler).cookie_manager.as(CookieManager)
       end
 
       def session

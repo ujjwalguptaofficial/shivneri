@@ -8,16 +8,14 @@ module Shivneri
     include HASHES
 
     class RequestHandlerHelper
-      getter wall_instances
+      getter wall_instances, cookie_manager
       @wall_instances = [] of Wall
       @cookie_manager : CookieManager | Nil = nil
 
       protected def cookie_manager=(@cookie_manager)
       end
 
-      protected def cookie_manager
-        return @cookie_manager
-      end
+      
 
       private def get_available_types(type : String)
         case type

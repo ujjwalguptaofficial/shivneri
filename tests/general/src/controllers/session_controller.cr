@@ -25,7 +25,6 @@ module General
     @[Worker]
     def exist
       key = self.query["key"]
-      # puts "key in exist #{key} "
       if (self.session.is_exist(key))
         return text_result("key is found")
       else

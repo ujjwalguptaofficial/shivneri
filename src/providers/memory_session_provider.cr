@@ -37,10 +37,8 @@ module Shivneri
 
       def []=(key : String, val) : Nil
         if (is_session_exist)
-          puts "key is #{key}, val is #{val} #{@@session_values[self.session_id].to_json}"
           @@session_values[self.session_id][key] = val
         else
-          puts "key is #{key}"
           self.create_session
           @@session_values[self.session_id] = {
             "#{key}" => val,

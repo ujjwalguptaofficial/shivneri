@@ -2,6 +2,8 @@ require "./providers/index"
 
 module Shivneri
   class FortGlobal
+    
+
     @@app_name = "fort"
     @@should_parse_cookie = true
     @@walls = [] of Proc(RequestHandler, Wall)
@@ -72,7 +74,8 @@ module Shivneri
     return @@logger
   end
 
-  macro FortGlobal.is_env_production
+  macro FortGlobal
+is_env_production
     return @@is_env_production
   end
 end

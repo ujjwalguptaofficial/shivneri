@@ -14,14 +14,14 @@ require "./walls/wall_without_outgoing"
 
 # TODO: Put your code here
 
-class App < Fort
-  def intialize
-  end
-end
+# class App < Fort
+#   def intialize
+#   end
+# end
 
 def init_app(on_success = nil)
-  app = App.new
-  routes = [{
+  # app = App.new
+  Shivneri.routes = [{
     controller: DefaultController,
     path:       "/*",
   }, {
@@ -46,8 +46,8 @@ def init_app(on_success = nil)
   # routes.each do |route|
   #   app.register_controller(route[:controller], route[:path])
   # end
-  app.routes = routes
-  app.walls = [WallWithoutOutgoing]
+  # Shivneri.routes = routes
+  Shivneri.walls = [WallWithoutOutgoing]
   app_option = AppOption.new
   path_of_static_folder = File.join(Dir.current, "static")
   app_option.folders = [{
@@ -57,9 +57,9 @@ def init_app(on_success = nil)
     path_alias: "/",
     path:       path_of_static_folder,
   }]
-  ENV["APP_URL"] = "http://localhost:#{app.port}"
-  app.create(app_option, on_success)
-  return app
+  ENV["APP_URL"] = "http://localhost:#{Shivneri.port}"
+  Shivneri.open(app_option, on_success)
+  return Shivneri
 end
 
 if (ENV["CRYSTAL_ENV"]? != "TEST")

@@ -13,14 +13,62 @@ module Shivneri
   include GENERIC
   include STRUCT
 
-  # include Enums
-
   if (ENV.has_key?("CRYSTAL_ENV") == false)
     ENV["CRYSTAL_ENV"] = "development"
   end
 
+  def self.port
+    return Fort.instance.port
+  end
+
+  def self.add_wall(wall)
+    # @walls.push(wall)
+  end
+
+  def self.walls=(walls)
+    walls.each do |wall|
+      add_wall(wall)
+    end
+  end
+
+  def self.open(option : AppOption = AppOption.new)
+    Fort.instance.create(option)
+  end
+
+  def self.open(option : AppOption = AppOption.new, on_success : Proc(Nil) = ->{})
+    Fort.instance.create(option, on_success)
+  end
+
+  def self.open(option : AppOption = AppOption.new, on_success : Nil = nil)
+    Fort.instance.create(option)
+  end
+
+  # def self.open(option : AppOption = AppOption.new)
+  #   Fort.instance.create(option, ->{})
+  # end
+
+  def self.close
+    Fort.instance.destroy
+  end
+
+  def self.routes=(routes)
+    routes.each do |route|
+      Fort.instance.register_controller(route[:controller], route[:path])
+    end
+  end
+
+  def self.port=(port : Int32)
+    Fort.instance.port = port
+  end
+
   class Fort
     property port
+    @@instance = Fort.new
+
+    def self.instance
+      return @@instance
+    end
+
     # @server = nil;
     @error_handler : MODEL::ErrorHandler.class = ErrorHandler
     @walls = [] of Wall.class
@@ -31,22 +79,6 @@ module Shivneri
 
     def register_controller(controller, path : String)
       @routes.push({controller_name: controller.name, path: path})
-    end
-
-    def routes=(routes)
-      routes.each do |route|
-        register_controller(route[:controller], route[:path])
-      end
-    end
-
-    def add_wall(wall)
-      @walls.push(wall)
-    end
-
-    def walls=(walls)
-      walls.each do |wall|
-        add_wall(wall)
-      end
     end
 
     def initialize
@@ -200,9 +232,9 @@ module Shivneri
       FortGlobal.folders = option.folders
     end
 
-    def create(option : AppOption = AppOption.new, on_success = nil)
-      create(option)
-    end
+    # def create(option : AppOption = AppOption.new, on_success = nil)
+    #   create(option)
+    # end
 
     def create(option : AppOption = AppOption.new, on_success : Proc(Nil) = ->{})
       add_shield

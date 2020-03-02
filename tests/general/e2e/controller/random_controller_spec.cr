@@ -55,7 +55,7 @@ describe "UserController" do
   it "/error" do
     response = http_client.get("/error")
     response.status_code.should eq 500
-    status = (response.body.includes? "Missing hash key: \"test_key\"") #== true
+    status = (response.body.includes? "Missing hash key: \"test_key\"") # == true
     status.should eq true
   end
 
@@ -78,5 +78,12 @@ describe "UserController" do
     response.status_code.should eq 200
     response.content_type.should eq "image/png"
     response.headers.has_key?("content-disposition").should eq false
+  end
+
+  it "/invalid_guard_injection" do
+    response = http_client.get("/invalid_guard_injection")
+    response.status_code.should eq 500
+    response.content_type.should eq "text/html"
+    response.body.includes?("Guard General::InvalidInjectionGuard expect some arguments in method check, use Inject annotation for dependency injection.").should eq true
   end
 end

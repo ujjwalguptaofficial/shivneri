@@ -1,3 +1,5 @@
+require "../guards/invalid_injection_guard"
+
 module General
   class RandomController < Controller
     @[DefaultWorker]
@@ -50,6 +52,12 @@ module General
     def get_file
       path_location = File.join(Dir.current, "contents/JsStore_16_16.png")
       return file_result(path_location)
+    end
+
+    @[Worker]
+    @[Guards(InvalidInjectionGuard)]
+    def invalid_guard_injection
+      return text_result ""
     end
   end
 end

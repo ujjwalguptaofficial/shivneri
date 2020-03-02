@@ -8,6 +8,13 @@ module General
       return file_result(path_location)
     end
 
+    @[Worker("POST")]
+    @[Route("/")]
+    @[Guards(UserValidator)]
+    def add_user
+      return text_result("ok")
+    end
+
     @[Worker("GET")]
     @[Route("/allow/me")]
     def allow_me

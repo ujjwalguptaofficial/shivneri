@@ -1,5 +1,5 @@
 require "../shields/authentication_shield"
-require "../guards/test_guard"
+require "../guards/user_validator"
 require "../extras/my_singleton"
 
 # include Shivneri::ABSTRACT
@@ -12,7 +12,7 @@ module General
     end
 
     @[DefaultWorker]
-    @[Guards(TestGuard)]
+    # @[Guards(TestGuard)]
     @[Inject("Welcome to fort")]
     def index(title : String)
       return view_result("default/index.html", {
@@ -21,7 +21,7 @@ module General
     end
 
     @[Worker]
-    @[Guards(TestGuard)]
+    # @[Guards(TestGuard)]
     @[Inject("Ujjwal", "Gupta")]
     def index1(first_name : String, last_name : String)
       sleep 5

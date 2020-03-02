@@ -172,11 +172,33 @@ module Shivneri
 
     private def add_guard
       {% for klass in Guard.all_subclasses %}
+        {% if klass_inject = klass.annotation(Inject) %}
+          {% klass_inject_args = klass_inject.args %}
+          {% is_klass_has_args = true %}
+        {% else %}
+          {% is_klass_has_args = false %}
+        {% end %}
         guard_executor =  -> (ctx : RequestHandler){
-          instance = {{klass}}.new;
+          {% if is_klass_has_args == true %}
+            instance = {{klass}}.new(*{{klass_inject_args}})
+          {% else %}
+            instance = {{klass}}.new
+          {% end %}
           instance.set_context(ctx);
           if(true)
-            return instance.check
+            error_message = "Guard #{ {{klass.name}} } expect some arguments in method check, use Inject annotation for dependency injection." 
+            {% check_method = klass.methods.select { |q| q.name == "check" }[0] %}
+            {% if guard_inject_annoation = check_method.annotation(Inject) %}
+              {% if guard_inject_annoation.args.size == check_method.args.size %}
+                return instance.check(*{{guard_inject_annoation.args}})
+              {% else %}
+                raise error_message;
+              {% end %}
+            {% elsif check_method.args.size > 0 %}
+              raise error_message
+            {% else %}
+              return instance.check
+            {% end %}
           elsif(ctx.body.has_key?("garbage_value_test"))
             return nil
           end

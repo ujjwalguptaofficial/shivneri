@@ -37,6 +37,11 @@ module Shivneri
         @route_match_info.as(RouteMatch)
       end
 
+      def initialize
+        @request = HTTP::Request.new("", "")
+        @response = HTTP::Server::Response.new(IO::Memory.new("temp"))
+      end
+
       def initialize(request : HTTP::Request, response : HTTP::Server::Response)
         @request = request
         @response = response

@@ -12,6 +12,7 @@ module Shivneri
       @@shield_store = {} of String => Proc(RequestHandler, ALIAS::ComponentResult)
       @@guard_store = {} of String => Proc(RequestHandler, ALIAS::ComponentResult)
       @@defaultRouteControllerName : String = ""
+      # @@body_store = {} of String => 
     end
 
     def RouteHandler.route_collection

@@ -11,6 +11,7 @@ module General
     @[Worker("POST")]
     @[Route("/")]
     @[Guards(UserValidator)]
+    @[Inject(as_body(NamedTuple(name: String)))]
     def add_user
       return text_result("ok")
     end

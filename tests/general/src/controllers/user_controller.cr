@@ -12,7 +12,7 @@ module General
     @[Route("/")]
     @[Guards(UserValidator)]
     @[Inject(as_body(NamedTuple(name: String)))]
-    def add_user
+    def add_user(val : NamedTuple(name: String))
       return text_result("ok")
     end
 

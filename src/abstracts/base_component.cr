@@ -123,9 +123,7 @@ module Shivneri
         HttpResult.new(value, status_code)
       end
 
-      macro get_tuple_from_body(value)
-        {{value}}.get_tuple_from_hash_json_any.call(self.body)
-      end
+     
     end
   end
 end

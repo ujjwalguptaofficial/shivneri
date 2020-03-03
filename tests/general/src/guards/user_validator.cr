@@ -1,6 +1,8 @@
 module General
   @[Inject("hello")]
   class UserValidator < Guard
+    # @user : NamedTuple(id: Int32, name: String)
+
     def initialize(value : String)
       @constructor_value = value
     end
@@ -12,14 +14,25 @@ module General
       end
 
       err_message = validate
-      return text_result(err_message, 400)
+      if (err_message.size > 0)
+        return text_result(err_message, 400)
+      end
     end
 
     def validate
-      if (body["name"]? == nil || body["name"].size < 5)
+      user = get_tuple_from_body(
+        NamedTuple(id: Int32, name: String, password: String, gender: String, email: String, address: String)
+      )
+      if (user[:name].size < 5)
         return "name should be minimum 5 characters"
-      elsif (body["password"]? == nil || body["password"].size < 5)
+      elsif (user[:password].size < 5)
         return "password should be minimum 5 characters"
+      elsif (["male", "female"].includes? user[:gender])
+        return "gender should be either male or female"
+      elsif (/\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i.match user[:email] == nil)
+        return "email not valid"
+      elsif (user[:address].size < 10 || user[:address].size > 10)
+        return "address length should be between 10 & 100"
       end
       return ""
 

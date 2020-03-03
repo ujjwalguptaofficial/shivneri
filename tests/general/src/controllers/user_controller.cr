@@ -10,10 +10,10 @@ module General
 
     @[Worker("POST")]
     @[Route("/")]
-    # @[Guards(UserValidator)]
+    @[Guards(UserValidator)]
     # @[Inject(as_body(NamedTuple(name: String)))]
     def add_user
-      user = get_tuple_from_body(NamedTuple(name: String))
+      user = get_tuple_from_body(NamedTuple(id: Int32, name: String))
       puts typeof(user)
       puts user.to_json
       return text_result("ok")

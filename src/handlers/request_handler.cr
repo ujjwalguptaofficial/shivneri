@@ -200,16 +200,22 @@ module Shivneri
     case data_type
     when "String"
       return ""
+    when "Int32"
+      return 0
     end
-    # return ""
   end
 
-  def convert_to(value : JSON::Any, data_type)
-    case data_type
-    when "String"
-      return value.as_s
+  def convert_to(key : String, value : JSON::Any, data_type)
+    begin
+      case data_type
+      when "String"
+        return value.as_s
+      when "Int32"
+        return value.as_i
+      end
+    rescue exception
+      raise "Invalid value supplied for property - '#{key}', should be type of #{data_type}"
     end
-    # return ""
   end
 
   def NamedTuple.get_tuple_from_hash_json_any
@@ -219,9 +225,9 @@ module Shivneri
               {% for key, data_type in T %}
                   {% key_as_string = key.stringify %}
                   {% type_as_string = data_type.stringify %}
-                  {{key_as_string}}: body_data.has_key?({{key_as_string}})? 
-                    convert_to(body_data[{{key_as_string}}], {{type_as_string}}) : 
-                    get_default_value({{type_as_string}}),     
+                  {{key_as_string}}: (body_data.has_key?({{key_as_string}})? 
+                    convert_to({{key_as_string}}, body_data[{{key_as_string}}], {{type_as_string}}) : 
+                    get_default_value({{type_as_string}})).as({{data_type}}),     
               {% end %}
               # name: "ujjwal"
           )

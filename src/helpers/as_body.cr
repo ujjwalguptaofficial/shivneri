@@ -16,14 +16,6 @@ module Shivneri
       return ""
     end
 
-    def convert_to(value : JSON::Any, data_type)
-      case data_type
-      when "String"
-        return value.as_s
-      end
-      return ""
-    end
-
     def NamedTuple.map_body
       return ->(body_data : Hash(String, JSON::Any)) {
         {% begin %}

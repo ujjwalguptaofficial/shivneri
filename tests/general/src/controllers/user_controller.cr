@@ -1,5 +1,5 @@
 module General
-  # @[Shields(AuthenticationShield)]
+  @[Shields(AuthenticationShield)]
   class UserController < Controller
     @[Worker("GET")]
     @[Route("/")]
@@ -13,7 +13,7 @@ module General
     @[Guards(UserValidator)]
     # @[Inject(as_body(NamedTuple(name: String)))]
     def add_user
-      user = get_tuple_from_body(NamedTuple(id: Int32, name: String))
+      user = body.to_tuple(NamedTuple(id: Int32, name: String)) # get_tuple_from_body(NamedTuple(id: Int32, name: String))
       puts typeof(user)
       puts user.to_json
       return text_result("ok")

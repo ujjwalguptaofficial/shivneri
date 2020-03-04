@@ -5,7 +5,7 @@ module Shivneri
     class PostHandler < ControllerResultHandler
       getter body, file
 
-      @body = {} of String => JSON::Any
+      @body : Body = Body.new({} of String => JSON::Any)
 
       @file : FileManager = FileManager.new
 
@@ -13,7 +13,7 @@ module Shivneri
         HTTP::FormData.parse(@request) do |part|
           case part.headers["Content-Type"]
           when MIME_TYPE["json"]
-            @body.merge!(JSON.parse(part.body).as_h)
+            @body.merge(JSON.parse(part.body).as_h)
           when MIME_TYPE["form_url_encoded"]
             HTTP::Params.parse(part.body.gets_to_end).each do |key, val|
               @body[key] = JSON::Any.new(val)
@@ -44,7 +44,7 @@ module Shivneri
         else
           case contentType
           when MIME_TYPE["json"]
-            @body = JSON.parse(@request.body.as(IO)).as_h
+            @body.body_data = JSON.parse(@request.body.as(IO)).as_h
           when MIME_TYPE["form_url_encoded"]
             HTTP::Params.parse(@request.body.as(IO).gets_to_end).each do |key, val|
               @body[key] = JSON::Any.new(val)

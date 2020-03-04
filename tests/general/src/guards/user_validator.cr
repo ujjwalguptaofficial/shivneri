@@ -20,17 +20,18 @@ module General
     end
 
     def validate
-      user = get_tuple_from_body(
-        NamedTuple(id: Int32, name: String, password: String, gender: String, email: String, address: String)
-      )
+      # user = get_tuple_from_body(
+      #   NamedTuple(id: Int32, name: String, password: String, gender: String, email: String, address: String)
+      # )
+      user = body.to_tuple(NamedTuple(id: Int32, name: String, password: String, gender: String, email: String, address: String))
       if (user[:name].size < 5)
         return "name should be minimum 5 characters"
       elsif (user[:password].size < 5)
         return "password should be minimum 5 characters"
       elsif (["male", "female"].includes? user[:gender])
         return "gender should be either male or female"
-      elsif (/\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i.match user[:email] == nil)
-        return "email not valid"
+        # elsif (/\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i.match user[:email] == nil)
+        #   return "email not valid"
       elsif (user[:address].size < 10 || user[:address].size > 10)
         return "address length should be between 10 & 100"
       end

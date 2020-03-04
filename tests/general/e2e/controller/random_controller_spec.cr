@@ -43,13 +43,13 @@ describe "UserController" do
       "content-type" => "application/x-www-form-urlencoded",
     }, HTTP::Params.encode({"hello" => "world"}))
     response.status_code.should eq 200
-    response.body.should eq "{\"body\":{\"hello\":\"world\"},\"query\":{}}"
+    response.body.should eq "{\"body\":{\"body_data\":{\"hello\":\"world\"}},\"query\":{}}"
   end
 
   it "/form with get" do
     response = http_client.get("/form?" + HTTP::Params.encode({"hello" => "world"}))
     response.status_code.should eq 200
-    response.body.should eq "{\"body\":{},\"query\":{\"hello\":\"world\"}}"
+    response.body.should eq "{\"body\":{\"body_data\":{}},\"query\":{\"hello\":\"world\"}}"
   end
 
   it "/error" do

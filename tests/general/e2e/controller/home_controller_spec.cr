@@ -101,7 +101,7 @@ describe "HomeController" do
       "Content-Type" => "application/json",
     }, nil)
     response.status_code.should eq 200
-    response.body.should eq "{}"
+    response.body.should eq "{\"body_data\":{}}"
   end
 
   it "/post with empty body" do
@@ -110,7 +110,7 @@ describe "HomeController" do
       "Content-Type" => "application/json",
     }, ({} of String => String).to_json)
     response.status_code.should eq 200
-    response.body.should eq "{}"
+    response.body.should eq "{\"body_data\":{}}"
   end
 
   it "/post with some body" do
@@ -121,7 +121,7 @@ describe "HomeController" do
       key: "hello",
     }.to_json)
     response.status_code.should eq 200
-    response.body.should eq "{\"key\":\"hello\"}"
+    response.body.should eq "{\"body_data\":{\"key\":\"hello\"}}"
   end
 
   it "/post with xml data" do
@@ -131,7 +131,7 @@ describe "HomeController" do
     }, "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
     <key>hello</key>")
     response.status_code.should eq 200
-    response.body.should eq "{}"
+    response.body.should eq "{\"body_data\":{}}"
   end
 
   it "/post with http:get" do

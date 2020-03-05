@@ -117,7 +117,19 @@ module Shivneri
               {% end %}
               instance.set_context(ctx);
               {% if is_worker_has_args == true %}
-                return instance.{{method.name}}(*{{worker_inject_args}})
+                {% if body_tuple = method.annotation(ExpectBody) %}
+                  return instance.{{method.name}}(*{
+                    {% for value in worker_inject_args %}
+                      {% if value == "as_body" %}
+                        {{body_tuple.args[0]}}.get_tuple_from_hash_json_any.call(ctx.body.as_hash),
+                      {% else %}
+                        {{value}}
+                      {% end %}
+                    {% end %}
+                  })
+                {% else %}
+                  return instance.{{method.name}}(*{{worker_inject_args}})
+                {% end %}
               {% else %}
                 return instance.{{method.name}}
               {% end %}

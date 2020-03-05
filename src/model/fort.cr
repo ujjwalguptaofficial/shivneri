@@ -208,7 +208,33 @@ module Shivneri
                       {% if value == "as_body" %}
                         {{body_tuple.args[0]}}.get_tuple_from_hash_json_any.call(ctx.body.as_hash),
                       {% else %}
-                        {{value}}
+                        {{value}},
+                      {% end %}
+                    {% end %}
+                  })
+                {% elsif target_body = check_method.annotation(BodyOf) %}
+                  return instance.check(*{
+                    {% for value in guard_inject_annoation.args %}
+                      {% if value == "as_body" %}
+                        {% controller_name = target_body[0].split("::").last %} 
+                        {% klasses = Controller.all_subclasses.select { |q| q.name.split("::").last == controller_name } %}
+                        {% if klasses.size > 0 %}
+                          {% methods = klasses[0].methods.select { |q| q.name == target_body[1] } %}
+                          {% if methods.size > 0 %}
+                            {% if body_tuple = methods[0].annotation(ExpectBody) %}
+                              {{body_tuple.args[0]}}.get_tuple_from_hash_json_any.call(ctx.body.as_hash),
+                            {% else %}
+                              raise "expected body is not defined"
+                            {% end %}
+                          {% else %}
+                            raise "invalid method name supplied in body_of, #{ {{target_body[1]}} } can not be found in class #{ {{controller_name}} }"
+                          {% end %}
+                        {% else %}
+                          raise "invalid controller name supplied in body_of, #{ {{controller_name}} } is not registered"
+                        {% end %}
+                        
+                      {% else %}
+                        {{value}},
                       {% end %}
                     {% end %}
                   })

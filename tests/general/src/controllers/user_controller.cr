@@ -1,5 +1,5 @@
 module General
-  # @[Shields(AuthenticationShield)]
+  @[Shields(AuthenticationShield)]
   class UserController < Controller
     @[Worker("GET")]
     @[Route("/")]

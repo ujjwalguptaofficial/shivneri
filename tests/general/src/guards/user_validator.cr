@@ -8,17 +8,21 @@ module General
     end
 
     @[Inject("injection ok in guard", "as_body")]
+    # @[ExpectBody(body_of("UserController", "as"))]
+    @[BodyOf("UserController", "add_user")]
+    # @[ExpectBody(NamedTuple(id: Int32, name: String))]
     def check(value : String, user)
-      puts "user in guard"
-      puts user
+      # puts "user in guard"
+      # puts user
       if (query["guard_injection_test"]? != nil)
         return text_result("#{@constructor_value} #{value}", 200)
       end
 
-      err_message = validate
-      if (err_message.size > 0)
-        return text_result(err_message, 400)
-      end
+      # err_message = validate
+      # if (err_message.size > 0)
+      #   return text_result(err_message, 400)
+      # end
+      # return text_result("okkk")
     end
 
     def validate

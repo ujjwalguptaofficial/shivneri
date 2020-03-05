@@ -4,8 +4,8 @@ require "./controllers/session_controller"
 require "./controllers/home_controller"
 require "./controllers/random_controller"
 require "./controllers/user_controller"
-# require "./controllers/file_controller"
-# require "./controllers/cookie_controller"
+require "./controllers/file_controller"
+require "./controllers/cookie_controller"
 
 include Shivneri
 include General
@@ -36,15 +36,15 @@ def init_app(on_success = nil)
   }, {
     controller: UserController,
     path:       "/user",
-  }, 
-  # {
-  #   controller: FileController,
-  #   path:       "/file",
-  # }, {
-  #   controller: CookieController,
-  #   path:       "/cookie",
-  # }
-]
+  },
+  {
+    controller: FileController,
+    path:       "/file",
+  }, {
+    controller: CookieController,
+    path:       "/cookie",
+  },
+  ]
   # routes.each do |route|
   #   app.register_controller(route[:controller], route[:path])
   # end

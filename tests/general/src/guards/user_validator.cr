@@ -7,8 +7,10 @@ module General
       @constructor_value = value
     end
 
-    @[Inject("injection ok in guard")]
-    def check(value : String)
+    @[Inject("injection ok in guard", "as_body")]
+    def check(value : String, user)
+      puts "user in guard"
+      puts user
       if (query["guard_injection_test"]? != nil)
         return text_result("#{@constructor_value} #{value}", 200)
       end

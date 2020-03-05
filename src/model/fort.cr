@@ -202,9 +202,21 @@ module Shivneri
             {% check_method = klass.methods.select { |q| q.name == "check" }[0] %}
             {% if guard_inject_annoation = check_method.annotation(Inject) %}
               {% if guard_inject_annoation.args.size == check_method.args.size %}
-                return instance.check(*{{guard_inject_annoation.args}})
+                {% if body_tuple = check_method.annotation(ExpectBody) %}
+                  return instance.check(*{
+                    {% for value in guard_inject_annoation.args %}
+                      {% if value == "as_body" %}
+                        {{body_tuple.args[0]}}.get_tuple_from_hash_json_any.call(ctx.body.as_hash),
+                      {% else %}
+                        {{value}}
+                      {% end %}
+                    {% end %}
+                  })
+                {% else %}
+                  return instance.check(*{{guard_inject_annoation.args}})
+                {% end %}
               {% else %}
-                raise error_message;
+                raise "Guard #{ {{klass.name}} } expect #{ {{check_method.args.size}} } arguments in method check but supplied #{ {{guard_inject_annoation.args.size}} }, use Inject annotation for dependency injection." ;
               {% end %}
             {% elsif check_method.args.size > 0 %}
               raise error_message

@@ -87,6 +87,10 @@ module Shivneri
         return HttpResult.new(value, MIME_TYPE["text"], status_code)
       end
 
+      def text_result(value : Int32 | Int64 | Bool | Char | Float32 | Float64 | Nil, status_code = 200)
+        return HttpResult.new(value.to_s, MIME_TYPE["text"], status_code)
+      end
+
       def redirect_result(url : String)
         return HttpResult.new(url, MIME_TYPE["text"], true)
       end
@@ -122,8 +126,6 @@ module Shivneri
       def format_result(value : Hash(String, String), status_code = 200)
         HttpResult.new(value, status_code)
       end
-
-     
     end
   end
 end

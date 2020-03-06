@@ -3,13 +3,14 @@ module MODEL
     include JSON::Serializable
     property id, name, gender, password, email, address
 
-    def initialize(body_data : Hash(String, JSON::Any))
-      @id = body_data.has_key?("id") ? body_data["id"] : 0
-      @name = body_data["name"]
-      @gender = body_data["gender"]
-      @password = body_data["password"]
-      @email = body_data["email"]
-      @address = body_data["address"]
+    def initialize(user)
+      @id = user[:id]
+      @name = user[:name]
+      @gender = user[:gender]
+      @password = user[:password]
+      @email = user[:email]
+      @address = user[:address]
+      # , , , , "ujjwal@mg.com", "India"
     end
 
     def initialize(@id : Int32, @name : String, @gender : String, @password : String, @email : String, @address : String)

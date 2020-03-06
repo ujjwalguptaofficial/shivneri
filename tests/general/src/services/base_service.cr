@@ -1,7 +1,9 @@
 require "../models/index"
 
 module SERVICE
-  class BaseService
+  include MODEL
+
+class BaseService
     @@store = [MODEL::User.new(1, "ujjwal", "male", "admin", "ujjwal@mg.com", "India")]
 
     def users

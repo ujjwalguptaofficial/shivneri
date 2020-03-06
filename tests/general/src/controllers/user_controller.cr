@@ -22,6 +22,13 @@ module General
       return text_result(@service.get_users.size)
     end
 
+    @[Worker("GET")]
+    @[Route("/{user_id}")]
+    def get_user
+      user_id = param["user_id"].to_i
+      return json_result(@service.get_user_by_id(user_id))
+    end
+
     @[Worker("POST")]
     @[Route("/")]
     @[Guards(UserValidator)]
@@ -35,6 +42,31 @@ module General
 
       user = @service.add_user(MODEL::User.new(user))
       return json_result(user, 201)
+    end
+
+    @[Worker("PUT")]
+    @[Route("/")]
+    @[Guards(UserValidator)]
+    def update_user
+      user = body.to_tuple(NamedTuple(id: Int32, name: String, password: String, gender: String, email: String, address: String)) # get_tuple_from_body(NamedTuple(id: Int32, name: String))
+      if (@service.update_user(MODEL::User.new(user)))
+        return text_result("user updated")
+      else
+        return text_result("invalid user")
+      end
+      return json_result(user, 200)
+    end
+
+    @[Worker("DELETE")]
+    @[Route("/{user_id}")]
+    def delete_user
+      user_id = param["user_id"].to_i
+      if (@service.delete_user(user_id))
+        return text_result("user deleted")
+      else
+        return text_result("invalid user")
+      end
+      return json_result(user, 200)
     end
 
     @[Worker("GET")]

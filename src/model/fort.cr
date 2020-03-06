@@ -212,7 +212,7 @@ module Shivneri
                       {% end %}
                     {% end %}
                   })
-                {% elsif target_body = check_method.annotation(BodyOf) %}
+                {% elsif target_body = check_method.annotation(BodySameAs) %}
                   return instance.check(*{
                     {% for value in guard_inject_annoation.args %}
                       {% if value == "as_body" %}

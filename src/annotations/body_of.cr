@@ -1,6 +1,6 @@
 module Shivneri
     module ANNOTATION
-      annotation BodyOf
+      annotation BodySameAs
       end
     end
   end

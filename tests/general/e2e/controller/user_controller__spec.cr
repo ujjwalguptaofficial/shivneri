@@ -80,4 +80,73 @@ describe "UserController" do
     response.body.should eq "2"
     # JSON.parse(response.body).as_h.size.should eq 2
   end
+
+  it "/patch" do
+    response = http_client.patch("/", HTTP::Headers{
+      "Content-Type" => "application/json",
+      "Cookie"       => cookie_string,
+    })
+    response.status_code.should eq 405
+    response.headers["allow"]?.should eq "GET,POST,PUT"
+  end
+
+  it "/update user" do
+    response = http_client.put("/", HTTP::Headers{
+      "Content-Type" => "application/json",
+      "Cookie"       => cookie_string,
+    }, {
+      id:       2,
+      name:     "angela yu",
+      address:  "newyork street 5 america",
+      email:    "angela@mg.com",
+      gender:   "female",
+      password: "hiangela",
+    }.to_json)
+    response.status_code.should eq 200
+    response.body.should eq "user updated"
+  end
+
+  it "/get user with id 2" do
+    response = http_client.get("/2", HTTP::Headers{
+      "Content-Type" => "application/json",
+      "Cookie"       => cookie_string,
+    })
+    response.status_code.should eq 200
+    response.body.should eq "{\"id\":2,\"name\":\"angela yu\",\"gender\":\"female\",\"password\":\"hiangela\",\"email\":\"angela@mg.com\",\"address\":\"newyork street 5 america\"}"
+    # JSON.parse(response.body).as_h.size.should eq 2
+  end
+
+  it "/update user with invalid id" do
+    response = http_client.put("/", HTTP::Headers{
+      "Content-Type" => "application/json",
+      "Cookie"       => cookie_string,
+    }, {
+      id:       5,
+      name:     "angela yu",
+      address:  "newyork street 5 america",
+      email:    "angela@mg.com",
+      gender:   "female",
+      password: "hiangela",
+    }.to_json)
+    response.status_code.should eq 200
+    response.body.should eq "invalid user"
+  end
+
+  it "/delete" do
+    response = http_client.delete("/2", HTTP::Headers{
+      "Content-Type" => "application/json",
+      "Cookie"       => cookie_string,
+    })
+    response.status_code.should eq 200
+    response.body.should eq "user deleted"
+  end
+
+  it "/get user with id 2" do
+    response = http_client.get("/2", HTTP::Headers{
+      "Content-Type" => "application/json",
+      "Cookie"       => cookie_string,
+    })
+    response.status_code.should eq 200
+    response.body.should eq ""
+  end
 end

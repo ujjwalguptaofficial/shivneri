@@ -8,7 +8,7 @@ module General
     end
 
     @[Inject("injection ok in guard", "as_body")]
-    @[BodyOf("UserController", "add_user")]
+    @[BodySameAs("UserController", "add_user")]
     def check(value : String, user)
       if (query["guard_injection_test"]? != nil)
         return text_result("#{@constructor_value} #{value}", 200)

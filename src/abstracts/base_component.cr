@@ -79,6 +79,10 @@ module Shivneri
         return HttpResult.new(value, MIME_TYPE["json"], status_code)
       end
 
+      def json_result(value : Int32 | Int64 | Bool | Char | Float32 | Float64 | Nil, status_code = 200)
+        return HttpResult.new(value.to_s, MIME_TYPE["json"], status_code)
+      end
+
       def nil_result
         return nil
       end

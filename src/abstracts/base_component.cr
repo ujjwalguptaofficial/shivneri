@@ -91,7 +91,7 @@ module Shivneri
         return HttpResult.new(value, MIME_TYPE["text"], status_code)
       end
 
-      def text_result(value : Int32 | Int64 | Bool | Char | Float32 | Float64 | Nil, status_code = 200)
+      def text_result(value : Int32 | Int64 | Bool | Char | Float32 | Float64 | Nil | JSON::Any, status_code = 200)
         return HttpResult.new(value.to_s, MIME_TYPE["text"], status_code)
       end
 

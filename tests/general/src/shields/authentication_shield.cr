@@ -3,12 +3,13 @@ module General
     @@counter = 0
 
     def protect
+      @@counter = @@counter + 1
       puts "authentication shield executed"
-      self["authenticationShieldCounter"] = @@counter + 1
+      self["authentication_shield_counter"] = @@counter
       logger.debug("data", self.component_data)
       query = self.query
       data = self.component_data
-      if (self.request.headers.has_key?("throwexceptionbyshield"))
+      if (self.request.headers.has_key?("throw_exception_by_shield"))
         raise ("thrown by shield")
       end
 

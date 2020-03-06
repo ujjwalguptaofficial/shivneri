@@ -149,4 +149,41 @@ describe "UserController" do
     response.status_code.should eq 200
     response.body.should eq ""
   end
+
+  it "/get shield counter" do
+    response = http_client.get("/shield/count", HTTP::Headers{
+      "Content-Type" => "application/json",
+      "Cookie"       => cookie_string,
+    })
+    response.status_code.should eq 200
+    response.body.should eq "12"
+  end
+
+  it "/thrown by shield using header counter" do
+    response = http_client.get("/", HTTP::Headers{
+      "Content-Type"              => "application/json",
+      "Cookie"                    => cookie_string,
+      "throw_exception_by_shield" => "true",
+    })
+    response.status_code.should eq 500
+    response.body.includes?("thrown by shield").should eq true
+  end
+
+  it "/logout" do
+    response = HttpClient.new(ENV["APP_URL"] + "/home/").get("log_out", HTTP::Headers{
+      "Content-Type" => "application/json",
+    })
+    # response.status_code.should eq 200
+    response.body.should eq "Logged out"
+  end
+
+  it "/access user after logout" do
+    response = http_client.post("/?guard_injection_test=true", HTTP::Headers{
+      "Accept" => "*/*",
+      # "Content-Type" => "application/json",
+      "Cookie" => cookie_string,
+    })
+    response.status_code.should eq 302
+    response.body.should eq ""
+  end
 end

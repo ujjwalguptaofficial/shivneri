@@ -29,6 +29,12 @@ module General
       return json_result(@service.get_user_by_id(user_id))
     end
 
+    @[Worker("GET")]
+    @[Route("/shield/count")]
+    def get_shield_count
+      return text_result(self["authentication_shield_counter"])
+    end
+
     @[Worker("POST")]
     @[Route("/")]
     @[Guards(UserValidator)]

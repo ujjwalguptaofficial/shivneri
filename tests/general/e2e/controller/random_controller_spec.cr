@@ -86,4 +86,71 @@ describe "UserController" do
     response.content_type.should eq "text/html"
     response.body.includes?("Guard General::InvalidInjectionGuard expect some arguments in method check, use Inject annotation for dependency injection.").should eq true
   end
+
+  it "/tuple_convert_test for get" do
+    response = http_client.get("/tuple_convert_test")
+    response.status_code.should eq 200
+    # response.body.includes?("Guard General::InvalidInjectionGuard expect some arguments in method check, use Inject annotation for dependency injection.").should eq true
+    response.body.should eq "{\"id1\":0,\"id2\":0,\"id3\":0.0,\"id4\":0.0,\"name\":\"\",\"char\":\" \"}"
+  end
+
+  it "/tuple_convert_test for type int32" do
+    response = http_client.post("/tuple_convert_test", HTTP::Headers{
+      "Content-Type" => "application/json",
+      # "Cookie"       => cookie_string,
+    }, {id1: "ujjwal"}.to_json)
+    response.status_code.should eq 400
+    response.body.includes?("Invalid value supplied for property - 'id1', should be type of Int32").should eq true
+    # response.body.should eq "{\"id1\":0,\"id2\":0,\"id3\":0.0,\"id4\":0.0,\"name\":\"\",\"char\":\" \"}"
+  end
+
+  it "/tuple_convert_test for type int64" do
+    response = http_client.post("/tuple_convert_test", HTTP::Headers{
+      "Content-Type" => "application/json",
+      # "Cookie"       => cookie_string,
+    }, {id2: "ujjwal"}.to_json)
+    response.status_code.should eq 400
+    response.body.includes?("Invalid value supplied for property - 'id2', should be type of Int64").should eq true
+    # response.body.should eq "{\"id1\":0,\"id2\":0,\"id3\":0.0,\"id4\":0.0,\"name\":\"\",\"char\":\" \"}"
+  end
+
+  it "/tuple_convert_test for type Float32" do
+    response = http_client.post("/tuple_convert_test", HTTP::Headers{
+      "Content-Type" => "application/json",
+      # "Cookie"       => cookie_string,
+    }, {id3: "ujjwal"}.to_json)
+    response.status_code.should eq 400
+    response.body.includes?("Invalid value supplied for property - 'id3', should be type of Float32").should eq true
+    # response.body.should eq "{\"id1\":0,\"id2\":0,\"id3\":0.0,\"id4\":0.0,\"name\":\"\",\"char\":\" \"}"
+  end
+
+  it "/tuple_convert_test for type Float64" do
+    response = http_client.post("/tuple_convert_test", HTTP::Headers{
+      "Content-Type" => "application/json",
+      # "Cookie"       => cookie_string,
+    }, {id4: "ujjwal"}.to_json)
+    response.status_code.should eq 400
+    response.body.includes?("Invalid value supplied for property - 'id4', should be type of Float64").should eq true
+    # response.body.should eq "{\"id1\":0,\"id2\":0,\"id3\":0.0,\"id4\":0.0,\"name\":\"\",\"char\":\" \"}"
+  end
+
+  it "/tuple_convert_test for type String" do
+    response = http_client.post("/tuple_convert_test", HTTP::Headers{
+      "Content-Type" => "application/json",
+      # "Cookie"       => cookie_string,
+    }, {name: 0}.to_json)
+    response.status_code.should eq 400
+    response.body.includes?("Invalid value supplied for property - 'name', should be type of String").should eq true
+    # response.body.should eq "{\"id1\":0,\"id2\":0,\"id3\":0.0,\"id4\":0.0,\"name\":\"\",\"char\":\" \"}"
+  end
+
+  it "/tuple_convert_test for type char" do
+    response = http_client.post("/tuple_convert_test", HTTP::Headers{
+      "Content-Type" => "application/json",
+      # "Cookie"       => cookie_string,
+    }, {char: 0}.to_json)
+    response.status_code.should eq 400
+    response.body.includes?("Invalid value supplied for property - 'char', should be type of Char").should eq true
+    # response.body.should eq "{\"id1\":0,\"id2\":0,\"id3\":0.0,\"id4\":0.0,\"name\":\"\",\"char\":\" \"}"
+  end
 end

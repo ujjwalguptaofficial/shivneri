@@ -204,6 +204,14 @@ module Shivneri
       return ""
     when "Int32"
       return 0
+    when "Int64"
+      return 0.to_i64
+    when "Float32"
+      return 0.to_f32
+    when "Float64"
+      return 0.to_f
+    when "Char"
+      return ' '
     end
   end
 
@@ -214,6 +222,30 @@ module Shivneri
         return value.as_s
       when "Int32"
         return value.as_i
+      when "Int64"
+        return value.as_i64
+      when "Float32"
+        return value.as_f32
+      when "Float64"
+        return value.as_f
+      when "Char"
+        return value.as_s[0]
+      when "Int8"
+        return value.as_i.to_i8
+      when "UInt8"
+        return value.as_i.to_u8
+      when "Int16"
+        return value.as_i.to_i16
+      when "UInt16"
+        return value.as_i.to_u16
+      when "UInt32"
+        return value.as_i.to_u32
+      when "UInt64"
+        return value.as_i64.to_u64
+      when "Bool"
+        return value.as_bool
+      else
+        raise "Invalid data type #{data_type} - json does not support this type."
       end
     rescue TypeCastError
       raise TupleBodyException.new(

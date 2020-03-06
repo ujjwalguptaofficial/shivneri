@@ -89,9 +89,7 @@ module Shivneri
 
     private def add_workers
       {% for klass in Controller.all_subclasses %}
-     
-      {% default_empty_args = GenericController.methods.select { |m| m.name == "generic_method" }[0].args %}
-        {% if klass_inject = klass.annotation(Inject) %}
+      {% if klass_inject = klass.annotation(Inject) %}
           {% klass_inject_args = klass_inject.args %}
           {% is_klass_has_args = true %}
         {% else %}

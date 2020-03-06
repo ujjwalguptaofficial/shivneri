@@ -172,6 +172,7 @@ describe "UserController" do
   it "/logout" do
     response = HttpClient.new(ENV["APP_URL"] + "/home/").get("log_out", HTTP::Headers{
       "Content-Type" => "application/json",
+      "Cookie"       => cookie_string,
     })
     # response.status_code.should eq 200
     response.body.should eq "Logged out"

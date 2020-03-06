@@ -85,9 +85,11 @@ module Shivneri
 
       def clear : Nil
         #    remove session values
-        @@session_values[self.session_id].clear
-        # expire cookie in browser
-        self.destroy_session
+        if (is_session_created)
+          @@session_values[self.session_id].clear
+          # expire cookie in browser
+          self.destroy_session
+        end
         return nil
       end
     end

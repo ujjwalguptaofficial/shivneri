@@ -2,10 +2,12 @@ require "../fort_global"
 require "../constants"
 require "../hashes/index"
 require "http"
+require "../exceptions/index"
 
 module Shivneri
   module Handlers
     include HASHES
+    include EXCEPTION
 
     class RequestHandlerHelper
       getter wall_instances, cookie_manager
@@ -14,8 +16,6 @@ module Shivneri
 
       protected def cookie_manager=(@cookie_manager)
       end
-
-      
 
       private def get_available_types(type : String)
         case type

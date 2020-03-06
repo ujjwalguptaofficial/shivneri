@@ -95,6 +95,8 @@ module Shivneri
               @route_match_info = route_match_info.as(RouteMatch)
               self.on_route_matched
             end
+          rescue ex1 : TupleBodyException
+            self.on_bad_request(ex1)
           rescue ex
             self.on_error_occured(ex)
           end
@@ -213,8 +215,10 @@ module Shivneri
       when "Int32"
         return value.as_i
       end
-    rescue exception
-      raise "Invalid value supplied for property - '#{key}', should be type of #{data_type}"
+    rescue TypeCastError
+      raise TupleBodyException.new(
+        "Invalid value supplied for property - '#{key}', should be type of #{data_type}"
+      )
     end
   end
 

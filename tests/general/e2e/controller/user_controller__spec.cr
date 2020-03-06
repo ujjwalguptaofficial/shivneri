@@ -71,6 +71,38 @@ describe "UserController" do
     # cookie_string = response.headers["Set-Cookie"]
   end
 
+  it "/add user with invalid data type" do
+    response = http_client.post("/", HTTP::Headers{
+      "Content-Type" => "application/json",
+      "Cookie"       => cookie_string,
+    }, {
+      name:     1,
+      address:  "newyork street 5 america",
+      email:    "angela@mg.com",
+      gender:   "female",
+      password: "hiangela",
+    }.to_json)
+    response.status_code.should eq 400
+    response.body.includes?("Invalid value supplied for property - 'name', should be type of String").should eq true
+  end
+
+  it "/add user with invalid data type" do
+    response = http_client.post("/", HTTP::Headers{
+      "Content-Type" => "application/json",
+      "Cookie"       => cookie_string,
+    }, {
+      id:       "asd",
+      name:     "adddf",
+      address:  "newyork street 5 america",
+      email:    "angela@mg.com",
+      gender:   "female",
+      password: "hiangela",
+    }.to_json)
+    response.status_code.should eq 400
+    # response.body.should eq "name should be minimum 5 characters"
+    response.body.includes?("Invalid value supplied for property - 'id', should be type of Int32").should eq true
+  end
+
   it "/user count" do
     response = http_client.get("/count", HTTP::Headers{
       "Content-Type" => "application/json",
@@ -156,7 +188,7 @@ describe "UserController" do
       "Cookie"       => cookie_string,
     })
     response.status_code.should eq 200
-    response.body.should eq "12"
+    response.body.should eq "14"
   end
 
   it "/thrown by shield using header counter" do

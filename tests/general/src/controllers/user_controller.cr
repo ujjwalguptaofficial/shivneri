@@ -48,6 +48,7 @@ module General
       # puts user.to_json
 
       # user = @service.add_user(MODEL::User.new(user))
+      user = @service.add_user(user)
       return json_result(user, 201)
     end
 

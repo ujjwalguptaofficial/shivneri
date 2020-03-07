@@ -16,9 +16,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Enter test dir
-      run: cd tests/general
     - name: Install dependencies
       run: shards install
     - name: Run tests
-      run: CRYSTAL_ENV=TEST crystal spec e2e/ --error-trace
+      run: cd tests/general && shards install && CRYSTAL_ENV=TEST crystal spec e2e/* --error-trace

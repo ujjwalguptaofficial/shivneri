@@ -39,14 +39,15 @@ module General
     @[Route("/")]
     @[Guards(UserValidator)]
     @[Inject("as_body")]
-    @[ExpectBody(NamedTuple(id: Int32, name: String, password: String, gender: String, email: String, address: String))]
+    @[ExpectBody(User)]
+    # @[ExpectBody(NamedTuple(id: Int32, name: String, password: String, gender: String, email: String, address: String))]
     def add_user(user)
       # user = body.to_tuple(NamedTuple(id: Int32, name: String)) # get_tuple_from_body(NamedTuple(id: Int32, name: String))
       # puts user
       # puts typeof(user)
       # puts user.to_json
 
-      user = @service.add_user(MODEL::User.new(user))
+      # user = @service.add_user(MODEL::User.new(user))
       return json_result(user, 201)
     end
 

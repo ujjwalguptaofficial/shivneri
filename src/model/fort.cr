@@ -119,7 +119,16 @@ module Shivneri
                   return instance.{{method.name}}(*{
                     {% for value in worker_inject_args %}
                       {% if value == "as_body" %}
-                        {{body_tuple.args[0]}}.get_tuple_from_hash_json_any.call(ctx.body.as_hash),
+                        {% vars = body_tuple.args[0].resolve.instance_vars %}
+                        {{body_tuple.args[0].resolve}}.new({
+                            {% for prop, index in vars %}
+                                {% key_as_string = prop.stringify %}
+                                {% type_as_string = prop.type.stringify %}
+                                {{prop}}: (ctx.body.has_key?({{key_as_string}})? 
+                                  convert_to({{key_as_string}}, ctx.body[{{key_as_string}}], {{type_as_string}}) : 
+                                  get_default_value({{type_as_string}})).as({{prop.type}}) , 
+                            {% end %}
+                        }),
                       {% else %}
                         {{value}}
                       {% end %}

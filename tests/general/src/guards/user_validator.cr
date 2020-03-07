@@ -8,7 +8,9 @@ module General
     end
 
     @[Inject("injection ok in guard", "as_body")]
-    @[BodySameAs("UserController", "add_user")]
+    # @[BodySameAs("UserController", "add_user")]
+    @[ExpectBody(NamedTuple(id: Int32, name: String, password: String, gender: String, email: String, address: String))]
+
     def check(value : String, user)
       if (query["guard_injection_test"]? != nil)
         return text_result("#{@constructor_value} #{value}", 200)

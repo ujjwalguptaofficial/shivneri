@@ -39,6 +39,34 @@ describe "UserController" do
     response.body.should eq "hello injection ok in guard"
   end
 
+  it "/guard injection test with return body sending no body" do
+    response = http_client.post("/", HTTP::Headers{
+      "Accept" => "*/*",
+      # "Content-Type" => "application/json",
+      "Cookie"                           => cookie_string,
+      "guard_injection_test_return_body" => "true",
+    })
+    response.status_code.should eq 200
+    response.body.should eq "{\"id\":0,\"name\":\"\",\"gender\":\"\",\"password\":\"\",\"email\":\"\",\"address\":\"\"}"
+  end
+
+  it "/guard injection test with return body sending body" do
+    response = http_client.post("/", HTTP::Headers{
+      "Accept"                           => "*/*",
+      "Content-Type"                     => "application/json",
+      "Cookie"                           => cookie_string,
+      "guard_injection_test_return_body" => "true",
+    }, {
+      name:     "angela",
+      address:  "newyork street 5 america",
+      email:    "angela@mg.com",
+      gender:   "female",
+      password: "hiangela",
+    }.to_json)
+    response.status_code.should eq 200
+    response.body.should eq "{\"id\":0,\"name\":\"angela\",\"gender\":\"female\",\"password\":\"hiangela\",\"email\":\"angela@mg.com\",\"address\":\"newyork street 5 america\"}"
+  end
+
   it "/add user" do
     response = http_client.post("/", HTTP::Headers{
       "Content-Type" => "application/json",
@@ -188,7 +216,7 @@ describe "UserController" do
       "Cookie"       => cookie_string,
     })
     response.status_code.should eq 200
-    response.body.should eq "14"
+    response.body.should eq "16"
   end
 
   it "/thrown by shield using header counter" do

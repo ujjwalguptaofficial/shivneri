@@ -91,7 +91,7 @@ describe "UserController" do
     response = http_client.get("/tuple_convert_test")
     response.status_code.should eq 200
     # response.body.includes?("Guard General::InvalidInjectionGuard expect some arguments in method check, use Inject annotation for dependency injection.").should eq true
-    response.body.should eq "{\"id1\":0,\"id2\":0,\"id3\":0.0,\"id4\":0.0,\"name\":\"\",\"char\":\" \"}"
+    response.body.should eq "{\"id1\":0,\"id2\":0,\"id3\":0.0,\"id4\":0.0,\"name\":\"\",\"char\":\" \",\"int_8\":0,\"uint_8\":0,\"int_16\":0,\"uint_16\":0,\"uint_32\":0,\"uint_64\":0,\"bool\":false}"
   end
 
   it "/tuple_convert_test for type int32" do
@@ -151,6 +151,16 @@ describe "UserController" do
     }, {char: 0}.to_json)
     response.status_code.should eq 400
     response.body.includes?("Invalid value supplied for property - 'char', should be type of Char").should eq true
+    # response.body.should eq "{\"id1\":0,\"id2\":0,\"id3\":0.0,\"id4\":0.0,\"name\":\"\",\"char\":\" \"}"
+  end
+
+  it "/tuple_convert_test for type Bool" do
+    response = http_client.post("/tuple_convert_test", HTTP::Headers{
+      "Content-Type" => "application/json",
+      # "Cookie"       => cookie_string,
+    }, {bool: "0"}.to_json)
+    response.status_code.should eq 400
+    response.body.includes?("Invalid value supplied for property - 'bool', should be type of Bool").should eq true
     # response.body.should eq "{\"id1\":0,\"id2\":0,\"id3\":0.0,\"id4\":0.0,\"name\":\"\",\"char\":\" \"}"
   end
 end

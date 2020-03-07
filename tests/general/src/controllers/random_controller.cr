@@ -66,12 +66,19 @@ module General
       name: String, char: Char, int_8: Int8, uint_8: UInt8, int_16: Int16,
       uint_16: UInt16, uint_32: UInt32, uint_64: UInt64, bool: Bool))]
     def tuple_convert_test(data)
-      my_body = {id1:  data[:id1],
-                 id2:  data[:id2],
-                 id3:  data[:id3],
-                 id4:  data[:id4],
-                 name: data[:name],
-                 char: data[:char].to_s,
+      my_body = {id1:     data[:id1],
+                 id2:     data[:id2],
+                 id3:     data[:id3],
+                 id4:     data[:id4],
+                 name:    data[:name],
+                 char:    data[:char].to_s,
+                 int_8:   data[:int_8],
+                 uint_8:  data[:uint_8],
+                 int_16:  data[:int_16],
+                 uint_16: data[:uint_16],
+                 uint_32: data[:uint_32],
+                 uint_64: data[:uint_64],
+                 bool:    data[:bool],
       }
       return json_result my_body
     end

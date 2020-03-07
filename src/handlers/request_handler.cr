@@ -212,6 +212,22 @@ module Shivneri
       return 0.to_f
     when "Char"
       return ' '
+    when "Int8"
+      return 0.to_i8
+    when "UInt8"
+      return 0.to_u8
+    when "Int16"
+      return 0.to_i16
+    when "UInt16"
+      return 0.to_u16
+    when "UInt32"
+      return 0.to_u32
+    when "UInt64"
+      return 0.to_u64
+    when "Bool"
+      return false
+    else
+      raise "Invalid data type #{data_type} - json does not support this type."
     end
   end
 
@@ -245,7 +261,7 @@ module Shivneri
       when "Bool"
         return value.as_bool
       else
-        raise "Invalid data type #{data_type} - json does not support this type."
+        raise "Invalid data type #{data_type} for property '#{key}' - json does not support this type."
       end
     rescue TypeCastError
       raise TupleBodyException.new(

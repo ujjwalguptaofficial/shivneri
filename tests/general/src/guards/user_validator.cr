@@ -8,9 +8,9 @@ module General
     end
 
     @[Inject("injection ok in guard", "as_body")]
-    # @[BodySameAs("UserController", "add_user")]
-    @[ExpectBody(NamedTuple(id: Int32, name: String, password: String, gender: String, email: String, address: String))]
-
+    @[BodySameAs("UserController", "add_user")]
+    # @[ExpectBody(NamedTuple(id: Int32, name: String, password: String, gender: String, email: String, address: String))]
+    # @[ExpectBody(User)]
     def check(value : String, user)
       if (query["guard_injection_test"]? != nil)
         return text_result("#{@constructor_value} #{value}", 200)
@@ -22,10 +22,10 @@ module General
       # return text_result("okkk")
     end
 
-    def validate(user)
-      # user = get_tuple_from_body(
-      #   NamedTuple(id: Int32, name: String, password: String, gender: String, email: String, address: String)
-      # )
+    def validate(user1)
+      user = body.to_tuple(
+        NamedTuple(id: Int32, name: String, password: String, gender: String, email: String, address: String)
+      )
       # user = body.to_tuple(NamedTuple(id: Int32, name: String, password: String, gender: String, email: String, address: String))
       if (user[:name].size < 5)
         return "name should be minimum 5 characters"

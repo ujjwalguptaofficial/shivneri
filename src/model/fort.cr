@@ -129,7 +129,7 @@ module Shivneri
                             {% end %}
                         }),
                       {% else %}
-                        {{value}}
+                        {{value}},
                       {% end %}
                     {% end %}
                   })
@@ -212,7 +212,15 @@ module Shivneri
                   return instance.check(*{
                     {% for value in guard_inject_annoation.args %}
                       {% if value == "as_body" %}
-                        {{body_tuple.args[0]}}.get_tuple_from_hash_json_any.call(ctx.body.as_hash),
+                      {{body_tuple.args[0].resolve}}.new({
+                        {% for prop in body_tuple.args[0].resolve.instance_vars %}
+                            {% key_as_string = prop.stringify %}
+                            {% type_as_string = prop.type.stringify %}
+                            {{prop}}: (ctx.body.has_key?({{key_as_string}})? 
+                              convert_to({{key_as_string}}, ctx.body[{{key_as_string}}], {{type_as_string}}) : 
+                              get_default_value({{type_as_string}})).as({{prop.type}}) , 
+                        {% end %}
+                    }),
                       {% else %}
                         {{value}},
                       {% end %}
@@ -228,7 +236,15 @@ module Shivneri
                           {% methods = klasses[0].methods.select { |q| q.name == target_body[1] } %}
                           {% if methods.size > 0 %}
                             {% if body_tuple = methods[0].annotation(ExpectBody) %}
-                              {{body_tuple.args[0]}}.get_tuple_from_hash_json_any.call(ctx.body.as_hash),
+                            {{body_tuple.args[0].resolve}}.new({
+                              {% for prop in body_tuple.args[0].resolve.instance_vars %}
+                                  {% key_as_string = prop.stringify %}
+                                  {% type_as_string = prop.type.stringify %}
+                                  {{prop}}: (ctx.body.has_key?({{key_as_string}})? 
+                                    convert_to({{key_as_string}}, ctx.body[{{key_as_string}}], {{type_as_string}}) : 
+                                    get_default_value({{type_as_string}})).as({{prop.type}}) , 
+                              {% end %}
+                          }),
                             {% else %}
                               raise "expected body is not defined"
                             {% end %}

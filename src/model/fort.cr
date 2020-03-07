@@ -119,9 +119,8 @@ module Shivneri
                   return instance.{{method.name}}(*{
                     {% for value in worker_inject_args %}
                       {% if value == "as_body" %}
-                        {% vars = body_tuple.args[0].resolve.instance_vars %}
                         {{body_tuple.args[0].resolve}}.new({
-                            {% for prop, index in vars %}
+                            {% for prop in body_tuple.args[0].resolve.instance_vars %}
                                 {% key_as_string = prop.stringify %}
                                 {% type_as_string = prop.type.stringify %}
                                 {{prop}}: (ctx.body.has_key?({{key_as_string}})? 

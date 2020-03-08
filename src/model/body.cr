@@ -29,6 +29,10 @@ module Shivneri
         return @body_data[key]
       end
 
+      def []?(key : String)
+        return @body_data[key]?
+      end
+
       def []=(key : String, value)
         @body_data[key] = value
       end
@@ -45,13 +49,13 @@ module Shivneri
         @body_data.has_key?(key)
       end
 
-    #   def to_json
-    #     return @body_data.to_json
-    #   end
+      #   def to_json
+      #     return @body_data.to_json
+      #   end
 
-    #   def to_json(value : JSON::Builder)
-    #     return @body_data.to_json
-    #   end
+      #   def to_json(value : JSON::Builder)
+      #     return @body_data.to_json
+      #   end
     end
   end
 end

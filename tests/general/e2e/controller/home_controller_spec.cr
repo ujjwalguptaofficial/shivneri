@@ -196,4 +196,35 @@ describe "HomeController" do
     response.status_code.should eq 200
     response.body.should eq "[{\"id\":1,\"name\":\"ujjwal\",\"type\":\"employee\"}]"
   end
+
+  it "/text with get_body without any body" do
+    response = http_client.post("/get_body", HTTP::Headers{
+      "Accept" => "application/json",
+    })
+    response.status_code.should eq 200
+    response.body.should eq "{\"name\":null,\"address\":null}"
+  end
+
+  it "/text with get_body with body - name only" do
+    response = http_client.post("/get_body", HTTP::Headers{
+      # "Content-Type" => "application/json",
+      "Accept" => "application/json",
+    }, {
+      name: "ujjwal",
+    }.to_json)
+    response.status_code.should eq 200
+    response.body.should eq "{\"name\":\"ujjwal\",\"address\":null}"
+  end
+
+  it "/text with get_body with body - name & address" do
+    response = http_client.post("/get_body", HTTP::Headers{
+      # "Content-Type" => "application/json",
+      "Accept" => "application/json",
+    }, {
+      name:    "ujjwal",
+      address: "India",
+    }.to_json)
+    response.status_code.should eq 200
+    response.body.should eq "{\"name\":\"ujjwal\",\"address\":\"India\"}"
+  end
 end

@@ -43,8 +43,6 @@ module Shivneri
           self.parse_multi_part_data
         else
           case contentType
-          when MIME_TYPE["json"]
-            @body.body_data = JSON.parse(@request.body.as(IO)).as_h
           when MIME_TYPE["form_url_encoded"]
             HTTP::Params.parse(@request.body.as(IO).gets_to_end).each do |key, val|
               @body[key] = JSON::Any.new(val)
@@ -52,6 +50,8 @@ module Shivneri
           when MIME_TYPE["xml"]
             puts "parsing body xml"
             # @body = XML.parse(@request.body.as(IO)).as_h
+          else
+            @body.body_data = JSON.parse(@request.body.as(IO)).as_h
           end
         end
       end

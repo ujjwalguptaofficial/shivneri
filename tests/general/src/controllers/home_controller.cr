@@ -93,6 +93,16 @@ module General
       return json_result(@employee_service.get_all)
     end
 
+    @[Worker]
+    def get_body
+      data = {
+        name:    body["name"]?,
+        address: body["address"]?,
+      }
+
+      return json_result(data)
+    end
+
     # @Worker()
     # async getAllFromServices(@Singleton(UserService) userService,
     #     @Singleton(StudentService) studentService,

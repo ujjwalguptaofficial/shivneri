@@ -31,8 +31,16 @@ module Shivneri
     end
   end
 
+  def self.open(&block)
+    Fort.instance.create(AppOption.new, block)
+  end
+
   def self.open(option : AppOption = AppOption.new)
     Fort.instance.create(option)
+  end
+
+  def self.open(option : AppOption = AppOption.new, &block)
+    Fort.instance.create(option, block)
   end
 
   def self.open(option : AppOption = AppOption.new, on_success : Proc(Nil) = ->{})

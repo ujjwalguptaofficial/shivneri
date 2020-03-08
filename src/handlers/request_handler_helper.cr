@@ -61,7 +61,7 @@ module Shivneri
         return Async(Nil).new(->{
           @wall_instances.reverse.each do |wall_instance|
             return Async(Nil).new(->{
-              wall_instance.on_outgoing
+              wall_instance.finished
               return nil
             }).await
             return nil

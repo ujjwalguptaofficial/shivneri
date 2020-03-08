@@ -9,7 +9,7 @@ module Shivneri
     # include HASHES
 
     class GenericWall < Wall
-      def accepted : HttpResult | Nil
+      def entered : HttpResult | Nil
         # response.headers.add("Wall-Without-Outgoing-Wall", "*"");
         return HttpResult.new("blocked by generic wall", "text/plain")
       end

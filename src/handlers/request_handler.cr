@@ -63,7 +63,7 @@ module Shivneri
         FortGlobal.walls.each do |create_wall_instance|
           wall_instance = create_wall_instance.call(self)
           self.wall_instances.push(wall_instance)
-          wall_result = wall_instance.accepted.as(HttpResult | Nil)
+          wall_result = wall_instance.entered.as(HttpResult | Nil)
           if (wall_result != nil)
             status = false
             self.on_termination_from_Wall(wall_result.as(HttpResult))

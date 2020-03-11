@@ -35,7 +35,7 @@ module Shivneri
         return {} of String => JSON::Any
       end
 
-      def []=(key : String, val) : Nil
+      def []=(key : String, val : JSON::Any) : Nil
         if (is_session_exist)
           @@session_values[self.session_id][key] = val
         else

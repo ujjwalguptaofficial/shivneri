@@ -55,6 +55,10 @@ module Shivneri
         cookie.path = "/"
         self.cookie.delete(cookie)
       end
+
+      def []=(key : String, value : JSON::Any | Nil) : Nil
+        raise "value is type of JSON::Any | Nil, please convert it to a particular type"
+      end
     end
   end
 end

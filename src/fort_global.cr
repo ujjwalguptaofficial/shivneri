@@ -2,8 +2,6 @@ require "./providers/index"
 
 module Shivneri
   class FortGlobal
-    
-
     @@app_name = "fort"
     @@should_parse_cookie = true
     @@walls = [] of Proc(RequestHandler, Wall)
@@ -72,6 +70,10 @@ module Shivneri
 
   def FortGlobal.logger
     return @@logger
+  end
+
+  def FortGlobal.should_parse_post=(value)
+    @@should_parse_post = value
   end
 
   macro FortGlobal

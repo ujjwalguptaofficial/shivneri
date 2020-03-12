@@ -69,6 +69,10 @@ module Shivneri
     Fort.instance.port = port
   end
 
+  def self.should_parse_post=(value : Bool)
+    FortGlobal.should_parse_post = value
+  end
+
   class Fort
     property port
     @@instance = Fort.new

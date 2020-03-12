@@ -24,7 +24,7 @@ module General
     # @[Guards(TestGuard)]
     @[Inject("Ujjwal", "Gupta")]
     def index1(first_name : String, last_name : String)
-      sleep 5
+      # sleep 5
       return text_result("#{first_name}#{last_name}")
     end
 

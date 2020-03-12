@@ -2,7 +2,7 @@ require "json"
 
 module Shivneri
   module MODEL
-    class Body
+    struct Body
       JSON.mapping(
         body_data: Hash(String, JSON::Any)
       )

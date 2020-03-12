@@ -1,6 +1,6 @@
 module Shivneri
   module MODEL
-    class ViewReadOption
+    struct ViewReadOption
       getter file_location
       @file_location : String
 

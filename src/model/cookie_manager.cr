@@ -2,7 +2,7 @@ require "./http_cookie"
 
 module Shivneri
   module MODEL
-    class CookieManager
+    struct CookieManager
       property response_cookie
       # getter cookie_collection
       @response_cookie = [] of String

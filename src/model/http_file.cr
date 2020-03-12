@@ -2,7 +2,7 @@ require "json"
 
 module Shivneri
   module MODEL
-    class HttpFile
+    struct HttpFile
       include JSON::Serializable
       getter field_name, original_file_name, path, headers, size
 

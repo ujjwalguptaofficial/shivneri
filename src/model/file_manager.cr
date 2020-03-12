@@ -1,6 +1,6 @@
 module Shivneri
   module MODEL
-    class FileManager
+    struct FileManager
       files : Hash(String, HttpFile)
 
       def initialize(value)

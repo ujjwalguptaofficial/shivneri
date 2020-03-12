@@ -2,7 +2,7 @@ require "json"
 
 module Shivneri
   module MODEL
-    class HttpCookie
+    struct HttpCookie
       include JSON::Serializable
       property name, value, expires, http_only, max_age, path, domain
 

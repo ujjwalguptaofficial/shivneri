@@ -1,6 +1,6 @@
 module Shivneri
   module MODEL
-    class RouteMatch
+    struct RouteMatch
       property params, allowedHttpMethod, worker_info, shields
 
       # @controllerInfo : RouteInfo

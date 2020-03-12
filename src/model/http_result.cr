@@ -4,7 +4,7 @@ module Shivneri
   module MODEL
     include HASHES
 
-    class HttpResult
+    struct HttpResult
       property status_code, response_data, content_type, response_format, should_redirect, file
       @status_code : Int32
       @response_data : String

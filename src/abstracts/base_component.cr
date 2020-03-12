@@ -29,8 +29,16 @@ module Shivneri
         return component_data[key]
       end
 
-      def []=(key : String, value : Int64 | String)
+      def []?(key : String)
+        return component_data[key]?
+      end
+
+      def []=(key : String, value : JSON::Any::Type)
         component_data[key] = JSON::Any.new(value)
+      end
+
+      def []=(key : String, value : JSON::Any)
+        component_data[key] = value
       end
 
       def []=(key : String, value : Int32)

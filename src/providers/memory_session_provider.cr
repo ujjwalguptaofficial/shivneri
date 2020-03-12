@@ -51,7 +51,7 @@ module Shivneri
         return self[key.to_s] = val
       end
 
-      def []=(key : String, value : String | Int64 | Nil) : Nil
+      def []=(key : String, value : JSON::Any::Type) : Nil
         return self[key] = JSON::Any.new(value)
       end
 

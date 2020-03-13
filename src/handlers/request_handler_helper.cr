@@ -59,7 +59,7 @@ module Shivneri
 
       protected def run_wall_out_going
         @wall_instances.reverse.each do |wall_instance|
-          wall_instance.exited
+          wall_instance.outgoing
         end
       end
 

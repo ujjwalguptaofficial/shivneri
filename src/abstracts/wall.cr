@@ -1,9 +1,9 @@
 module Shivneri
   module ABSTRACT
     abstract class Wall < BaseComponent
-      abstract def entered(*args) : HttpResult | Nil
+      abstract def incoming(*args) : HttpResult | Nil
 
-      def exited(*args)
+      def outgoing(*args)
       end
     end
   end

@@ -58,15 +58,9 @@ module Shivneri
       end
 
       protected def run_wall_out_going
-        return Async(Nil).new(->{
-          @wall_instances.reverse.each do |wall_instance|
-            return Async(Nil).new(->{
-              wall_instance.finished
-              return nil
-            }).await
-            return nil
-          end
-        })
+        @wall_instances.reverse.each do |wall_instance|
+          wall_instance.exited
+        end
       end
 
       protected def on_error_occured(error : Exception)
@@ -97,7 +91,7 @@ module Shivneri
 
       protected def on_request_options(allowedMethods : Array(String))
         begin
-          self.run_wall_out_going.await
+          self.run_wall_out_going
         rescue ex
           return self.on_error_occured(ex)
         end

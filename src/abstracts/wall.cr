@@ -3,7 +3,7 @@ module Shivneri
     abstract class Wall < BaseComponent
       abstract def entered(*args) : HttpResult | Nil
 
-      def finished(*args)
+      def exited(*args)
       end
     end
   end

@@ -16,7 +16,7 @@ module Shivneri
 
     class RequestHandler < PostHandler
       getter query, request, route_match_info, response, session_provider, component_data
-      @query = {} of String => String
+      @query : Query = Query.new({} of String => String)
       @component_data = {} of String => JSON::Any
       @request : HTTP::Request
       @response : HTTP::Server::Response
@@ -37,10 +37,10 @@ module Shivneri
         @route_match_info.as(RouteMatch)
       end
 
-      def initialize
-        @request = HTTP::Request.new("", "")
-        @response = HTTP::Server::Response.new(IO::Memory.new("temp"))
-      end
+      # def initialize
+      #   @request = HTTP::Request.new("", "")
+      #   @response = HTTP::Server::Response.new(IO::Memory.new("temp"))
+      # end
 
       def initialize(request : HTTP::Request, response : HTTP::Server::Response)
         @request = request
@@ -78,11 +78,11 @@ module Shivneri
           @query[name] = value
         end
 
-        shouldExecuteNextProcess : Bool = self.parse_cookie_from_request
-        if (shouldExecuteNextProcess)
+        should_execute_next_process : Bool = self.parse_cookie_from_request
+        if (should_execute_next_process)
           url = @request.path
-          shouldExecuteNextProcess = execute_wall_incoming
-          if (shouldExecuteNextProcess == false)
+          should_execute_next_process = execute_wall_incoming
+          if (should_execute_next_process == false)
             return
           end
           requestMethod = @request.method

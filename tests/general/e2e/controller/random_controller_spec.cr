@@ -43,13 +43,13 @@ describe "UserController" do
       "content-type" => "application/x-www-form-urlencoded",
     }, HTTP::Params.encode({"hello" => "world"}))
     response.status_code.should eq 200
-    response.body.should eq "{\"body\":{\"body_data\":{\"hello\":\"world\"}},\"query\":{}}"
+    response.body.should eq "{\"body\":{\"body_data\":{\"hello\":\"world\"}},\"query\":{\"query_data\":{}}}"
   end
 
   it "/form with get" do
     response = http_client.get("/form?" + HTTP::Params.encode({"hello" => "world"}))
     response.status_code.should eq 200
-    response.body.should eq "{\"body\":{\"body_data\":{}},\"query\":{\"hello\":\"world\"}}"
+    response.body.should eq "{\"body\":{\"body_data\":{}},\"query\":{\"query_data\":{\"hello\":\"world\"}}}"
   end
 
   it "/error" do
@@ -162,5 +162,12 @@ describe "UserController" do
     response.status_code.should eq 400
     response.body.includes?("Invalid value supplied for property - 'bool', should be type of Bool").should eq true
     # response.body.should eq "{\"id1\":0,\"id2\":0,\"id3\":0.0,\"id4\":0.0,\"name\":\"\",\"char\":\" \"}"
+  end
+
+  it "/big query test" do
+    response = http_client.get("/big_query_test?key1=value1&key2=12&key3=true&key4=12&key5=1234.34")
+    # response.status_code.should eq 200
+    # response.body.includes?("Invalid value supplied for property - 'bool', should be type of Bool").should eq true
+    response.body.should eq "{\"key1\":\"value1\",\"key2\":12,\"key3\":true,\"key4\":12,\"key5\":1234.34}"
   end
 end

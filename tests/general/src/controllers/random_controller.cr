@@ -85,5 +85,17 @@ module General
       }
       return json_result my_body
     end
+
+    @[Worker]
+    def big_query_test
+      return json_result(query.to_tuple(
+        NamedTuple(
+          key1: String,
+          key2: Int32,
+          key3: Bool,
+          key4: UInt16,
+          key5: Float32)
+      ))
+    end
   end
 end

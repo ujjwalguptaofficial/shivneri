@@ -138,10 +138,6 @@ module Shivneri
       def format_result(value : Hash(String, String), status_code = 200)
         HttpResult.new(value, status_code)
       end
-
-      def headers
-        return request.headers
-      end
     end
   end
 end

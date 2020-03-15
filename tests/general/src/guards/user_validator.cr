@@ -15,7 +15,7 @@ module General
       if (query["guard_injection_test"]? != nil)
         return text_result("#{@constructor_value} #{value}", 200)
       end
-      if (headers.has_key?("guard_injection_test_return_body"))
+      if (request.headers.has_key?("guard_injection_test_return_body"))
         return json_result(user, 200)
       end
       err_message = validate user

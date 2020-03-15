@@ -8,7 +8,7 @@ module General
     @@req_count = 0
 
     private def get_ip
-      ip = (headers["x-forwarded-for"]? || "").split(",").pop || request.remote_address
+      ip = (request.headers["x-forwarded-for"]? || "").split(",").pop || request.remote_address
       return ip
     end
 
@@ -16,7 +16,7 @@ module General
       if (query["req_count_reset"]? != nil)
         @@req_count = 0
       end
-      headers["Custom-Header-From-Incoming-Wall"] = "1"
+      response.headers["Custom-Header-From-Incoming-Wall"] = "1"
       self["ip"] = get_ip
       # if (this.query.doNotCount !== 'true') {
       self["req_count"] = @@req_count += 1
@@ -33,8 +33,8 @@ module General
 
     def outgoing
       logger.debug("executing request logger")
-      headers["Custom-Header-From-Outgoing-Wall"] = "*"
-      headers["injection-result"] = @injection_value
+      response.headers["Custom-Header-From-Outgoing-Wall"] = "*"
+      response.headers["injection-result"] = @injection_value
       response.headers["request_count_from_wall"] = @@req_count.to_s
     end
   end

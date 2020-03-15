@@ -107,8 +107,11 @@ module Shivneri
         {% else %}
           {% is_klass_has_args = false %}
         {% end %}
-        {% for method in klass.methods.select { |m| m.annotation(DefaultWorker) || m.annotation(Worker) } %}
+        {% for method in klass.methods.select { |m| m.visibility == :public } %}
+         
           {% method_name = "#{method.name}" %}
+
+          {% if method.annotation(DefaultWorker) || method.annotation(Worker) %}
           {% inject_annotation = method.annotation(Inject) %}
           {% if inject_annotation %}
               {% worker_inject_args = inject_annotation.args %}
@@ -166,21 +169,21 @@ module Shivneri
            {% end %}
             workerInfo =  WorkerInfo.new({{method_name}},http_methods, action)
             RouteHandler.addWorker({{klass}}.name, workerInfo)
-            RouteHandler.addRoute({{klass}}.name, {{method_name}}, {{worker_route}})
+
+            {% if method.annotation(Route) %}
+              RouteHandler.addRoute({{klass}}.name, {{method_name}},{{method.annotation(Route).args}}[0])
+            {% else %}
+              RouteHandler.addRoute({{klass}}.name, {{method_name}}, {{worker_route}})
+            {% end %}
+
+            {% if method.annotation(Guards) %}
+              {% for guard in method.annotation(Guards).args %}
+                RouteHandler.add_guard_in_worker({{klass}}.name, {{method_name}},{{guard}}.name)
+              {% end %}
+            {% end %}
+
+          {% end %}
         {% end %}
-
-      {% for method in klass.methods.select { |m| m.annotation(Route) } %}
-        {% method_name = "#{method.name}" %}
-        {% args = method.annotation(Route).args %}
-        RouteHandler.addRoute({{klass}}.name, {{method_name}},{{args}}[0])
-      {% end %}
-
-      {% for method in klass.methods.select { |m| m.annotation(Guards) } %}
-        {% method_name = "#{method.name}" %}
-        {% args = method.annotation(Guards).args %}
-        RouteHandler.add_guard_in_worker({{klass}}.name, {{method_name}},{{args}}[0].name)
-      {% end %}
-
       {% end %}
     end
 

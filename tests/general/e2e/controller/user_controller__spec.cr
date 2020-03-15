@@ -6,10 +6,10 @@ describe "UserController" do
   cookie_string = ""
 
   it "/allow me without login" do
-    response = http_client.get("/allow/me")
+    response = http_client.get("/allow/me?req_count_reset=1")
     response.status_code.should eq 200
     response.body.should eq "i am allowed"
-    response.headers["request_count_from_wall"].should eq "23"
+    response.headers["request_count_from_wall"].should eq "1"
   end
 
   it "/access user without login" do
@@ -247,6 +247,6 @@ describe "UserController" do
     })
     response.status_code.should eq 302
     response.body.should eq ""
-    response.headers["request_count_from_wall"].should eq "43"
+    response.headers["request_count_from_wall"].should eq "21"
   end
 end

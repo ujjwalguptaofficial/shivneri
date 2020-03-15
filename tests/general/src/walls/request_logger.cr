@@ -13,6 +13,9 @@ module General
     end
 
     def incoming
+      if (query["req_count_reset"]? != nil)
+        @@req_count = 0
+      end
       headers["Custom-Header-From-Incoming-Wall"] = "1"
       self["ip"] = get_ip
       # if (this.query.doNotCount !== 'true') {

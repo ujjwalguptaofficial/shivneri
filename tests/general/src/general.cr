@@ -6,18 +6,11 @@ require "./controllers/random_controller"
 require "./controllers/user_controller"
 require "./controllers/file_controller"
 require "./controllers/cookie_controller"
+require "./walls/all"
 
 include Shivneri
 include General
 VERSION = "0.1.0"
-require "./walls/wall_without_outgoing"
-
-# TODO: Put your code here
-
-# class App < Fort
-#   def intialize
-#   end
-# end
 
 def init_app(on_success = nil)
   # app = App.new
@@ -49,7 +42,7 @@ def init_app(on_success = nil)
   #   app.register_controller(route[:controller], route[:path])
   # end
   # Shivneri.routes = routes
-  Shivneri.walls = [WallWithoutOutgoing]
+  Shivneri.walls = [WallWithoutOutgoing, RequestLogger]
   app_option = AppOption.new
   path_of_static_folder = File.join(Dir.current, "static")
   app_option.folders = [{

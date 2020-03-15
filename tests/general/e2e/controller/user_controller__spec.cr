@@ -9,6 +9,7 @@ describe "UserController" do
     response = http_client.get("/allow/me")
     response.status_code.should eq 200
     response.body.should eq "i am allowed"
+    response.headers["request_count_from_wall"].should eq "23"
   end
 
   it "/access user without login" do
@@ -246,5 +247,6 @@ describe "UserController" do
     })
     response.status_code.should eq 302
     response.body.should eq ""
+    response.headers["request_count_from_wall"].should eq "43"
   end
 end

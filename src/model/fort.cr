@@ -326,14 +326,24 @@ module Shivneri
 
     private def add_walls
       {% for klass in Wall.all_subclasses %}
-        create_wall_instance = -> (ctx : RequestHandler) { 
-          instance = {{klass}}.new;
+        {% if klass_inject = klass.annotation(Inject) %}
+          {% klass_inject_args = klass_inject.args %}
+          {% is_klass_has_args = true %}
+        {% else %}
+          {% is_klass_has_args = false %}
+        {% end %}
+        create_wall_instance = -> (ctx : RequestHandler) {
+          {% if is_klass_has_args %}
+            instance = {{klass}}.new(*{{klass_inject_args}})
+          {% else %}
+            instance = {{klass}}.new
+          {% end %} 
           instance.set_context(ctx);
           return instance.as(Wall);
         }
         if(!{{klass}}.name.includes?("GenericWall"))
-        FortGlobal.walls.push(create_wall_instance)
-      end
+          FortGlobal.walls.push(create_wall_instance)
+        end
       {% end %}
     end
 

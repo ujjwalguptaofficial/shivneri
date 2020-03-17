@@ -1,7 +1,7 @@
 [![GitHub version](https://badge.fury.io/gh/ujjwalguptaofficial%2Fshivneri.svg)](https://badge.fury.io/gh/ujjwalguptaofficial%2Fshivneri) ![Crystal CI](https://github.com/ujjwalguptaofficial/shivneri/workflows/Crystal%20CI/badge.svg?branch=master) [![Docs](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://shivneriforcrystal.com/)
 # Shivneri
 
-Component based MVC web framework based on fort architecture for [crystal](https://crystal-lang.org/) targeting good code structures & modularity.
+Component based MVC web framework based on fort architecture for [crystal](https://crystal-lang.org/) targeting good code structures, modularity & performance.
 
 # Features
 

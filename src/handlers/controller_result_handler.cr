@@ -23,9 +23,9 @@ module Shivneri
           self.on_error_occured(ex)
           return
         end
-        @response.content_type = negotaited_mime_type
-        @response.status_code = @controller_result.status_code
-        @response.print(@controller_result.response_data)
+        response.content_type = negotaited_mime_type
+        response.status_code = @controller_result.status_code
+        response.print(@controller_result.response_data)
       end
 
       protected def on_result_from_controller(result : HttpResult)
@@ -52,16 +52,16 @@ module Shivneri
       end
 
       private def handle_redirect_result
-        @response.headers["Location"] = @controller_result.response_data
-        @response.status_code = @controller_result.status_code
-        @response.close
+        response.headers["Location"] = @controller_result.response_data
+        response.status_code = @controller_result.status_code
+        response.close
       end
 
       private def handle_file_result
         file_result = @controller_result.file.as(FileResultInfo)
         file_path = file_result.path
         if (file_result.should_download == true)
-          @response.headers["Content-Disposition"] = "attachment;filename=#{file_result.name}"
+          response.headers["Content-Disposition"] = "attachment;filename=#{file_result.name}"
         end
         self.handle_file_request_from_absolute_path(file_path, MIME.from_filename(file_path))
       end

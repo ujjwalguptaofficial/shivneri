@@ -69,13 +69,13 @@ module Shivneri
       end
 
       private def send_file_as_response(file_path : String, mime_type : String)
-        @response.content_type = mime_type
-        @response.status = HTTP::Status::OK
+        response.content_type = mime_type
+        response.status = HTTP::Status::OK
         begin
           File.open(file_path) do |file|
             bytes_read = 1
             while bytes_read > 0
-              bytes_read = IO.copy(file, @response, 16384) # 16kb at a time
+              bytes_read = IO.copy(file, response, 16384) # 16kb at a time
               Fiber.yield
             end
           end

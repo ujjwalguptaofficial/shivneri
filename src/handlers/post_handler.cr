@@ -10,7 +10,7 @@ module Shivneri
       @file : FileManager = FileManager.new
 
       private def parse_multi_part_data
-        HTTP::FormData.parse(@request) do |part|
+        HTTP::FormData.parse(request) do |part|
           case part.headers["Content-Type"]
           when MIME_TYPE["json"]
             @body.merge(JSON.parse(part.body).as_h)
@@ -33,10 +33,10 @@ module Shivneri
 
       protected def parse_post_data_and_set_body
         contentType = ""
-        if (@request.headers.has_key?(CONSTANTS.content_type))
-          contentType = @request.headers[CONSTANTS.content_type]
-        elsif @request.headers.has_key?("content-type")
-          contentType = @request.headers["content_type"]
+        if (request.headers.has_key?(CONSTANTS.content_type))
+          contentType = request.headers[CONSTANTS.content_type]
+        elsif request.headers.has_key?("content-type")
+          contentType = request.headers["content_type"]
         end
         contentType = parse_content_type(contentType)
         if (contentType == MIME_TYPE["form_multi_part"])
@@ -44,14 +44,14 @@ module Shivneri
         else
           case contentType
           when MIME_TYPE["form_url_encoded"]
-            HTTP::Params.parse(@request.body.as(IO).gets_to_end).each do |key, val|
+            HTTP::Params.parse(request.body.as(IO).gets_to_end).each do |key, val|
               @body[key] = JSON::Any.new(val)
             end
           when MIME_TYPE["xml"]
             puts "parsing body xml"
-            # @body = XML.parse(@request.body.as(IO)).as_h
+            # @body = XML.parse(request.body.as(IO)).as_h
           else
-            @body.body_data = JSON.parse(@request.body.as(IO)).as_h
+            @body.body_data = JSON.parse(request.body.as(IO)).as_h
           end
         end
       end

@@ -1,49 +1,50 @@
 require "json"
+require "./base_web_socket_controller"
 
 module Shivneri
   module ABSTRACT
-    class BaseComponent
-      @context : RequestHandler | Nil = nil
+    class BaseComponent < BaseWebSocketController
+      # @context : RequestHandler | Nil = nil
 
-      def set_context(context)
-        @context = context
-      end
+      # def set_context(context)
+      #   @context = context
+      # end
 
-      def request
-        return @context.as(RequestHandler).request
-      end
+      # def request
+      #   return @context.as(RequestHandler).request
+      # end
 
       def response
         return @context.as(RequestHandler).response
       end
 
-      def query
-        return @context.as(RequestHandler).query
-      end
+      # def query
+      #   return @context.as(RequestHandler).query
+      # end
 
-      def component_data
-        return @context.as(RequestHandler).component_data
-      end
+      # def component_data
+      #   return @context.as(RequestHandler).component_data
+      # end
 
-      def [](key : String)
-        return component_data[key]
-      end
+      # def [](key : String)
+      #   return component_data[key]
+      # end
 
-      def []?(key : String)
-        return component_data[key]?
-      end
+      # def []?(key : String)
+      #   return component_data[key]?
+      # end
 
-      def []=(key : String, value : JSON::Any::Type)
-        component_data[key] = JSON::Any.new(value)
-      end
+      # def []=(key : String, value : JSON::Any::Type)
+      #   component_data[key] = JSON::Any.new(value)
+      # end
 
-      def []=(key : String, value : JSON::Any)
-        component_data[key] = value
-      end
+      # def []=(key : String, value : JSON::Any)
+      #   component_data[key] = value
+      # end
 
-      def []=(key : String, value : Int32)
-        self[key] = value.to_i64
-      end
+      # def []=(key : String, value : Int32)
+      #   self[key] = value.to_i64
+      # end
 
       def worker_name
         return @context.as(RequestHandler).worker_name
@@ -57,9 +58,9 @@ module Shivneri
         return @context.as(RequestHandler).session_provider.as(SessionProvider)
       end
 
-      def logger
-        return @context.as(RequestHandler).logger
-      end
+      # def logger
+      #   return @context.as(RequestHandler).logger
+      # end
 
       def render_view(view_name : String, model)
         return FortGlobal.view_engine.render(ViewEngineData.new(view_name, model))

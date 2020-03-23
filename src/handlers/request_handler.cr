@@ -18,8 +18,9 @@ module Shivneri
       getter query, request, route_match_info, response, session_provider, component_data
       @query : Query = Query.new({} of String => String)
       @component_data = {} of String => JSON::Any
-      @request : HTTP::Request
-      @response : HTTP::Server::Response
+      @context : HTTP::Server::Context
+      # request : HTTP::Request
+      # response : HTTP::Server::Response
 
       @route_match_info : RouteMatch | Nil = nil
 
@@ -37,14 +38,15 @@ module Shivneri
         @route_match_info.as(RouteMatch)
       end
 
-      # def initialize
-      #   @request = HTTP::Request.new("", "")
-      #   @response = HTTP::Server::Response.new(IO::Memory.new("temp"))
-      # end
+      def request : HTTP::Request
+        return @context.request
+      end
 
-      def initialize(request : HTTP::Request, response : HTTP::Server::Response)
-        @request = request
-        @response = response
+      def response : HTTP::Server::Response
+        return @context.response
+      end
+
+      def initialize(@context)
       end
 
       def handle
@@ -53,9 +55,9 @@ module Shivneri
       end
 
       private def set_pre_header
-        @response.headers["X-Powered-By"] = FortGlobal.app_name
-        @response.headers["Vary"] = "Accept-Encoding"
-        @response.headers["Date"] = Time.utc.to_s
+        response.headers["X-Powered-By"] = FortGlobal.app_name
+        response.headers["Vary"] = "Accept-Encoding"
+        response.headers["Date"] = Time.utc.to_s
       end
 
       private def execute_wall_incoming
@@ -74,18 +76,18 @@ module Shivneri
       end
 
       private def execute
-        @request.query_params.each do |name, value|
+        request.query_params.each do |name, value|
           @query[name] = value
         end
 
         should_execute_next_process : Bool = self.parse_cookie_from_request
         if (should_execute_next_process)
-          url = @request.path
+          url = request.path
           should_execute_next_process = execute_wall_incoming
           if (should_execute_next_process == false)
             return
           end
-          requestMethod = @request.method
+          requestMethod = request.method
           begin
             route_match_info = parseRoute?(url.downcase, requestMethod)
             if (route_match_info == nil) # no route matched
@@ -104,7 +106,7 @@ module Shivneri
       end
 
       private def handle_post_data
-        if (FortGlobal.should_parse_post == true && @request.method != HTTP_METHOD["get"] && @request.body != nil)
+        if (FortGlobal.should_parse_post == true && request.method != HTTP_METHOD["get"] && request.body != nil)
           begin
             self.parse_post_data_and_set_body
           rescue ex
@@ -118,7 +120,7 @@ module Shivneri
       private def on_route_matched
         worker_info = route_match_info.worker_info
         if (worker_info == nil)
-          if (@request.method == HTTP_METHOD["options"])
+          if (request.method == HTTP_METHOD["options"])
             self.on_request_options(route_match_info.allowedHttpMethod)
           else
             self.on_method_not_allowed(route_match_info.allowedHttpMethod)
@@ -172,10 +174,10 @@ module Shivneri
       private def parse_cookie_from_request : Bool
         if (FortGlobal.should_parse_cookie)
           raw_cookie = ""
-          if (@request.headers.has_key?(CONSTANTS.cookie))
-            raw_cookie = @request.headers[CONSTANTS.cookie]
-          elsif (@request.headers.has_key?("cookie"))
-            raw_cookie = @request.headers["cookie"]
+          if (request.headers.has_key?(CONSTANTS.cookie))
+            raw_cookie = request.headers[CONSTANTS.cookie]
+          elsif (request.headers.has_key?("cookie"))
+            raw_cookie = request.headers["cookie"]
           end
 
           begin

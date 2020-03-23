@@ -71,9 +71,9 @@ module Shivneri
         rescue ex
           errMessage = "#{ex.message}"
         end
-        @response.content_type = MIME_TYPE["html"]
-        @response.status = HTTP::Status::INTERNAL_SERVER_ERROR
-        @response.print(errMessage)
+        response.content_type = MIME_TYPE["html"]
+        response.status = HTTP::Status::INTERNAL_SERVER_ERROR
+        response.print(errMessage)
       end
 
       protected def on_bad_request(error)
@@ -84,9 +84,9 @@ module Shivneri
         rescue ex
           return self.on_error_occured(ex)
         end
-        @response.content_type = MIME_TYPE["html"]
-        @response.status = HTTP::Status::BAD_REQUEST
-        @response.print(errMessage)
+        response.content_type = MIME_TYPE["html"]
+        response.status = HTTP::Status::BAD_REQUEST
+        response.print(errMessage)
       end
 
       protected def on_request_options(allowedMethods : Array(String))
@@ -95,10 +95,10 @@ module Shivneri
         rescue ex
           return self.on_error_occured(ex)
         end
-        @response.headers.add("Allow", allowedMethods.join(","))
-        @response.content_type = MIME_TYPE["html"]
-        @response.status = HTTP::Status::OK
-        @response.print("")
+        response.headers.add("Allow", allowedMethods.join(","))
+        response.content_type = MIME_TYPE["html"]
+        response.status = HTTP::Status::OK
+        response.print("")
       end
 
       protected def on_not_acceptable_request
@@ -109,9 +109,9 @@ module Shivneri
         rescue ex
           return self.on_error_occured(ex)
         end
-        @response.content_type = MIME_TYPE["html"]
-        @response.status = HTTP::Status::NOT_ACCEPTABLE
-        @response.print(errMessage)
+        response.content_type = MIME_TYPE["html"]
+        response.status = HTTP::Status::NOT_ACCEPTABLE
+        response.print(errMessage)
       end
 
       protected def on_method_not_allowed(allowedMethods : Array(String))
@@ -122,23 +122,23 @@ module Shivneri
         rescue ex
           return self.on_error_occured(ex)
         end
-        @response.headers.add("Allow", allowedMethods.join(","))
-        @response.content_type = MIME_TYPE["html"]
-        @response.status = HTTP::Status::METHOD_NOT_ALLOWED
-        @response.print(errMessage)
+        response.headers.add("Allow", allowedMethods.join(","))
+        response.content_type = MIME_TYPE["html"]
+        response.status = HTTP::Status::METHOD_NOT_ALLOWED
+        response.print(errMessage)
       end
 
       protected def on_not_found
         errMessage = ""
         begin
           self.run_wall_out_going
-          errMessage = FortGlobal.error_handler.new.on_not_found(@request.path)
+          errMessage = FortGlobal.error_handler.new.on_not_found(request.path)
         rescue ex
           return self.on_error_occured(ex)
         end
-        @response.content_type = MIME_TYPE["html"]
-        @response.status = HTTP::Status::NOT_FOUND
-        @response.print(errMessage)
+        response.content_type = MIME_TYPE["html"]
+        response.status = HTTP::Status::NOT_FOUND
+        response.print(errMessage)
       end
     end
   end

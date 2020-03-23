@@ -65,6 +65,12 @@ module Shivneri
     end
   end
 
+  # def self.add_websocket_route=(routes)
+  #   routes.each do |route|
+  #     Fort.instance.register_controller(route[:controller], route[:path])
+  #   end
+  # end
+
   def self.port=(port : Int32)
     Fort.instance.port = port
   end
@@ -95,7 +101,7 @@ module Shivneri
 
     def initialize
       @server = HTTP::Server.new do |context|
-        RequestHandler.new(context.request, context.response).handle
+        RequestHandler.new(context).handle
       end
     end
 
@@ -182,6 +188,38 @@ module Shivneri
               {% end %}
             {% end %}
 
+          {% end %}
+        {% end %}
+      {% end %}
+    end
+
+    private def add_web_socket_controller
+      {% for klass in WebSocketController.all_subclasses %}
+      {% if klass_inject = klass.annotation(Inject) %}
+          {% klass_inject_args = klass_inject.args %}
+          {% is_klass_has_args = true %}
+        {% else %}
+          {% is_klass_has_args = false %}
+        {% end %}
+        {% for method in klass.methods.select { |m| m.visibility == :public } %}
+         
+          {% method_name = "#{method.name}" %}
+
+          {% if method.annotation(DefaultWorker) %}
+        
+            action = -> (ctx : RequestHandler) { 
+              {% if is_klass_has_args == true %}
+                instance = {{klass}}.new(*{{klass_inject_args}})
+              {% else %}
+                instance = {{klass}}.new
+              {% end %}
+              instance.set_context(ctx);  
+              return instance.{{method.name}}
+               
+            }
+             
+            workerInfo =  WorkerInfo.new({{method_name}},["GET"], action)
+            RouteHandler.addWorker({{klass}}.name, workerInfo)
           {% end %}
         {% end %}
       {% end %}
@@ -308,6 +346,18 @@ module Shivneri
         {% end %}
       {% end %}
 
+      {% for klass in WebSocketController.all_subclasses %}
+        RouteHandler.addController({{klass}})
+        {% if shields = klass.annotation(Shields) %}
+          {% args = shields.args %}
+          {% if !args.empty? %}
+            {{args}}.each do |shield|
+              RouteHandler.add_shield_in_controller({{klass}}.name, shield.name)
+            end
+          {% end %}
+        {% end %}
+    {% end %}
+
       isDefaultRouteExist = false
       @routes.each do |route|
         RouteHandler.addControllerRoute(route[:controller_name], remove_last_slash(route[:path]))
@@ -361,6 +411,7 @@ module Shivneri
       add_guard
       add_workers
       add_walls
+      add_web_socket_controller
 
       save_option(option)
       address = @server.bind_tcp @port

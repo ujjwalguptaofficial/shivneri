@@ -6,7 +6,7 @@ require "./controllers/random_controller"
 require "./controllers/user_controller"
 require "./controllers/file_controller"
 require "./controllers/cookie_controller"
-# require "./controllers/chat_controller"
+require "./controllers/chat_controller"
 require "./walls/all"
 
 include Shivneri
@@ -38,10 +38,10 @@ def init_app(on_success = nil)
     controller: CookieController,
     path:       "/cookie",
   },
-  # {
-  #   controller: ChatController,
-  #   path:       "/chat",
-  # },
+  {
+    controller: ChatController,
+    path:       "/chat",
+  },
   ]
   # routes.each do |route|
   #   app.register_controller(route[:controller], route[:path])

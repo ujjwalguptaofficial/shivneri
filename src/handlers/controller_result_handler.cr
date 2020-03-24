@@ -4,7 +4,9 @@ require "./file_handler"
 module Shivneri
   module Handlers
     class ControllerResultHandler < FileHandler
+      property is_request_processed_by_worker
       @controller_result : HttpResult = HttpResult.new("", "")
+      @is_request_processed_by_worker = false
 
       private def on_termination_from_Wall(result : HttpResult | Nil)
         handle_final_result(result)
@@ -35,7 +37,9 @@ module Shivneri
           self.on_error_occured(ex)
           return
         end
-        self.handle_final_result(result)
+        if (is_request_processed_by_worker == false)
+          self.handle_final_result(result)
+        end
       end
 
       private def handle_format_result

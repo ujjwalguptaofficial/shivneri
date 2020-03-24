@@ -194,34 +194,32 @@ module Shivneri
     end
 
     private def add_web_socket_controller
+      puts "adding web socket"
       {% for klass in WebSocketController.all_subclasses %}
-      {% if klass_inject = klass.annotation(Inject) %}
-          {% klass_inject_args = klass_inject.args %}
-          {% is_klass_has_args = true %}
-        {% else %}
-          {% is_klass_has_args = false %}
-        {% end %}
-        {% for method in klass.methods.select { |m| m.visibility == :public } %}
-         
-          {% method_name = "#{method.name}" %}
-
-          {% if method.annotation(DefaultWorker) %}
-        
-            action = -> (ctx : RequestHandler) { 
-              {% if is_klass_has_args == true %}
-                instance = {{klass}}.new(*{{klass_inject_args}})
-              {% else %}
-                instance = {{klass}}.new
-              {% end %}
-              instance.set_context(ctx);  
-              return instance.{{method.name}}
-               
-            }
-             
-            workerInfo =  WorkerInfo.new({{method_name}},["GET"], action)
-            RouteHandler.addWorker({{klass}}.name, workerInfo)
+          puts "adding worker"
+          {% if klass_inject = klass.annotation(Inject) %}
+              {% klass_inject_args = klass_inject.args %}
+              {% is_klass_has_args = true %}
+          {% else %}
+            {% is_klass_has_args = false %}
           {% end %}
-        {% end %}
+          puts "adding worker 2"   
+          {% method_name = "handle_request" %}
+          puts "adding worker 3"
+            puts {{method_name}}
+          action = -> (ctx : RequestHandler) { 
+            {% if is_klass_has_args == true %}
+              instance = {{klass}}.new(*{{klass_inject_args}})
+            {% else %}
+              instance = {{klass}}.new
+            {% end %}
+            instance.set_context(ctx);  
+            return instance.handle_request
+          }
+            
+          workerInfo =  WorkerInfo.new({{method_name}},["GET"], action)
+          RouteHandler.addWorker({{klass}}.name, workerInfo)
+          RouteHandler.addRoute({{klass}}.name, {{method_name}}, "/")
       {% end %}
     end
 
@@ -347,6 +345,7 @@ module Shivneri
       {% end %}
 
       {% for klass in WebSocketController.all_subclasses %}
+            puts "adding web socket controller"
         RouteHandler.addController({{klass}})
         {% if shields = klass.annotation(Shields) %}
           {% args = shields.args %}

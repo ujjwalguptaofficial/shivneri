@@ -58,6 +58,8 @@ module Shivneri
       url = remove_last_slash(url)
       urlParts = url.split("/")
       route = RouteHandler.findControllerFromPath(urlParts)
+      puts "route #{route.to_json}"
+      # puts
       return route == nil ? checkRouteInWorker(RouteHandler.defaultRoute, httpMethod, urlParts) : checkRouteInWorker(route.as(RouteInfo), httpMethod, urlParts)
     end
   end

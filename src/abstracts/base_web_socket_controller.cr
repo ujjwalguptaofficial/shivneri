@@ -5,6 +5,10 @@ module Shivneri
     class BaseWebSocketController
       @context : RequestHandler | Nil = nil
 
+      def is_request_processed=(value)
+        @context.as(RequestHandler).is_request_processed_by_worker = value
+      end
+
       def set_context(context)
         @context = context
       end

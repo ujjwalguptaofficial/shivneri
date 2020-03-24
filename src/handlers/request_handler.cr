@@ -15,7 +15,7 @@ module Shivneri
     include GENERIC
 
     class RequestHandler < PostHandler
-      getter query, request, route_match_info, response, session_provider, component_data
+      getter query, context, route_match_info, session_provider, component_data
       @query : Query = Query.new({} of String => String)
       @component_data = {} of String => JSON::Any
       @context : HTTP::Server::Context

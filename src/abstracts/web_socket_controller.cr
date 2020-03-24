@@ -1,12 +1,14 @@
 require "./base_web_socket_controller"
 
+# require "../annotations/index"
+
 module Shivneri
   module ABSTRACT
     abstract class WebSocketController < BaseWebSocketController
-      #   @[DefaultWorker]
+      #   @[ANNOTATION::DefaultWorker]
       def handle_request
         if (!(request.headers["Connection"]? == "Upgrade" && request.headers["Upgrade"]? == "websocket"))
-          return text_result("Not a http end point", 400)
+          return HttpResult.new("Not a http end point", "text/plain", 400)
         end
 
         web_socket_handler_instance = HTTP::WebSocketHandler.new do |socket|
@@ -14,7 +16,9 @@ module Shivneri
           puts "Socket opened"
           #   SOCKETS << socket
           socket.on_message do |message|
-            SOCKETS.each { |socket| socket.send "Echo back from server: #{message}" }
+            # puts
+            socket.send "Echo back from server: #{message}"
+            # SOCKETS.each { |socket| socket.send "Echo back from server: #{message}" }
           end
           socket.on_close do
             self.disconnected
@@ -23,7 +27,9 @@ module Shivneri
           end
         end
 
-        web_socket_handler_instance.call(context)
+        web_socket_handler_instance.call(@context.as(RequestHandler).context)
+        is_request_processed = true
+        return HttpResult.new("Connection Established for web socket", "text/plain")
       end
 
       abstract def connected

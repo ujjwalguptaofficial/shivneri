@@ -2,7 +2,7 @@ module Shivneri
   module MODEL
     struct RouteMatch
       property params, allowedHttpMethod, worker_info, shields
-
+      getter controller_name
       # @controllerInfo : RouteInfo
       @worker_info : WorkerInfo | Nil = nil
       @allowedHttpMethod : Array(String)

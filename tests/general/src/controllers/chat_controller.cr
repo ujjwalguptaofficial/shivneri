@@ -4,16 +4,17 @@ module General
       puts "Socket connected"
     end
 
-    @[Worker]
+    @[Event]
     def receive_plain_message
       puts "receive message called"
-      send("receive message calledjjwal")
+      client.emit("receiveMessage", message.as_s)
+      # send("message received is #{message.as_s}")
     end
 
-    def on_message(message : String)
-      puts "message #{message}"
-      send("Hey I am Ujjwal")
-    end
+    # def on_message(message : String)
+    #   # puts "message #{message}"
+    #   # send("Hey I am Ujjwal")
+    # end
 
     def disconnected
       puts "Socket disconnected"

@@ -221,19 +221,20 @@ module Shivneri
           RouteHandler.addWorker({{klass}}.name, workerInfo)
           RouteHandler.addRoute({{klass}}.name, {{method_name}}, "/")
 
-          # action = -> (ctx : RequestHandler) { 
-          #   {% if is_klass_has_args == true %}
-          #     instance = {{klass}}.new(*{{klass_inject_args}})
-          #   {% else %}
-          #     instance = {{klass}}.new
-          #   {% end %}
-          #   instance.set_context(ctx);  
-          #   return instance.get_info
-          # }
+          {% method_name = "get_info" %}
+          action = -> (ctx : RequestHandler) { 
+            {% if is_klass_has_args == true %}
+              instance = {{klass}}.new(*{{klass_inject_args}})
+            {% else %}
+              instance = {{klass}}.new
+            {% end %}
+            instance.set_context(ctx);  
+            return instance.get_info
+          }
             
-          # workerInfo =  WorkerInfo.new({{method_name}},["GET"], action)
-          # RouteHandler.addWorker({{klass}}.name, workerInfo)
-          # RouteHandler.addRoute({{klass}}.name, {{method_name}}, "/info")
+          workerInfo =  WorkerInfo.new({{method_name}},["GET"], action)
+          RouteHandler.addWorker({{klass}}.name, workerInfo)
+          RouteHandler.addRoute({{klass}}.name, {{method_name}}, "/info")
       {% end %}
     end
 

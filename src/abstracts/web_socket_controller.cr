@@ -22,7 +22,7 @@ module Shivneri
     end
 
     abstract class WebSocketController < BaseWebSocketController
-      getter message, client
+      getter message, client, ping_interval, ping_timeout
 
       @message = JSON::Any.new(nil)
       @socket_id : String
@@ -32,10 +32,28 @@ module Shivneri
       @ping_interval = 5000
       @ping_timeout = 5000
 
+      @pong_timer : Concurrent::Future(Nil) = delay(0) { }
+
       def initialize
         @socket_id = UUID.random.to_s
         @client = WebSocketClient.new do |payload|
           send(payload)
+        end
+      end
+
+      def send_ping_to_client
+        delay(@ping_interval) {
+          send({
+            event_name: "ping",
+            data:       "ping",
+            data_type:  "string",
+          })
+        }
+      end
+
+      def wait_for_pong
+        @pong_timer = delay(@ping_timeout) do
+          @@socket_store[@controller_name][@socket_id].close
         end
       end
 
@@ -45,6 +63,12 @@ module Shivneri
           data:       "pong",
           data_type:  "string",
         })
+        #
+      end
+
+      def on_pong_from_client
+        @pong_timer.cancel
+        send_ping_to_client
       end
 
       def add_socket(socket)
@@ -56,7 +80,6 @@ module Shivneri
             @socket_id => socket,
           }
         end
-        self.connected
       end
 
       def add_to(group_id : String)
@@ -74,11 +97,7 @@ module Shivneri
         end
       end
 
-      # def on_message(message : String)
-      # end
-
       private def send(message : MessagePayload)
-        puts "message to be send #{message.to_json}"
         @@socket_store[@controller_name][@socket_id].send(message.to_json)
       end
 
@@ -97,6 +116,14 @@ module Shivneri
           {% end %}
       end
 
+      def send_error(message : String)
+        send({
+          event_name: "error",
+          data:       message,
+          data_type:  "string",
+        })
+      end
+
       def handle_request
         if (!(request.headers["Connection"]? == "Upgrade" && request.headers["Upgrade"]? == "websocket"))
           return HttpResult.new("Not a http end point", "text/plain", 400)
@@ -104,34 +131,34 @@ module Shivneri
 
         web_socket_handler_instance = HTTP::WebSocketHandler.new do |socket|
           add_socket(socket)
+          self.connected
+          send_ping_to_client()
           worker_procs = get_worker_procs
+
           socket.on_message do |message|
             begin
               json_message = JSON.parse(message).as_h
-              puts json_message
-              target_worker_name = json_message["eventName"].as_s
-              if (worker_procs.has_key?(target_worker_name))
+              target_event_name = json_message["eventName"].as_s
+              if (worker_procs.has_key?(target_event_name))
                 @message = json_message["data"]
-                worker_procs[target_worker_name].call(self)
-              elsif (target_worker_name == "ping")
-                on_ping_from_client()
+                worker_procs[target_event_name].call(self)
               else
-                #   socket.send({
-
-                # }.to_json)
+                case target_event_name
+                when "ping"
+                  on_ping_from_client()
+                when "pong"
+                  on_pong_from_client()
+                else
+                  send_error("Invalid event - event #{target_event_name} not found")
+                end
               end
             rescue exception
-              puts exception
+              send_error(exception.message.as(String))
             end
-
-            # puts
-            # socket.send "Echo back from server: #{message}"
-            # SOCKETS.each { |socket| socket.send "Echo back from server: #{message}" }
           end
+
           socket.on_close do
             self.disconnected
-            #     SOCKETS.delete(socket)
-            puts "Socket closed"
           end
         end
 

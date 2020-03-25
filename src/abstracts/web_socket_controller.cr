@@ -52,16 +52,10 @@ module Shivneri
         @@socket_store[@controller_name][@socket_id].send(message)
       end
 
-      def handle_request
-        if (!(request.headers["Connection"]? == "Upgrade" && request.headers["Upgrade"]? == "websocket"))
-          return HttpResult.new("Not a http end point", "text/plain", 400)
-        end
-
-        web_socket_handler_instance = HTTP::WebSocketHandler.new do |socket|
-          add_socket(socket)
-          {% begin %}
+      def get_worker_procs
+        {% begin %}
             {% klass = @type %}
-              worker_procs = NamedTuple.new(
+             return NamedTuple.new(
                 {% for method in @type.methods.select { |m| m.visibility == :public && m.annotation(Worker) } %}
                   {% method_name = "#{method.name}" %}  
                   {{method_name}}: -> (instance : {{klass}}) {
@@ -70,11 +64,30 @@ module Shivneri
                         }
                 {% end %}
               )
-              
           {% end %}
+      end
+
+      def handle_request
+        if (!(request.headers["Connection"]? == "Upgrade" && request.headers["Upgrade"]? == "websocket"))
+          return HttpResult.new("Not a http end point", "text/plain", 400)
+        end
+
+        web_socket_handler_instance = HTTP::WebSocketHandler.new do |socket|
+          add_socket(socket)
+          worker_procs = get_worker_procs
           socket.on_message do |message|
             begin
-              @message = JSON.parse(message)
+              json_message = JSON.parse(message).as_h
+              puts json_message
+              target_worker_name = json_message["workerName"].as_s
+              if (worker_procs.has_key?(target_worker_name))
+                @message = json_message["data"]
+                worker_procs[target_worker_name].call(self)
+              else
+                #   socket.send({
+
+                # }.to_json)
+              end
               on_message(message)
             rescue exception
               puts exception

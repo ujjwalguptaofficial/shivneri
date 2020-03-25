@@ -88,8 +88,8 @@ module Shivneri
           return value.to_f32
         when "Float64"
           return value.to_f64
-        # when "Char"
-        #   return value[0].to_s
+          # when "Char"
+          #   return value[0].to_s
         when "Int8"
           return value.to_i8
         when "UInt8"
@@ -125,7 +125,6 @@ module Shivneri
                               convert_to({{key_as_string}}, body_data[{{key_as_string}}], {{type_as_string}}) : 
                               get_default_value({{type_as_string}})).as({{data_type}}),     
                         {% end %}
-                        # name: "ujjwal"
                     )
                 {% end %}
       }

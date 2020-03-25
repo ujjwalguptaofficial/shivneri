@@ -2,16 +2,18 @@
 <meta charset="utf-8" />
 <title>WebSocket Test</title>
 <script language="javascript" type="text/javascript">
-    var wsUri = "ws://localhost:4000/chat/";
-    var output;
+    var wsUri = "ws://localhost:4000/chsat/";
+    var output, websocket;
+
+    // function init() {
+    //     output = document.getElementById("output");
+    //     testWebSocket();
+    // }
 
     function init() {
         output = document.getElementById("output");
-        testWebSocket();
-    }
-
-    function testWebSocket() {
         websocket = new WebSocket(wsUri);
+        // websocket.
         websocket.onopen = function (evt) {
             onOpen(evt)
         };
@@ -37,7 +39,7 @@
 
     function onMessage(evt) {
         writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data + '</span>');
-        websocket.close();
+        // websocket.close();
     }
 
     function onError(evt) {
@@ -46,7 +48,11 @@
 
     function doSend(message) {
         writeToScreen("SENT: " + message);
-        websocket.send(message);
+        message = {
+            type: typeof message,
+            data: message
+        };
+        websocket.send(JSON.stringify(message));
     }
 
     function writeToScreen(message) {

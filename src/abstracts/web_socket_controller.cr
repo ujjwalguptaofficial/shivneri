@@ -8,9 +8,11 @@ module Shivneri
 
     abstract class WebSocketController < BaseWebSocketController
       #   @[ANNOTATION::DefaultWorker]
+      @message = JSON::Any.new(nil)
       @socket_id : String
       @controller_name : String = ""
       @@socket_store = {} of String => WebSocketMap
+      @@groups_as_string = {} of String => Array(String)
 
       def initialize
         @socket_id = UUID.random.to_s
@@ -28,6 +30,21 @@ module Shivneri
         self.connected
       end
 
+      def add_to(group_id : String)
+        if (@@groups_as_string.has_key?(group_id) == false)
+          @@groups_as_string[group_id] = [@@socket_id]
+        else
+          @@groups_as_string[group_id] = @socket_id
+        end
+      end
+
+      def send_to(group_id : String, message : String)
+        store = @@socket_store[@controller_name]
+        @@groups_as_string[group_id].each do |socket_id|
+          store[socket_id].send(message)
+        end
+      end
+
       def on_message(message : String)
       end
 
@@ -42,8 +59,27 @@ module Shivneri
 
         web_socket_handler_instance = HTTP::WebSocketHandler.new do |socket|
           add_socket(socket)
+          {% begin %}
+            {% klass = @type %}
+              worker_procs = NamedTuple.new(
+                {% for method in @type.methods.select { |m| m.visibility == :public && m.annotation(Worker) } %}
+                  {% method_name = "#{method.name}" %}  
+                  {{method_name}}: -> (instance : {{klass}}) {
+                            instance.{{method.name}}
+                            nil
+                        }
+                {% end %}
+              )
+              
+          {% end %}
           socket.on_message do |message|
-            on_message(message)
+            begin
+              @message = JSON.parse(message)
+              on_message(message)
+            rescue exception
+              puts exception
+            end
+
             # puts
             # socket.send "Echo back from server: #{message}"
             # SOCKETS.each { |socket| socket.send "Echo back from server: #{message}" }
@@ -58,6 +94,10 @@ module Shivneri
         web_socket_handler_instance.call(@context.as(RequestHandler).context)
         is_request_processed = true
         return HttpResult.new("Connection Established for web socket", "text/plain")
+      end
+
+      def get_info
+        return HttpResult.new({{@type}}.name, "text/plain")
       end
 
       abstract def connected

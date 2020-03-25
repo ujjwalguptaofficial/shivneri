@@ -9,6 +9,7 @@ module Shivneri
   module Handlers
     class RouteHandler
       @@route_collection = {} of String => MODEL::RouteInfo
+      # @@socket_route_collection = {} of String => MODEL::SocketControllerInfo
       @@shield_store = {} of String => Proc(RequestHandler, ALIAS::ComponentResult)
       @@guard_store = {} of String => Proc(RequestHandler, ALIAS::ComponentResult)
       @@defaultRouteControllerName : String = ""

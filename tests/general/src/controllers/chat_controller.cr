@@ -4,6 +4,10 @@ module General
       puts "Socket connected"
     end
 
+    # @[Worker]
+    # def receive_plain_message
+    # end
+
     def on_message(message : String)
       puts "message #{message}"
       send("Hey I am Ujjwal")

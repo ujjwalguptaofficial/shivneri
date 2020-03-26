@@ -1,11 +1,11 @@
 name: shivneri
-version: 0.8.1
+version: 0.9.0
 
 authors:
   - Ujjwal Gupta <ujjwalkumargupta44@gmail.com>
 
 description: |
-  Component based MVC framework based on fort architecture.
+  Component based MVC web framework based on fort architecture targeting good code structures, modularity & performance.
 
 dependencies:
   crinja:

@@ -5,21 +5,6 @@ require "./base_web_socket_controller"
 module Shivneri
   module ABSTRACT
     alias WebSocketMap = Hash(String, HTTP::WebSocket)
-    alias MessagePayload = NamedTuple(event_name: String, data: String, data_type: String)
-
-    class WebSocketClient
-      def initialize(&@emit_proc : MessagePayload ->)
-      end
-
-      def emit(event_name : String, data : String)
-        puts "event name #{event_name}"
-        @emit_proc.call({
-          event_name: event_name,
-          data:       data,
-          data_type:  "string",
-        })
-      end
-    end
 
     abstract class WebSocketController < BaseWebSocketController
       getter message, client, ping_interval, ping_timeout
@@ -29,8 +14,8 @@ module Shivneri
       @controller_name : String = ""
       @@socket_store = {} of String => WebSocketMap
       @@groups_as_string = {} of String => Array(String)
-      @ping_interval = 5000
-      @ping_timeout = 5000
+      @ping_interval = 10
+      @ping_timeout = 10
 
       @pong_timer : Concurrent::Future(Nil) = delay(0) { }
 
@@ -42,18 +27,20 @@ module Shivneri
       end
 
       def send_ping_to_client
-        delay(@ping_interval) {
+        delay(@ping_interval) do
           send({
             event_name: "ping",
             data:       "ping",
             data_type:  "string",
           })
-        }
+          wait_for_pong
+        end
       end
 
       def wait_for_pong
         @pong_timer = delay(@ping_timeout) do
           @@socket_store[@controller_name][@socket_id].close
+          nil
         end
       end
 
@@ -63,7 +50,6 @@ module Shivneri
           data:       "pong",
           data_type:  "string",
         })
-        #
       end
 
       def on_pong_from_client
@@ -97,7 +83,7 @@ module Shivneri
         end
       end
 
-      private def send(message : MessagePayload)
+      private def send(message : ALIAS::MessagePayload)
         @@socket_store[@controller_name][@socket_id].send(message.to_json)
       end
 
@@ -110,7 +96,7 @@ module Shivneri
                   {{method_name}}: -> (instance : {{klass}}) {
                             instance.{{method.name}}
                             nil
-                        }
+                        },
                 {% end %}
               )
           {% end %}
@@ -131,8 +117,7 @@ module Shivneri
 
         web_socket_handler_instance = HTTP::WebSocketHandler.new do |socket|
           add_socket(socket)
-          self.connected
-          send_ping_to_client()
+
           worker_procs = get_worker_procs
 
           socket.on_message do |message|
@@ -160,6 +145,8 @@ module Shivneri
           socket.on_close do
             self.disconnected
           end
+          self.connected
+          # send_ping_to_client()
         end
 
         web_socket_handler_instance.call(@context.as(RequestHandler).context)
@@ -168,7 +155,7 @@ module Shivneri
       end
 
       def get_info
-        return HttpResult.new({{@type}}.name, "text/plain")
+        return HttpResult.new("ok", "text/plain")
       end
 
       abstract def connected

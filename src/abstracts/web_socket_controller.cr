@@ -4,48 +4,43 @@ require "./base_web_socket_controller"
 
 module Shivneri
   module ABSTRACT
-    alias WebSocketMap = Hash(String, WebSocketClient)
-
     abstract class WebSocketController < BaseWebSocketController
       getter message, clients, ping_interval, ping_timeout
 
       @message = JSON::Any.new(nil)
-      @socket_id : String
-      @controller_name : String = ""
-      @@socket_store = {} of String => WebSocketMap
-      @@groups_as_string = {} of String => Array(String)
+      # @socket_id : String
+      # @controller_name : String = ""
+
       @ping_interval = 10
       @ping_timeout = 10
 
       @pong_timer : Concurrent::Future(Nil) = delay(0) { }
 
       def initialize
-        @socket_id = UUID.random.to_s
-        @clients = WebSocketClients.new ->{
-          return current_client
-        }
+        # @socket_id = UUID.random.to_s
+        @clients = WebSocketClients.new
       end
 
-      private def current_client
-        return @@socket_store[@controller_name][@socket_id]
-      end
+      # private def clients.current
+      #   return @@socket_store[@controller_name][@socket_id]
+      # end
 
       private def send_ping_to_client
         delay(@ping_interval) do
-          current_client.emit("ping", "ping")
+          clients.current.emit("ping", "ping")
           wait_for_pong
         end
       end
 
       private def wait_for_pong
         @pong_timer = delay(@ping_timeout) do
-          @@socket_store[@controller_name][@socket_id].close
+          clients.current.close
           nil
         end
       end
 
       private def on_ping_from_client
-        current_client.emit("pong", "pong")
+        clients.current.emit("pong", "pong")
       end
 
       private def on_pong_from_client
@@ -54,14 +49,11 @@ module Shivneri
       end
 
       private def add_socket(socket)
-        @controller_name = @context.as(RequestHandler).route_match_info.controller_name
-        if (@@socket_store.has_key?(@controller_name))
-          @@socket_store[@controller_name][@socket_id] = WebSocketClient.new socket
-        else
-          @@socket_store[@controller_name] = {
-            @socket_id => WebSocketClient.new socket,
-          }
-        end
+        # @controller_name = @context.as(RequestHandler).route_match_info.controller_name
+        @clients.add(
+          socket,
+          @context.as(RequestHandler).route_match_info.controller_name
+        )
       end
 
       # def add_to(group_id : String)
@@ -99,12 +91,7 @@ module Shivneri
       end
 
       private def send_error(message : String)
-        current_client.emit("error", message)
-        # send({
-        #   event_name: "error",
-        #   data:       message,
-        #   data_type:  "string",
-        # })
+        clients.current.emit("error", message)
       end
 
       def handle_request
@@ -116,27 +103,26 @@ module Shivneri
           add_socket(socket)
 
           worker_procs = get_worker_procs
-
+          puts "worker_procs #{worker_procs}"
           socket.on_message do |message|
-            begin
-              json_message = JSON.parse(message).as_h
-              target_event_name = json_message["eventName"].as_s
-              if (worker_procs.has_key?(target_event_name))
-                @message = json_message["data"]
-                worker_procs[target_event_name].call(self)
+            puts "message #{message}"
+            json_message = JSON.parse(message).as_h
+            target_event_name = json_message["eventName"].as_s
+            if (worker_procs.has_key?(target_event_name))
+              @message = json_message["data"]
+              worker_procs[target_event_name].call(self)
+            else
+              case target_event_name
+              when "ping"
+                on_ping_from_client()
+              when "pong"
+                on_pong_from_client()
               else
-                case target_event_name
-                when "ping"
-                  on_ping_from_client()
-                when "pong"
-                  on_pong_from_client()
-                else
-                  send_error("Invalid event - event #{target_event_name} not found")
-                end
+                send_error("Invalid event - event #{target_event_name} not found")
               end
-            rescue exception
-              send_error(exception.message.as(String))
             end
+          rescue exception
+            send_error(exception.message.as(String))
           end
 
           socket.on_close do

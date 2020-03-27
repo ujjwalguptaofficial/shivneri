@@ -5,23 +5,23 @@ module General
     end
 
     @[Event]
-    def receive_string_message
+    def receive_string_message(message)
       # puts "receive string called"
       clients.current.emit("receiveMessage", message.as_s)
     end
 
     @[Event]
-    def receive_number_message
+    def receive_number_message(message)
       clients.current.emit("receiveMessage", 12345)
     end
 
     @[Event]
-    def receive_json_message
+    def receive_json_message(message)
       clients.current.emit("receiveJsonMessage", message)
     end
 
     @[Event]
-    def receive_bool_message
+    def receive_bool_message(message)
       clients.current.emit("receiveMessage", message.as_bool)
     end
 

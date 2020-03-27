@@ -2,31 +2,7 @@ module Shivneri
   module MODEL
     alias WebSocketMap = Hash(String, WebSocketClient)
 
-    struct WebSocketGroups
-      @@groups_as_string = {} of String => Array(String)
-
-      def initialize(@current_proc : Proc(String))
-      end
-
-      def create(group_name : String)
-        @@groups_as_string[group_name] = [] of String
-      end
-
-      def add(group_name : String)
-        add(group_name, @current_proc.call)
-      end
-
-      def add(group_name : String, socket_id : String)
-        if (@@groups_as_string.has_key?(group_name))
-          @@groups_as_string[group_name].push(socket_id)
-        else
-          @@groups_as_string[group_name] = [socket_id]
-        end
-      end
-
-      def emit(group_name : String, message)
-      end
-    end
+   
 
     struct WebSocketClients
       @@socket_store = {} of String => WebSocketMap
@@ -36,8 +12,22 @@ module Shivneri
       # def initialize(@current_proc : Proc(WebSocketClient))
       # end
 
-      def filters(socket_ids : Array(String))
-        
+      def select(socket_ids : Array(String), &block : WebSocketClient ->)
+        @@socket_store[@controller_name].each do |socket_id, client|
+          if (socket_ids.include?)
+            block.call client
+          end
+        end
+      end
+
+      def select(&block : String -> Bool)
+        clients = [] of WebSocketClient
+        @@socket_store[@controller_name].each do |socket_id, client|
+          if (block.call(socket_id))
+            clients.push(client)
+          end
+        end
+        return clients
       end
 
       def initialize

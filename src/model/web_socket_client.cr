@@ -1,11 +1,18 @@
 module Shivneri
   module MODEL
     struct WebSocketClient
-      def initialize(&@emit_proc : ALIAS::MessagePayload ->)
+      # def initialize(&@emit_proc : ALIAS::MessagePayload ->)
+      # end
+
+      def initialize(@socket : HTTP::WebSocket)
+      end
+
+      private def send(message : ALIAS::MessagePayload)
+        @socket.send(message.to_json)
       end
 
       def emit(event_name : String, data : String)
-        @emit_proc.call({
+        send({
           event_name: event_name,
           data:       data,
           data_type:  "string",
@@ -13,7 +20,7 @@ module Shivneri
       end
 
       def emit(event_name : String, data)
-        @emit_proc.call({
+        send({
           event_name: event_name,
           data:       data.to_json,
           data_type:  "json",
@@ -21,7 +28,7 @@ module Shivneri
       end
 
       def emit(event_name : String, data : ALIAS::NumberType)
-        @emit_proc.call({
+        send({
           event_name: event_name,
           data:       data.to_s,
           data_type:  "number",
@@ -29,11 +36,15 @@ module Shivneri
       end
 
       def emit(event_name : String, data : Bool)
-        @emit_proc.call({
+        send({
           event_name: event_name,
           data:       data.to_s,
           data_type:  "bool",
         })
+      end
+
+      def close
+        @socket.close
       end
     end
   end

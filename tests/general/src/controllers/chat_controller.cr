@@ -6,22 +6,22 @@ module General
 
     @[Event]
     def receive_string_message
-      client.emit("receiveMessage", message.as_s)
+      clients.current.emit("receiveMessage", message.as_s)
     end
 
     @[Event]
-    def send_number_message
-      client.emit("receiveMessage", 12345)
+    def receive_number_message
+      clients.current.emit("receiveMessage", 12345)
     end
 
     @[Event]
-    def send_json_message
-      client.emit("receiveMessage", message)
+    def receive_json_message
+      clients.current.emit("receiveJsonMessage", message)
     end
 
     @[Event]
     def receive_bool_message
-      client.emit("receiveMessage", message.as_bool)
+      clients.current.emit("receiveMessage", message.as_bool)
     end
 
     def disconnected

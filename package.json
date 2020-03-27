@@ -1,0 +1,23 @@
+{
+  "name": "shivneri",
+  "version": "1.0.0",
+  "description": "[![GitHub version](https://badge.fury.io/gh/ujjwalguptaofficial%2Fshivneri.svg)](https://badge.fury.io/gh/ujjwalguptaofficial%2Fshivneri) ![Crystal CI](https://github.com/ujjwalguptaofficial/shivneri/workflows/Crystal%20CI/badge.svg?branch=master) [![Docs](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://shivneriforcrystal.com/) # Shivneri",
+  "main": "test_runner.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "cd tests/general && CRYSTAL_ENV=TEST crystal spec e2e/* --error-trace",
+    "start": "cd tests/general && crystal src/general.cr"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ujjwalguptaofficial/shivneri.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ujjwalguptaofficial/shivneri/issues"
+  },
+  "homepage": "https://github.com/ujjwalguptaofficial/shivneri#readme"
+}

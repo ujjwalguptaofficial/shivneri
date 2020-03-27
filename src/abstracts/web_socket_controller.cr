@@ -4,10 +4,10 @@ require "./base_web_socket_controller"
 
 module Shivneri
   module ABSTRACT
-    alias WebSocketMap = Hash(String, HTTP::WebSocket)
+    alias WebSocketMap = Hash(String, WebSocketClient)
 
     abstract class WebSocketController < BaseWebSocketController
-      getter message, client, ping_interval, ping_timeout
+      getter message, clients, ping_interval, ping_timeout
 
       @message = JSON::Any.new(nil)
       @socket_id : String
@@ -21,73 +21,82 @@ module Shivneri
 
       def initialize
         @socket_id = UUID.random.to_s
-        @client = WebSocketClient.new do |payload|
-          send(payload)
-        end
+        # @client = WebSocketClient.new do |payload|
+        #   send(payload)
+        # end
+        @clients = WebSocketClients.new ->{
+          return current_client
+        }
       end
 
-      def send_ping_to_client
+      private def current_client
+        return @@socket_store[@controller_name][@socket_id]
+      end
+
+      private def send_ping_to_client
         delay(@ping_interval) do
-          send({
-            event_name: "ping",
-            data:       "ping",
-            data_type:  "string",
-          })
+          current_client.emit("ping", "ping")
+          # send({
+          #   event_name: "ping",
+          #   data:       "ping",
+          #   data_type:  "string",
+          # })
           wait_for_pong
         end
       end
 
-      def wait_for_pong
+      private def wait_for_pong
         @pong_timer = delay(@ping_timeout) do
           @@socket_store[@controller_name][@socket_id].close
           nil
         end
       end
 
-      def on_ping_from_client
-        send({
-          event_name: "pong",
-          data:       "pong",
-          data_type:  "string",
-        })
+      private def on_ping_from_client
+        current_client.emit("pong", "pong")
+        # send({
+        #   event_name: "pong",
+        #   data:       "pong",
+        #   data_type:  "string",
+        # })
       end
 
-      def on_pong_from_client
+      private def on_pong_from_client
         @pong_timer.cancel
         send_ping_to_client
       end
 
-      def add_socket(socket)
+      private def add_socket(socket)
         @controller_name = @context.as(RequestHandler).route_match_info.controller_name
         if (@@socket_store.has_key?(@controller_name))
-          @@socket_store[@controller_name][@socket_id] = socket
+          @@socket_store[@controller_name][@socket_id] = WebSocketClient.new socket
         else
           @@socket_store[@controller_name] = {
-            @socket_id => socket,
+            @socket_id => WebSocketClient.new socket,
           }
         end
       end
 
-      def add_to(group_id : String)
-        if (@@groups_as_string.has_key?(group_id) == false)
-          @@groups_as_string[group_id] = [@@socket_id]
-        else
-          @@groups_as_string[group_id] = @socket_id
-        end
-      end
+      # def add_to(group_id : String)
+      #   if (@@groups_as_string.has_key?(group_id) == false)
+      #     @@groups_as_string[group_id] = [@@socket_id]
+      #   else
+      #     @@groups_as_string[group_id] = @socket_id
+      #   end
+      # end
 
-      def send_to(group_id : String, message : String)
-        store = @@socket_store[@controller_name]
-        @@groups_as_string[group_id].each do |socket_id|
-          store[socket_id].send(message)
-        end
-      end
+      # def send_to(group_id : String, message : String)
+      #   store = @@socket_store[@controller_name]
+      #   @@groups_as_string[group_id].each do |socket_id|
+      #     store[socket_id].send(message)
+      #   end
+      # end
 
-      private def send(message : ALIAS::MessagePayload)
-        @@socket_store[@controller_name][@socket_id].send(message.to_json)
-      end
+      # private def send(message : ALIAS::MessagePayload)
+      #   @@socket_store[@controller_name][@socket_id].send(message.to_json)
+      # end
 
-      def get_worker_procs
+      private def get_worker_procs
         {% begin %}
             {% klass = @type %}
              return NamedTuple.new(
@@ -102,12 +111,13 @@ module Shivneri
           {% end %}
       end
 
-      def send_error(message : String)
-        send({
-          event_name: "error",
-          data:       message,
-          data_type:  "string",
-        })
+      private def send_error(message : String)
+        current_client.emit("error", message)
+        # send({
+        #   event_name: "error",
+        #   data:       message,
+        #   data_type:  "string",
+        # })
       end
 
       def handle_request

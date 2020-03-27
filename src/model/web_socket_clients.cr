@@ -8,6 +8,10 @@ module Shivneri
         return @current_proc.call
       end
 
+      def create_group(group_name : String)
+        
+      end
+
       def emit(event_name : String, data : String)
         current.emit(event_name, data)
       end

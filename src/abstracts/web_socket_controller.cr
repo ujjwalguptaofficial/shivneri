@@ -21,9 +21,6 @@ module Shivneri
 
       def initialize
         @socket_id = UUID.random.to_s
-        # @client = WebSocketClient.new do |payload|
-        #   send(payload)
-        # end
         @clients = WebSocketClients.new ->{
           return current_client
         }
@@ -36,11 +33,6 @@ module Shivneri
       private def send_ping_to_client
         delay(@ping_interval) do
           current_client.emit("ping", "ping")
-          # send({
-          #   event_name: "ping",
-          #   data:       "ping",
-          #   data_type:  "string",
-          # })
           wait_for_pong
         end
       end
@@ -54,11 +46,6 @@ module Shivneri
 
       private def on_ping_from_client
         current_client.emit("pong", "pong")
-        # send({
-        #   event_name: "pong",
-        #   data:       "pong",
-        #   data_type:  "string",
-        # })
       end
 
       private def on_pong_from_client

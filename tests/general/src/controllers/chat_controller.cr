@@ -6,7 +6,7 @@ module General
 
     @[Event]
     def receive_string_message
-      puts "receive string called"
+      # puts "receive string called"
       clients.current.emit("receiveMessage", message.as_s)
     end
 

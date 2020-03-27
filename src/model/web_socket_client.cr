@@ -12,7 +12,6 @@ module Shivneri
       end
 
       def emit(event_name : String, data : String)
-        puts "emit called #{data}"
         send({
           event_name: event_name,
           data:       data,

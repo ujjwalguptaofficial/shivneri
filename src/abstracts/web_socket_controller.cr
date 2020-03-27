@@ -8,13 +8,14 @@ module Shivneri
       getter message, clients, ping_interval, ping_timeout
 
       @message = JSON::Any.new(nil)
+
       # @socket_id : String
       # @controller_name : String = ""
 
-      @ping_interval = 10
-      @ping_timeout = 10
+      # @ping_interval = 10
+      # @ping_timeout = 10
 
-      @pong_timer : Concurrent::Future(Nil) = delay(0) { }
+      # @pong_timer : Concurrent::Future(Nil) = delay(0) { }
 
       def initialize
         # @socket_id = UUID.random.to_s
@@ -25,31 +26,30 @@ module Shivneri
       #   return @@socket_store[@controller_name][@socket_id]
       # end
 
-      private def send_ping_to_client
-        delay(@ping_interval) do
-          clients.current.emit("ping", "ping")
-          wait_for_pong
-        end
-      end
+      # private def send_ping_to_client
+      #   delay(@ping_interval) do
+      #     clients.current.emit("ping", "ping")
+      #     wait_for_pong
+      #   end
+      # end
 
-      private def wait_for_pong
-        @pong_timer = delay(@ping_timeout) do
-          clients.current.close
-          nil
-        end
-      end
+      # private def wait_for_pong
+      #   @pong_timer = delay(@ping_timeout) do
+      #     clients.current.close
+      #     nil
+      #   end
+      # end
+
+      # private def on_pong_from_client
+      #   @pong_timer.cancel
+      #   send_ping_to_client
+      # end
 
       private def on_ping_from_client
         clients.current.emit("pong", "pong")
       end
 
-      private def on_pong_from_client
-        @pong_timer.cancel
-        send_ping_to_client
-      end
-
       private def add_socket(socket)
-        # @controller_name = @context.as(RequestHandler).route_match_info.controller_name
         @clients.add(
           socket,
           @context.as(RequestHandler).route_match_info.controller_name
@@ -103,9 +103,8 @@ module Shivneri
           add_socket(socket)
 
           worker_procs = get_worker_procs
-          puts "worker_procs #{worker_procs}"
+
           socket.on_message do |message|
-            puts "message #{message}"
             json_message = JSON.parse(message).as_h
             target_event_name = json_message["eventName"].as_s
             if (worker_procs.has_key?(target_event_name))
@@ -115,8 +114,8 @@ module Shivneri
               case target_event_name
               when "ping"
                 on_ping_from_client()
-              when "pong"
-                on_pong_from_client()
+              # when "pong"
+              #   on_pong_from_client()
               else
                 send_error("Invalid event - event #{target_event_name} not found")
               end

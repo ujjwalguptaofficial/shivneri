@@ -12,7 +12,7 @@ module Shivneri
         })
       end
 
-      def emit_json(event_name : String, data)
+      def emit(event_name : String, data)
         @emit_proc.call({
           event_name: event_name,
           data:       data.to_json,

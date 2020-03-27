@@ -16,7 +16,12 @@ module General
 
     @[Event]
     def send_json_message
-      client.emit_json("receiveMessage", {name: "ujjwal"})
+      client.emit("receiveMessage", message)
+    end
+
+    @[Event]
+    def receive_bool_message
+      client.emit("receiveMessage", message.as_bool)
     end
 
     def disconnected

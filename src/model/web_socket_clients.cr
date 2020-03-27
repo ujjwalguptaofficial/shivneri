@@ -20,23 +20,21 @@ module Shivneri
       end
 
       def create_group(group_name : String)
+        @@groups_as_string[group_name] = [] of String
       end
 
-      # def emit(event_name : String, data : String)
-      #   current.emit(event_name, data)
+      # def add_to(group_name : String, socket_id : String)
+
       # end
 
-      # def emit(event_name : String, data)
-      #   current.emit(event_name, data)
+      # def emit_to(group_name : String)
       # end
 
-      # def emit(event_name : String, data : ALIAS::NumberType)
-      #   current.emit(event_name, data)
-      # end
-
-      # def emit(event_name : String, data : Bool)
-      #   current.emit(event_name, data)
-      # end
+      def emit(event_name : String, data)
+        @@socket_store[controller_name].each_value do |socket|
+          socket.emit(event_name, data)
+        end
+      end
 
       def add(socket, controller_name)
         @controller_name = controller_name

@@ -52,15 +52,13 @@ module Shivneri
                   {% end %}
                   {% first_arg_type = "#{method.args[0].restriction}" %}   
                   {{method_name}}: -> (instance : {{klass}},message : JSON::Any) {
-                            puts {{method.args[0].restriction}}
-                            {% if first_arg_type == "String" %}
-                              instance.{{method.name}}(message.as_s)
-                            {% else %}
-                              instance.{{method.name}}(message)
-                            {% end %}
-                            nil
-                        },
-                  # args: {{method.args[0]}},
+                      {% if first_arg_type == "String" %}
+                        instance.{{method.name}}(message.as_s)
+                      {% else %}
+                        instance.{{method.name}}(message)
+                      {% end %}
+                      nil
+                  },
                 {% end %}
               )
           {% end %}

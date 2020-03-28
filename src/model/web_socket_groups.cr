@@ -16,16 +16,16 @@ module Shivneri
       end
 
       def delete(group_name : String, socket_id : String)
-        if (@@group_store.has_key?(group_name))
-          @@group_store[group_name].delete(socket_id)
-          if (@@group_store[group_name].size == 0)
-            @@group_store.delete group_name
+        if (exist(group_name))
+          @@group_store[@controller_name][group_name].delete(socket_id)
+          if (@@group_store[@controller_name][group_name].size == 0)
+            @@group_store[@controller_name].delete group_name
           end
         end
       end
 
       def remove_from_all(socket_id : String)
-        @@group_store.each_key do |group_name|
+        @@group_store[@controller_name].each_key do |group_name|
           delete(group_name, socket_id)
         end
       end
@@ -37,10 +37,11 @@ module Shivneri
       def add(group_name : String, socket_id : String)
         unless @@group_store.has_key?(@controller_name)
           @@group_store = {
-            @controller_name => {
-              group_name => WebSocketGroup.new(@controller_name),
-            },
+            @controller_name => {} of String => WebSocketGroup,
           }
+        end
+        unless @@group_store[@controller_name].has_key?(group_name)
+          @@group_store[@controller_name][group_name] = WebSocketGroup.new(@controller_name)
         end
         @@group_store[@controller_name][group_name].add(socket_id)
       end

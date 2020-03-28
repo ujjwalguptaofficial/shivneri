@@ -55,7 +55,7 @@ module Shivneri
         end
       end
 
-      def remove
+      def delete
         @@socket_store[@controller_name].delete @socket_id
         @groups.remove_from_all @socket_id
       end

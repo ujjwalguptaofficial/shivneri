@@ -80,14 +80,11 @@ module Shivneri
               end
             end
           rescue exception
-            send_error({
-              message:    exception.message.as(String),
-              stacktrace: exception.callstack.as(CallStack).printable_backtrace,
-            }.to_json)
+            send_error (on_error(exception))
           end
 
           socket.on_close do
-            clients.remove
+            clients.delete
             self.disconnected
           end
           self.connected
@@ -103,8 +100,20 @@ module Shivneri
         return HttpResult.new("ok", "text/plain")
       end
 
-      abstract def connected
-      abstract def disconnected
+      def connected
+        puts "Socket connected"
+      end
+
+      def disconnected
+        puts "Socket disconnected"
+      end
+
+      def on_error(exception)
+        return {
+          message:    exception.message.as(String),
+          stacktrace: exception.callstack.as(CallStack).printable_backtrace,
+        }.to_json
+      end
     end
   end
 end

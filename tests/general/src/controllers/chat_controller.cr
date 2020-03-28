@@ -5,6 +5,14 @@ module General
     end
 
     @[Event]
+    def join_room(room_name : String)
+      # puts "receive string called"
+      clients.groups.add(room_name)
+      clients.current.emit("receiveMessage", "Welcome to group #{room_name}")
+      clients.groups.emit(room_name, "groupMessage", "New member has joined")
+    end
+
+    @[Event]
     def receive_string_message(message : String)
       # puts "receive string called"
       clients.current.emit("receiveMessage", message)

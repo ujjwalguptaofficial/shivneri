@@ -26,21 +26,6 @@ module Shivneri
         )
       end
 
-      # def add_to(group_id : String)
-      #   if (@@groups_as_string.has_key?(group_id) == false)
-      #     @@groups_as_string[group_id] = [@@socket_id]
-      #   else
-      #     @@groups_as_string[group_id] = @socket_id
-      #   end
-      # end
-
-      # def send_to(group_id : String, message : String)
-      #   store = @@socket_store[@controller_name]
-      #   @@groups_as_string[group_id].each do |socket_id|
-      #     store[socket_id].send(message)
-      #   end
-      # end
-
       private def get_worker_procs
         {% begin %}
             {% klass = @type %}
@@ -95,10 +80,12 @@ module Shivneri
               end
             end
           rescue exception
+            puts exception
             send_error(exception.message.as(String))
           end
 
           socket.on_close do
+            clients.remove
             self.disconnected
           end
           self.connected

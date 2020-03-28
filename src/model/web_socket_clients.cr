@@ -13,17 +13,22 @@ module Shivneri
       # def initialize(@current_proc : Proc(WebSocketClient))
       # end
 
-      def initialize
-        @socket_id = UUID.random.to_s
+      def initialize(@socket_id : String, @controller_name : String)
         @groups = WebSocketGroups.new ->{ @socket_id }
       end
 
-      def initialize(@controller_name)
-        initialize
-      end
+      # def initialize(@controller_name)
+      #   initialize("")
+      # end
 
       def current
         return @@socket_store[@controller_name][@socket_id]
+      end
+
+      def controller_name=(value)
+        @controller_name = value
+        # set controller name in group
+        @groups.controller_name = value
       end
 
       def emit(event_name : String, data)
@@ -40,18 +45,14 @@ module Shivneri
       #   @@socket_store[@controller_name][socket_id].emit(event_name, data)
       # end
 
-      def add(socket, controller_name)
-        @controller_name = controller_name
-        if (@@socket_store.has_key?(controller_name))
-          @@socket_store[controller_name][@socket_id] = WebSocketClient.new socket
+      def add(socket)
+        if (@@socket_store.has_key?(@controller_name))
+          @@socket_store[@controller_name][@socket_id] = WebSocketClient.new socket
         else
-          @@socket_store[controller_name] = {
+          @@socket_store[@controller_name] = {
             @socket_id => WebSocketClient.new socket,
           }
         end
-
-        # set controller name in group
-        @groups.controller_name = controller_name
       end
 
       def remove

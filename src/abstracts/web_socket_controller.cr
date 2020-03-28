@@ -5,14 +5,13 @@ require "./base_web_socket_controller"
 module Shivneri
   module ABSTRACT
     abstract class WebSocketController < BaseWebSocketController
-      getter clients, ping_interval, ping_timeout
+      getter clients, ping_interval, ping_timeout, socket_id
 
-      # getter message
-
-      # @message = JSON::Any.new(nil)
+      @socket_id : String
 
       def initialize
-        @clients = WebSocketClients.new
+        @socket_id = UUID.random.to_s
+        @clients = WebSocketClients.new @socket_id, ""
       end
 
       private def on_ping_from_client
@@ -20,9 +19,9 @@ module Shivneri
       end
 
       private def add_socket(socket)
+        @clients.controller_name = @context.as(RequestHandler).route_match_info.controller_name
         @clients.add(
-          socket,
-          @context.as(RequestHandler).route_match_info.controller_name
+          socket
         )
       end
 

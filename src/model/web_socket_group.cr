@@ -25,8 +25,12 @@ module Shivneri
         return @socket_ids.size
       end
 
+      def exist(socket_id : String)
+        @socket_ids.includes? socket_id
+      end
+
       def emit(event_name : String, message)
-        clients = WebSocketClients.new(@controller_name)
+        clients = WebSocketClients.new("", @controller_name)
         @socket_ids.each do |socket_id|
           clients.emit_to(socket_id, event_name, message)
         end

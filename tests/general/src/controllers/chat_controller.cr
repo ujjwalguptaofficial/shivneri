@@ -6,6 +6,9 @@ module General
 
     @[Event]
     def join_room(room_name : String)
+      if clients.groups.exist(room_name, socket_id)
+        return
+      end
       # puts "receive string called"
       clients.groups.add(room_name)
       clients.current.emit("receiveMessage", "Welcome to group #{room_name}")

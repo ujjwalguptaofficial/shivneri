@@ -5,6 +5,7 @@ module Shivneri
     class WebSocketClients
       getter groups
 
+      # key is controller name
       @@socket_store = {} of String => WebSocketMap
       @socket_id : String
       @controller_name : String = ""

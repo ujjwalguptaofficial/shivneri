@@ -9,7 +9,7 @@ module General
       # puts "receive string called"
       clients.groups.add(room_name)
       clients.current.emit("receiveMessage", "Welcome to group #{room_name}")
-      clients.groups.emit(room_name, "groupMessage", "New member has joined")
+      clients.groups[room_name].emit("groupMessage", "New member has joined")
     end
 
     @[Event]

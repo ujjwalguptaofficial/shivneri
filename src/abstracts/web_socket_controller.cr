@@ -59,10 +59,9 @@ module Shivneri
           return HttpResult.new("Not a http end point", "text/plain", 400)
         end
 
+        worker_procs = get_worker_procs
         web_socket_handler_instance = HTTP::WebSocketHandler.new do |socket|
           add_socket(socket)
-
-          worker_procs = get_worker_procs
 
           socket.on_message do |message|
             json_message = JSON.parse(message).as_h

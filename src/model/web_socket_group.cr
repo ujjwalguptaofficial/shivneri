@@ -1,12 +1,16 @@
 module Shivneri
   module MODEL
     struct WebSocketGroup
-      setter controller_name
-      @socket_ids = [] of String
+      getter socket_ids
+      #   setter controller_name
+      @socket_ids : Array(String)
       @controller_name : String = ""
 
       def initialize(@controller_name : String)
-        
+        @socket_ids = [] of String
+      end
+
+      def initialize(@controller_name : String, @socket_ids)
       end
 
       def add(socket_id : String)

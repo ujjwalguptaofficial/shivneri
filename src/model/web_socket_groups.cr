@@ -9,16 +9,11 @@ module Shivneri
       def initialize(@current_proc : Proc(String))
       end
 
-      # def controller_name=(value)
-      #   # @controller_name = value
-      #   @@groups_as_string[group_name].controller_name = value
-      # end
-
-      def remove(group_name : String)
-        remove(group_name, @current_proc.call)
+      def delete(group_name : String)
+        delete(group_name, @current_proc.call)
       end
 
-      def remove(group_name : String, socket_id : String)
+      def delete(group_name : String, socket_id : String)
         if (@@groups_as_string.has_key?(group_name))
           @@groups_as_string[group_name].delete(socket_id)
           if (@@groups_as_string[group_name].size == 0)
@@ -29,7 +24,7 @@ module Shivneri
 
       def remove_from_all(socket_id : String)
         @@groups_as_string.each_key do |group_name|
-          remove(group_name, socket_id)
+          delete(group_name, socket_id)
         end
       end
 
@@ -38,11 +33,6 @@ module Shivneri
       end
 
       def add(group_name : String, socket_id : String)
-        # if (@@groups_as_string.has_key?(group_name))
-        #   @@groups_as_string[group_name].add(socket_id)
-        # else
-        #   @@groups_as_string[group_name] = WebSocketGroup.new(socket_id)
-        # end
         unless @@groups_as_string.has_key?(group_name)
           @@groups_as_string[group_name] = WebSocketGroup.new(@controller_name)
         end
@@ -60,15 +50,17 @@ module Shivneri
         return nil
       end
 
-      # def emit(group_name : String, event_name : String, message)
-      #   if (@@groups_as_string.has_key? group_name)
-      #     puts "group name #{group_name}, controller '#{@controller_name}'"
-      #     clients = WebSocketClients.new(@controller_name)
-      #     @@groups_as_string[group_name].each do |socket_id|
-      #       clients.emit_to(socket_id, event_name, message)
-      #     end
-      #   end
-      # end
+      def except(group_name : String, socket_ids : Array(String))
+        group = WebSocketGroup.new(@controller_name, @@groups_as_string[group_name].socket_ids.clone)
+        socket_ids.each do |socket_id|
+          group.delete socket_id
+        end
+        return group
+      end
+
+      def except_me(group_name : String)
+        except(group_name, [@current_proc.call])
+      end
     end
   end
 end

@@ -39,6 +39,8 @@ module Shivneri
                   {{method_name}}: -> (instance : {{klass}},message : JSON::Any) {
                       {% if first_arg_type == "String" %}
                         instance.{{method.name}}(message.as_s)
+                      {% elsif first_arg_type.includes?("NamedTuple") %}
+                        instance.{{method.name}}({{method.args[0].restriction}}.get_tuple_from_hash_json_any.call(message.as_h))
                       {% else %}
                         instance.{{method.name}}(message)
                       {% end %}
@@ -80,8 +82,10 @@ module Shivneri
               end
             end
           rescue exception
-            puts exception
-            send_error(exception.message.as(String))
+            send_error({
+              message:    exception.message.as(String),
+              stacktrace: exception.callstack.as(CallStack).printable_backtrace,
+            }.to_json)
           end
 
           socket.on_close do

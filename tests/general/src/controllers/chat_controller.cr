@@ -16,6 +16,11 @@ module General
     end
 
     @[Event]
+    def receive_message_from_group(message : NamedTuple(group_name: String, data: String))
+      clients.groups[message[:group_name]].emit("groupMessage", message[:data])
+    end
+
+    @[Event]
     def receive_string_message(message : String)
       # puts "receive string called"
       clients.current.emit("receiveMessage", message)

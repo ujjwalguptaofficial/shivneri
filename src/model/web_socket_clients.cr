@@ -22,35 +22,6 @@ module Shivneri
         initialize
       end
 
-      # def select(socket_ids : Array(String), &block : WebSocketClient ->)
-      #   puts "controller_name #{@controller_name}"
-      #   puts "size #{@@socket_store[@controller_name].size} socket_ids #{socket_ids}"
-      #   @@socket_store[@controller_name].each do |socket_id, client|
-      #     # if (socket_ids.includes?(socket_id))
-      #     #   # block.call client
-      #     # end
-      #   end
-      # end
-
-      # def select( socket_ids : Array(String))
-
-      #   @@socket_store[@controller_name].each do |socket_id, client|
-      #     # if (socket_ids.includes?(socket_id))
-      #     #   # block.call client
-      #     # end
-      #   end
-      # end
-
-      # def select(&block : String -> Bool)
-      #   clients = [] of WebSocketClient
-      #   @@socket_store[@controller_name].each do |socket_id, client|
-      #     if (block.call(socket_id))
-      #       clients.push(client)
-      #     end
-      #   end
-      #   return clients
-      # end
-
       def current
         return @@socket_store[@controller_name][@socket_id]
       end
@@ -62,7 +33,6 @@ module Shivneri
       end
 
       def emit_to(socket_id : String, event_name : String, data)
-        puts "socket_id #{socket_id}, event_name #{event_name}, data #{data}"
         @@socket_store[@controller_name][socket_id].emit(event_name, data)
       end
 

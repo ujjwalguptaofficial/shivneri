@@ -5,13 +5,11 @@ require "../generics/index"
 require "http/server"
 require "../helpers/index"
 require "../handlers/index"
-require "../structs/index"
 
 module Shivneri
   include ANNOTATION
   include Handlers
   include GENERIC
-  include STRUCT
 
   if (ENV.has_key?("CRYSTAL_ENV") == false)
     ENV["CRYSTAL_ENV"] = "development"
@@ -35,20 +33,12 @@ module Shivneri
     Fort.instance.create(AppOption.new, block)
   end
 
-  def self.open(option : AppOption = AppOption.new)
-    Fort.instance.create(option)
+  def self.open(on_success : Proc(Nil) = ->{})
+    Fort.instance.create(on_success)
   end
 
-  def self.open(option : AppOption = AppOption.new, &block)
-    Fort.instance.create(option, block)
-  end
-
-  def self.open(option : AppOption = AppOption.new, on_success : Proc(Nil) = ->{})
-    Fort.instance.create(option, on_success)
-  end
-
-  def self.open(option : AppOption = AppOption.new, on_success : Nil = nil)
-    Fort.instance.create(option)
+  def self.open(on_success : Nil)
+    Fort.instance.create
   end
 
   # def self.open(option : AppOption = AppOption.new)
@@ -73,6 +63,10 @@ module Shivneri
 
   def self.port=(port : Int32)
     Fort.instance.port = port
+  end
+
+  def self.folders=(folders : Array(ALIAS::FolderMap))
+    FortGlobal.folders = folders
   end
 
   def self.should_parse_post=(value : Bool)
@@ -408,15 +402,7 @@ module Shivneri
       {% end %}
     end
 
-    private def save_option(option : AppOption)
-      FortGlobal.folders = option.folders
-    end
-
-    # def create(option : AppOption = AppOption.new, on_success = nil)
-    #   create(option)
-    # end
-
-    def create(option : AppOption = AppOption.new, on_success : Proc(Nil) = ->{})
+    def create(on_success : Proc(Nil) = ->{})
       add_shield
       add_controller_route_and_map_shields
       add_guard
@@ -424,7 +410,6 @@ module Shivneri
       add_walls
       add_web_socket_controller
 
-      save_option(option)
       address = @server.bind_tcp @port
       env = ENV["CRYSTAL_ENV"]
       if (env.downcase == "test")

@@ -30,7 +30,7 @@ module Shivneri
   end
 
   def self.open(&block)
-    Fort.instance.create(AppOption.new, block)
+    Fort.instance.create(block)
   end
 
   def self.open(on_success : Proc(Nil) = ->{})
@@ -40,10 +40,6 @@ module Shivneri
   def self.open(on_success : Nil)
     Fort.instance.create
   end
-
-  # def self.open(option : AppOption = AppOption.new)
-  #   Fort.instance.create(option, ->{})
-  # end
 
   def self.close
     Fort.instance.destroy

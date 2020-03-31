@@ -10,16 +10,22 @@ module Shivneri
       @socket_id : String
       @controller_name : String = ""
 
-      # def initialize(@current_proc : Proc(WebSocketClient))
-      # end
-
-      def initialize(@socket_id : String, @controller_name : String)
-        @groups = WebSocketGroups.new ->{ @socket_id }
+      def initialize(@controller_name : String, excepts : Array(String))
+        @socket_id = ""
+        @groups = WebSocketGroups.new @controller_name, excepts
       end
 
-      # def initialize(@controller_name)
-      #   initialize("")
-      # end
+      def initialize(@socket_id : String, @controller_name : String)
+        @groups = WebSocketGroups.new @socket_id
+      end
+
+      def except_me
+        return except([@socket_id])
+      end
+
+      def except(args : Array(String))
+        WebSocketClients.new(@controller_name, args)
+      end
 
       def current
         return @@socket_store[@controller_name][@socket_id]
@@ -32,8 +38,16 @@ module Shivneri
       end
 
       def emit(event_name : String, data)
-        @@socket_store[@controller_name].each_value do |socket|
-          socket.emit(event_name, data)
+        if (@except.size > 0)
+          @@socket_store[@controller_name].each do |id, socket|
+            unless (@except.includes? id)
+              socket.emit(event_name, data)
+            end
+          end
+        else
+          @@socket_store[@controller_name].each_value do |socket|
+            socket.emit(event_name, data)
+          end
         end
       end
 

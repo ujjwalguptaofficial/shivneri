@@ -108,11 +108,9 @@ module Shivneri
       end
 
       def connected
-        puts "Socket connected"
       end
 
       def disconnected
-        puts "Socket disconnected"
       end
 
       def on_error(exception)

@@ -6,13 +6,21 @@ module Shivneri
       setter controller_name
       # key is group name
       @@group_store = {} of String => WebSocketGroupMap
-      @controller_name : String = ""
+      @controller_name : String
+      @active_socket_id : String
+      @black_list_ids : Array(String)
 
-      def initialize(@current_proc : Proc(String))
+      def initialize(@active_socket_id : String)
+        @black_list_ids = [] of String
+        @controller_name = ""
+      end
+
+      def initialize(@controller_name : String, @black_list_ids : Array(String))
+        @active_socket_id = ""
       end
 
       def delete(group_name : String)
-        delete(group_name, @current_proc.call)
+        delete(group_name, @active_socket_id)
       end
 
       def delete(group_name : String, socket_id : String)
@@ -22,6 +30,7 @@ module Shivneri
             @@group_store[@controller_name].delete group_name
           end
         end
+        nil
       end
 
       def remove_from_all(socket_id : String)
@@ -31,7 +40,7 @@ module Shivneri
       end
 
       def add(group_name : String)
-        add(group_name, @current_proc.call)
+        add(group_name, @active_socket_id)
       end
 
       def add(group_name : String, socket_id : String)
@@ -55,7 +64,7 @@ module Shivneri
       end
 
       def [](group_name : String)
-        return @@group_store[@controller_name][group_name]
+        return @black_list_ids.size > 0 ? get_group_with_except(group_name) : @@group_store[@controller_name][group_name]
       end
 
       def []?(group_name : String)
@@ -65,16 +74,12 @@ module Shivneri
         return nil
       end
 
-      def except(group_name : String, socket_ids : Array(String))
+      def get_group_with_except(group_name)
         group = WebSocketGroup.new(@controller_name, @@group_store[@controller_name][group_name].socket_ids.clone)
-        socket_ids.each do |socket_id|
+        @black_list_ids.each do |socket_id|
           group.delete socket_id
         end
         return group
-      end
-
-      def except_me(group_name : String)
-        except(group_name, [@current_proc.call])
       end
     end
   end

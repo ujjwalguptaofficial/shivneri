@@ -9,14 +9,16 @@ module Shivneri
       @@socket_store = {} of String => WebSocketMap
       @socket_id : String
       @controller_name : String = ""
+      @excepts : Array(String)
 
-      def initialize(@controller_name : String, excepts : Array(String))
+      def initialize(@controller_name : String, @excepts : Array(String))
         @socket_id = ""
-        @groups = WebSocketGroups.new @controller_name, excepts
+        @groups = WebSocketGroups.new @controller_name, @excepts
       end
 
       def initialize(@socket_id : String, @controller_name : String)
         @groups = WebSocketGroups.new @socket_id
+        @excepts = [] of String
       end
 
       def except_me
@@ -38,9 +40,9 @@ module Shivneri
       end
 
       def emit(event_name : String, data)
-        if (@except.size > 0)
+        if (@excepts.size > 0)
           @@socket_store[@controller_name].each do |id, socket|
-            unless (@except.includes? id)
+            unless (@excepts.includes? id)
               socket.emit(event_name, data)
             end
           end

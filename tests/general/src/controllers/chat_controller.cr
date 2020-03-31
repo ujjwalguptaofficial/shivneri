@@ -29,6 +29,16 @@ module General
     end
 
     @[On]
+    def broadcast(message : String)
+      clients.emit("receiveMessage", "broadcasted message is #{message}")
+    end
+
+    @[On]
+    def broadcast_except_me(message : String)
+      clients.except_me.emit("receiveMessage", "broadcasted message is #{message}")
+    end
+
+    @[On]
     def receive_message_from_group(message : NamedTuple(group_name: String, data: String))
       clients.groups[message[:group_name]].emit("groupMessage", message[:data])
     end

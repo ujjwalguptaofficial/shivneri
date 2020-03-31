@@ -1,6 +1,6 @@
 module Shivneri
   module ANNOTATION
-    annotation Event
+    annotation On
     end
   end
 end

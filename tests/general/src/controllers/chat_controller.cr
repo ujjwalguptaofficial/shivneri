@@ -7,7 +7,7 @@ module General
       puts "Socket connected"
     end
 
-    @[Event]
+    @[On("join-room")]
     def join_room(room_name : String)
       if clients.groups.exist(room_name, socket_id)
         return
@@ -22,28 +22,28 @@ module General
       @groups.push room_name
     end
 
-    @[Event]
+    @[On]
     def receive_message_from_group(message : NamedTuple(group_name: String, data: String))
       clients.groups[message[:group_name]].emit("groupMessage", message[:data])
     end
 
-    @[Event]
+    @[On]
     def receive_string_message(message : String)
       # puts "receive string called"
       clients.current.emit("receiveMessage", message)
     end
 
-    @[Event]
+    @[On]
     def receive_number_message(message)
       clients.current.emit("receiveMessage", message)
     end
 
-    @[Event]
+    @[On]
     def receive_json_message(message)
       clients.current.emit("receiveMessage", message)
     end
 
-    @[Event]
+    @[On]
     def receive_bool_message(message)
       clients.current.emit("receiveMessage", message.as_bool)
     end

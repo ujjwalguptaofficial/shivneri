@@ -29,13 +29,14 @@ module Shivneri
         {% begin %}
             {% klass = @type %}
              return NamedTuple.new(
-                {% for method in klass.methods.select { |m| m.visibility == :public && m.annotation(Event) } %}
+                {% for method in klass.methods.select { |m| m.visibility == :public && m.annotation(On) } %}
                   {% method_name = "#{method.name}" %}  
                   {% if method.args.size == 0 %}
-                      raise "Invalid Event - event '{{method.name}}'  must have an argument."
+                      raise "Invalid event subscriber - event subscriber '{{method.name}}'  must have an argument."
                   {% end %}
-                  {% first_arg_type = "#{method.args[0].restriction}" %}   
-                  {{method_name}}: -> (instance : {{klass}},message : JSON::Any) {
+                  {% first_arg_type = "#{method.args[0].restriction}" %}
+                  {% on_annotation = method.annotation(On) %}
+                  {{ on_annotation && on_annotation.args.size > 0 ? on_annotation.args[0] : method_name }}: -> (instance : {{klass}},message : JSON::Any) {
                       {% if first_arg_type == "String" %}
                         instance.{{method.name}}(message.as_s)
                       {% elsif first_arg_type.includes?("NamedTuple") %}

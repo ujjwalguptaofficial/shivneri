@@ -10,7 +10,7 @@
     "test:websocket": "cd ../shivneri-ws-client-javascript && npm run test:dev",
     "test:general": "cd tests/general && CRYSTAL_ENV=TEST crystal spec e2e/* --error-trace",
     "test": "npm run test:general && npm run test:websocket",
-    "start": "cd tests/general && crystal src/general.cr"
+    "start": "cd tests/general && crystal src/general.cr --error-trace"
   },
   "repository": {
     "type": "git",

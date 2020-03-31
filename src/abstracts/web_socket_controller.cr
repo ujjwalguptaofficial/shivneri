@@ -41,6 +41,12 @@ module Shivneri
                         instance.{{method.name}}(message.as_s)
                       {% elsif first_arg_type.includes?("NamedTuple") %}
                         instance.{{method.name}}({{method.args[0].restriction}}.get_tuple_from_hash_json_any.call(message.as_h))
+                      {% elsif first_arg_type == "Int" || first_arg_type == "Int32" %}
+                        instance.{{method.name}}(message.as_i)
+                      {% elsif first_arg_type == "Int64" %}
+                        instance.{{method.name}}(message.as_i64)
+                      {% elsif first_arg_type == "Bool" %}
+                        instance.{{method.name}}(message.as_bool)
                       {% else %}
                         instance.{{method.name}}(message)
                       {% end %}

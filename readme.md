@@ -14,4 +14,11 @@ Component based MVC web framework based on fort architecture for [crystal](https
 
 # Examples
 
-All examples are available at - [https://github.com/ujjwalguptaofficial/shivneri-examples](https://github.com/ujjwalguptaofficial/shivneri-examples)
+* Rest Api - https://github.com/ujjwalguptaofficial/shivneri-examples/tree/master/rest
+* WebSocket - https://github.com/ujjwalguptaofficial/shivneri-examples/tree/master/chat
+* Authentication - https://github.com/ujjwalguptaofficial/shivneri-examples/tree/master/authentication
+* Request Logging - https://github.com/ujjwalguptaofficial/shivneri-examples/tree/master/request-logger
+
+# Doc Site
+https://github.com/ujjwalguptaofficial/shivneri-examples/tree/master/request-logger
+

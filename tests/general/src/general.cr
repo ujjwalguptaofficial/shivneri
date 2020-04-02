@@ -50,11 +50,14 @@ def init_app(on_success = nil)
   Shivneri.walls = [WallWithoutOutgoing, RequestLogger]
   path_of_static_folder = File.join(Dir.current, "static")
   Shivneri.folders = [{
-    path_alias: "static",
-    path:       path_of_static_folder,
+    path:   "static",
+    folder: path_of_static_folder,
   }, {
-    path_alias: "/",
-    path:       path_of_static_folder,
+    path:   "/",
+    folder: path_of_static_folder,
+  }, {
+    path:   "/contents",
+    folder: File.join(Dir.current, "contents"),
   }]
   ENV["APP_URL"] = "http://localhost:#{Shivneri.port}"
   Shivneri.open(on_success)

@@ -19,9 +19,9 @@ module Shivneri
 
       private def check_for_folder_allow_and_return_path(url_path : String)
         get_abs_path = ->(file_info : ALIAS::FileInfo) {
-          folder = FortGlobal.folders.find { |qry| qry[:path_alias] == file_info[:folder] }
+          folder = FortGlobal.folders.find { |qry| qry[:path] == file_info[:folder] }
           if (folder != nil)
-            return File.join(folder.as(ALIAS::FolderMap)[:path], file_info[:file])
+            return File.join(folder.as(ALIAS::FolderMap)[:folder], file_info[:file])
           end
           return nil
         }

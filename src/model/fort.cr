@@ -61,8 +61,22 @@ module Shivneri
     Fort.instance.port = port
   end
 
+  def self.register_folder(path : String, folder_location : String)
+    if (path != "/")
+      path = remove_first_slash(path)
+    end
+    FortGlobal.folders.push({path: path, folder: folder_location})
+  end
+
+  def self.register_folder(folder_map_info : ALIAS::FolderMap)
+    self.register_folder(folder_map_info[:path], folder_map_info[:folder])
+  end
+
   def self.folders=(folders : Array(ALIAS::FolderMap))
-    FortGlobal.folders = folders
+    # FortGlobal.folders = folders
+    folders.each do |value|
+      self.register_folder(value)
+    end
   end
 
   def self.should_parse_post=(value : Bool)

@@ -55,10 +55,8 @@ def init_app(on_success = nil)
   }, {
     path:   "/",
     folder: path_of_static_folder,
-  }, {
-    path:   "/contents",
-    folder: File.join(Dir.current, "contents"),
   }]
+  Shivneri.register_folder("/contents", File.join(Dir.current, "contents"))
   ENV["APP_URL"] = "http://localhost:#{Shivneri.port}"
   Shivneri.open(on_success)
   return Shivneri

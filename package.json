@@ -8,11 +8,13 @@
   },
   "scripts": {
     "test:websocket": "cd ../shivneri-ws-client-javascript && npm run test:dev",
-    "test:general": "cd tests/general && CRYSTAL_ENV=TEST crystal spec e2e/* --error-trace",
+    "test:general": "npm run test:general:dev && npm run test:general:prod",
+    "test:general:dev": "cd tests/general && CRYSTAL_ENV=TEST crystal spec e2e/* --error-trace",
+    "test:general:prod": "cd tests/general && CRYSTAL_ENV=production CLOSE_PROCESS=true crystal spec e2e/* --error-trace",
     "test": "npm run test:general && npm run test:websocket",
     "start": "cd tests/general && crystal src/general.cr --error-trace",
     "start:dev": "cd tests/general && crystal src/general.cr --error-trace",
-    "start:prod": "cd tests/general && CRYSTAL_ENV=PRODUCTION crystal src/general.cr --error-trace"
+    "start:prod": "cd tests/general && CRYSTAL_ENV=Production crystal src/general.cr --error-trace"
   },
   "repository": {
     "type": "git",

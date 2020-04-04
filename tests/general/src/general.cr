@@ -62,7 +62,8 @@ def init_app(on_success = nil)
   return Shivneri
 end
 
-if (ENV["CRYSTAL_ENV"]? != "TEST")
+if (ENV["CRYSTAL_ENV"]? != "TEST" && ENV["CLOSE_PROCESS"]? != "true")
+  puts "process will be closed"
   init_app(->{
     puts "Your fort is located at address - #{ENV["APP_URL"]}"
     puts "ENV is - #{ENV["CRYSTAL_ENV"]}"

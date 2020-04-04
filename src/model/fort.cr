@@ -421,15 +421,15 @@ module Shivneri
       add_web_socket_controller
 
       address = @server.bind_tcp @port
-      env = ENV["CRYSTAL_ENV"]
-      if (env.downcase == "test")
+
+      {% if ((env("CRYSTAL_ENV") != nil && env("CRYSTAL_ENV").downcase == "test") || (env("CLOSE_PROCESS") != nil && env("CLOSE_PROCESS").downcase == "true")) %}
         spawn do
           @server.listen
         end
-      else
+      {% else %}
         on_success.call
         @server.listen
-      end
+      {% end %}
     end
 
     def destroy

@@ -91,14 +91,34 @@ module Shivneri
         return file_type
       end
 
-      macro is_env_production
-        return true
+      private def get_etag(modification_time)
+        %{W/"#{modification_time.to_unix}"}
       end
 
-      {% if true %}
+      private def is_client_has_fresh_file(etag : String, last_modified_time)
+        if (request_headers["If-None-Match"]? == etag)
+          return true
+        elsif (if_modified_since = request_headers["If-Modified-Since"]?)
+          if last_time_of_resource_from_client = HTTP.parse_time(if_modified_since)
+            return last_modified_time <= last_time_of_resource_from_client + 5.second
+          end
+        end
+        return false
+      end
+
+      {% if env("CRYSTAL_ENV") != nil && env("CRYSTAL_ENV").downcase == "production" %}
         private def send_file(file_path : String, file_type : String, file_info : File::Info)
           begin
             self.run_wall_out_going
+            modification_time = file_info.modification_time
+            etag = self.get_etag(modification_time)
+            if (is_client_has_fresh_file(etag, modification_time))
+              self.response.status_code = 304
+              self.response.close
+              return
+            end
+            self.response_headers["Etag"] = etag
+            self.response_headers["Last-Modified"] = HTTP.format_time(modification_time)
             self.send_file_as_response(file_path, self.get_mime_type_from_file_type(file_type))
           rescue exception
             self.on_error_occured(exception)

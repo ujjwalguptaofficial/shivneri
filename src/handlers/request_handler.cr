@@ -46,6 +46,14 @@ module Shivneri
         return @context.response
       end
 
+      def request_headers
+        self.request.headers
+      end
+
+      def response_headers
+        self.response.headers
+      end
+
       def initialize(@context)
       end
 
@@ -57,7 +65,7 @@ module Shivneri
       private def set_pre_header
         response.headers["X-Powered-By"] = FortGlobal.app_name
         response.headers["Vary"] = "Accept-Encoding"
-        response.headers["Date"] = Time.utc.to_s
+        response.headers["Date"] = HTTP.format_time(Time.utc)
       end
 
       private def execute_wall_incoming

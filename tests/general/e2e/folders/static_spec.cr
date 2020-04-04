@@ -1,7 +1,7 @@
 require "../spec_helper.cr"
 require "../../src/controllers/default_controller"
 
-describe "UserController" do
+describe "Static folder" do
   http_client = HttpClient.new(ENV["APP_URL"])
   etag = ""
   last_modified = ""

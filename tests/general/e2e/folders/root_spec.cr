@@ -1,7 +1,7 @@
 require "../spec_helper.cr"
 require "../../src/controllers/default_controller"
 
-describe "UserController" do
+describe "/ route for folder" do
   http_client = HttpClient.new(ENV["APP_URL"])
 
   it "" do

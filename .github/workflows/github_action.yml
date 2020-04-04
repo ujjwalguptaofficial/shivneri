@@ -24,4 +24,4 @@ jobs:
     - name: Run tests for development
       run: cd tests/general && shards install && CRYSTAL_ENV=TEST crystal spec e2e/* --error-trace
     - name: Run tests for production
-      run: cd tests/general && shards install && CRYSTAL_ENV=Production CLOSE_PROCESS=true crystal spec e2e/* --error-trace
+      run: cd tests/general && shards install && CRYSTAL_ENV=production CLOSE_PROCESS=true crystal spec e2e/* --error-trace

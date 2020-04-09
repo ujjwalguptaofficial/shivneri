@@ -1,7 +1,7 @@
 require "../spec_helper.cr"
 require "../../src/controllers/default_controller"
 
-describe "UserController" do
+describe "RandomController" do
   http_client = HttpClient.new(ENV["APP_URL"] + "/random")
 
   it "/ + accept:text/html" do
@@ -67,14 +67,18 @@ describe "UserController" do
   end
 
   it "/download with post" do
-    response = http_client.post("/download")
+    response = http_client.post("/download", HTTP::Headers{
+      "Accept" => "*/*",
+    }, {
+      name: "ujjwal",
+    }.to_json)
     response.status_code.should eq 200
     response.content_type.should eq "text/html"
     response.headers["content-disposition"].should eq "attachment;filename=alias.html"
   end
 
   it "/file" do
-    response = http_client.post("/file")
+    response = http_client.post("/file", {name: "u"}.to_json)
     response.status_code.should eq 200
     response.content_type.should eq "image/png"
     response.headers.has_key?("content-disposition").should eq false

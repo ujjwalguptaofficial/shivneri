@@ -12,6 +12,7 @@ module General
     # @[ExpectBody(NamedTuple(id: Int32, name: String, password: String, gender: String, email: String, address: String))]
     # @[ExpectBody(User)]
     def check(value : String, user)
+      puts "'#{query["guard_injection_test"]?}'"
       if (query["guard_injection_test"]? != nil)
         return text_result("#{@constructor_value} #{value}", 200)
       end

@@ -31,8 +31,7 @@ describe "UserController" do
       "Accept"       => "application/json",
       "Content-Type" => "application/json",
     }, nil)
-    response.status_code.should eq 200
-    response.body.should eq "{\"count\":0,\"message\":\"file not saved\"}"
+    response.status_code.should eq 400
   end
 
   # it "/upload" do

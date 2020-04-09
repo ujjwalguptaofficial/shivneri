@@ -40,9 +40,7 @@ describe "DefaultController" do
 
   it "post friends" do
     response = http_client.post("/friends")
-    response.status_code.should eq 200
-    response.content_type.should eq "application/json"
-    response.body.should eq "{\"friends\":[\"mohan\",\"sohan\"]}"
+    response.status_code.should eq 400
   end
 
   it "put friends" do

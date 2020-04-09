@@ -31,7 +31,7 @@ describe "UserController" do
   end
 
   it "/guard injection test" do
-    response = http_client.post("/?guard_injection_test=true", HTTP::Headers{
+    response = http_client.get("/?guard_injection_test=true", HTTP::Headers{
       "Accept" => "*/*",
       # "Content-Type" => "application/json",
       "Cookie" => cookie_string,
@@ -41,7 +41,7 @@ describe "UserController" do
   end
 
   it "/guard injection test with return body sending no body" do
-    response = http_client.post("/", HTTP::Headers{
+    response = http_client.get("/", HTTP::Headers{
       "Accept" => "*/*",
       # "Content-Type" => "application/json",
       "Cookie"                           => cookie_string,

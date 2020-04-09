@@ -10,6 +10,7 @@ module General
 
     @[Worker("GET")]
     @[Route("/")]
+    @[Guards(UserValidator)]
     def get_users
       # path_location = File.join(Dir.current, "contents/JsStore_16_16.png")
       # return file_result(path_location)

@@ -32,6 +32,8 @@ module Shivneri
             MIME_TYPE["text"], MIME_TYPE["html"], MIME_TYPE["js"],
             MIME_TYPE["css"], MIME_TYPE["rtf"], MIME_TYPE["csv"],
           ]
+        else
+          return [type]
         end
         return [type]
       end

@@ -1,18 +1,14 @@
+require "log"
+
 module Shivneri
   module HELPER
     class FortLogger
-      @console = Logger.new(STDOUT)
-
-      def initialize
-        @console.level = Logger::DEBUG
-      end
-
       def info(*args)
-        @console.info(join_args(args))
+        Log.info { join_args(args) }
       end
 
       def error(*args)
-        @console.error(join_args(args))
+        Log.error { join_args(args) }
       end
 
       def console(*args)
@@ -20,7 +16,7 @@ module Shivneri
       end
 
       def debug(*args)
-        @console.debug(join_args(args))
+        Log.debug { join_args(args) }
       end
 
       private def join_args(args)

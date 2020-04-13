@@ -100,7 +100,7 @@ describe "HomeController" do
       "Accept"       => "application/json",
       "Content-Type" => "application/json",
     }, nil)
-    response.status_code.should eq 400
+    response.status_code.should eq 200
   end
 
   it "/post with empty body" do
@@ -200,7 +200,7 @@ describe "HomeController" do
     response = http_client.post("/get_body", HTTP::Headers{
       "Accept" => "application/json",
     })
-    response.status_code.should eq 400
+    response.status_code.should eq 200
   end
 
   it "/text with get_body with body - name only" do

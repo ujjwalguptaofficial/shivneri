@@ -1,7 +1,7 @@
 require "../spec_helper.cr"
 require "../../src/controllers/default_controller"
 
-describe "UserController" do
+describe "FileController" do
   http_client = HttpClient.new(ENV["APP_URL"] + "/file")
 
   it "/scripts/bundle.js" do
@@ -31,7 +31,7 @@ describe "UserController" do
       "Accept"       => "application/json",
       "Content-Type" => "application/json",
     }, nil)
-    response.status_code.should eq 400
+    response.status_code.should eq 200
   end
 
   # it "/upload" do

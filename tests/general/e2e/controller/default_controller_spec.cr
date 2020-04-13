@@ -40,7 +40,7 @@ describe "DefaultController" do
 
   it "post friends" do
     response = http_client.post("/friends")
-    response.status_code.should eq 400
+    response.status_code.should eq 200
   end
 
   it "put friends" do

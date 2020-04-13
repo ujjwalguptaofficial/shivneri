@@ -20,5 +20,5 @@ Component based MVC web framework based on fort architecture for [crystal](https
 * Request Logging - https://github.com/ujjwalguptaofficial/shivneri-examples/tree/master/request-logger
 
 # Doc Site
-https://github.com/ujjwalguptaofficial/shivneri-examples/tree/master/request-logger
+https://shivneriforcrystal.com/
 

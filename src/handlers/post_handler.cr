@@ -41,7 +41,7 @@ module Shivneri
         contentType = parse_content_type(contentType)
         if (contentType == MIME_TYPE["form_multi_part"])
           self.parse_multi_part_data
-        else
+        elsif request.content_length.as(UInt64) > 0
           case contentType
           when MIME_TYPE["form_url_encoded"]
             HTTP::Params.parse(request.body.as(IO).gets_to_end).each do |key, val|

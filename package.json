@@ -14,7 +14,10 @@
     "test": "npm run test:general && npm run test:websocket",
     "start": "cd tests/general && crystal src/general.cr --error-trace",
     "start:dev": "cd tests/general && crystal src/general.cr --error-trace",
-    "start:prod": "cd tests/general && CRYSTAL_ENV=Production crystal src/general.cr --error-trace"
+    "start:prod": "cd tests/general && CRYSTAL_ENV=Production crystal src/general.cr --error-trace",
+    "start:server": "cd tests/server && crystal src/server.cr --error-trace",
+    "test:server": "npm run test:server:dev",
+    "test:server:dev": "cd tests/server && CRYSTAL_ENV=TEST crystal spec e2e/* --error-trace"
   },
   "repository": {
     "type": "git",

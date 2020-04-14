@@ -62,7 +62,7 @@ module Shivneri
   end
 
   def self.host=(host : String)
-    Fort.instance.host = port
+    Fort.instance.host = host
   end
 
   def self.register_folder(path : String, folder_location : String)

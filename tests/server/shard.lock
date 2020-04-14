@@ -1,0 +1,10 @@
+version: 1.0
+shards:
+  crinja:
+    github: straight-shoota/crinja
+    version: 0.6.0
+
+  shivneri:
+    github: ujjwalguptaofficial/shivneri
+    version: 0.14.1
+

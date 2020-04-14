@@ -61,6 +61,10 @@ module Shivneri
     Fort.instance.port = port
   end
 
+  def self.host=(host : String)
+    Fort.instance.host = port
+  end
+
   def self.register_folder(path : String, folder_location : String)
     if (path != "/")
       path = remove_first_slash(path)
@@ -84,7 +88,7 @@ module Shivneri
   end
 
   class Fort
-    property port
+    property port, host
     @@instance = Fort.new
 
     def self.instance
@@ -95,6 +99,7 @@ module Shivneri
     @error_handler : MODEL::ErrorHandler.class = ErrorHandler
     @walls = [] of Wall.class
     @port : Int32 = 4000
+    @host : String = "127.0.0.1"
     @routes = [] of NamedTuple(controller_name: String, path: String)
 
     setter error_handler
@@ -420,7 +425,7 @@ module Shivneri
       add_walls
       add_web_socket_controller
 
-      address = @server.bind_tcp @port
+      address = @server.bind_tcp @host, @port
 
       {% if ((env("CRYSTAL_ENV") != nil && env("CRYSTAL_ENV").downcase == "test") || (env("CLOSE_PROCESS") != nil && env("CLOSE_PROCESS").downcase == "true")) %}
         spawn do

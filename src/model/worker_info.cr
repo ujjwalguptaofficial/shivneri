@@ -13,10 +13,15 @@ module Shivneri
       # expectedQuery?: any;
       # expectedBody?: any;
 
-      def initialize(workerName : String, httpMethods : Array(String), @workerProc)
+      def initialize(workerName : String, http_methods : Array(String), @workerProc)
         @name = workerName
         @pattern = "/#{workerName}"
-        @methodsAllowed = httpMethods.size == 0 ? HTTP_METHOD.values : httpMethods
+        @methodsAllowed = http_methods
+        if (http_methods.size == 0)
+          HTTP_METHOD.each_value do |value|
+            @methodsAllowed.push(value)
+          end
+        end
       end
 
       def to_json

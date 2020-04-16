@@ -6,6 +6,7 @@ require "../constants"
 require "../helpers/index"
 require "../generics/index"
 require "../aliases"
+require "../tuples/all"
 
 module Shivneri
   module Handlers
@@ -13,6 +14,7 @@ module Shivneri
     include HELPER
     include MODEL
     include GENERIC
+    include TUPLE
 
     class RequestHandler < PostHandler
       getter query, context, route_match_info, session_provider, component_data

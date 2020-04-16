@@ -1,5 +1,5 @@
 name: shivneri
-version: 0.14.2
+version: 0.15
 
 authors:
   - Ujjwal Gupta <ujjwalkumargupta44@gmail.com>
@@ -15,6 +15,6 @@ dependencies:
 #   webmock:
 #     github: manastech/webmock.cr
 
-crystal: 0.33.0
+crystal: 0.34.0
 
 license: APACHE 2.0

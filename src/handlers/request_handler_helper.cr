@@ -1,12 +1,12 @@
 require "../fort_global"
 require "../constants"
-require "../hashes/index"
+require "../tuples/all"
 require "http"
 require "../exceptions/index"
 
 module Shivneri
   module Handlers
-    include HASHES
+    include TUPLE
     include EXCEPTION
 
     class RequestHandlerHelper

@@ -1,8 +1,8 @@
-require "../hashes/index"
+require "../tuples/all"
 
 module Shivneri
   module MODEL
-    include HASHES
+    include TUPLE
 
     struct HttpResult
       property status_code, response_data, content_type, response_format, should_redirect, file

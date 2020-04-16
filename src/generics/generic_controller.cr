@@ -1,10 +1,10 @@
 require "../abstracts/index"
-require "../hashes/index"
+require "../tuples/all"
 
 module Shivneri
   module GENERIC
     include ABSTRACT
-    include HASHES
+    include TUPLE
 
     class GenericController < Controller
       def generic_method

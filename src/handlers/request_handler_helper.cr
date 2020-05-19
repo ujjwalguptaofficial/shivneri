@@ -65,10 +65,12 @@ module Shivneri
         end
       end
 
+      # // doesn't execute wall outgoing
+      # if there will be some error in outgoing, then
+      # it will become an infinite loop
       protected def on_error_occured(error : Exception)
         errMessage : String = ""
         begin
-          self.run_wall_out_going
           errMessage = FortGlobal.error_handler.new.on_server_error(error)
         rescue ex
           errMessage = "#{ex.message}"

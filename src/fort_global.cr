@@ -13,7 +13,7 @@ module Shivneri
     @@view_path = "src/views"
     @@is_env_production : Bool = ENV.has_key?("CRYSTAL_ENV") ? ENV["CRYSTAL_ENV"] == "production" : false # FortGlobal.is_env_production
     @@folders = [] of ALIAS::FolderMap
-    @@logger = FortLogger.new
+    @@logger = Logger.new
   end
 
   def FortGlobal.app_name
@@ -76,8 +76,12 @@ module Shivneri
     @@should_parse_post = value
   end
 
+  def FortGlobal.logger=(value)
+    @@logger = value
+  end
+
   macro FortGlobal
-is_env_production
+  is_env_production
     return @@is_env_production
   end
 end

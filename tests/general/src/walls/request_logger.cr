@@ -8,7 +8,7 @@ module General
     @@req_count = 0
 
     private def get_ip
-      ip = (request.headers["x-forwarded-for"]? || "").split(",").pop || request.remote_address
+      ip = (request.headers["x-forwarded-for"]? || "").split(",").pop || request.remote_address.to_s
       return ip
     end
 

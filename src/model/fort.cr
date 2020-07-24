@@ -87,6 +87,10 @@ module Shivneri
     FortGlobal.should_parse_post = value
   end
 
+  def self.logger=(value : Logger)
+    FortGlobal.logger = value
+  end
+
   class Fort
     property port, host
     @@instance = Fort.new

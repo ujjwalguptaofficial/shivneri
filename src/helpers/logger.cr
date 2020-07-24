@@ -2,7 +2,7 @@ require "log"
 
 module Shivneri
   module HELPER
-    class FortLogger
+    class Logger
       def info(*args)
         Log.info { join_args(args) }
       end
@@ -19,7 +19,7 @@ module Shivneri
         Log.debug { join_args(args) }
       end
 
-      private def join_args(args)
+      protected def join_args(args)
         message = ""
         args.each do |value|
           message += " #{value}"

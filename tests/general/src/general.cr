@@ -8,6 +8,7 @@ require "./controllers/file_controller"
 require "./controllers/cookie_controller"
 require "./controllers/chat_controller"
 require "./walls/all"
+require "./logger"
 
 include Shivneri
 include General
@@ -47,7 +48,8 @@ def init_app(on_success = nil)
   #   app.register_controller(route[:controller], route[:path])
   # end
   # Shivneri.routes = routes
-  Shivneri.walls = [WallWithoutOutgoing, RequestLogger]
+  Shivneri.walls = [WallWithoutOutgoing, RequestLogger];
+  Shivneri.logger = CustomLogger.new;
   path_of_static_folder = File.join(Dir.current, "static")
   Shivneri.folders = [{
     path:   "static",

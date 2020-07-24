@@ -116,7 +116,7 @@ module Shivneri
       def on_error(exception)
         return {
           message:    exception.message.as(String),
-          stacktrace: exception.callstack.as(CallStack).printable_backtrace,
+          stacktrace: exception.callstack.as(Exception::CallStack).printable_backtrace,
         }.to_json
       end
     end

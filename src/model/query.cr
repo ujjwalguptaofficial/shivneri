@@ -3,9 +3,11 @@ require "json"
 module Shivneri
   module MODEL
     struct Query
-      JSON.mapping(
-        query_data: Hash(String, String)
-      )
+      include JSON::Serializable
+
+      @[JSON::Field]
+      query_data : Hash(String, String)
+
       setter query_data
 
       @query_data : Hash(String, String)

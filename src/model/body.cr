@@ -3,9 +3,11 @@ require "json"
 module Shivneri
   module MODEL
     struct Body
-      JSON.mapping(
-        body_data: Hash(String, JSON::Any)
-      )
+      include JSON::Serializable
+
+      @[JSON::Field]
+      body_data : Hash(String, JSON::Any)
+
       setter body_data
 
       @body_data : Hash(String, JSON::Any)

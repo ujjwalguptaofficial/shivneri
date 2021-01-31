@@ -80,8 +80,8 @@ module Shivneri
     @@logger = value
   end
 
-  macro FortGlobal
-  is_env_production
+  # macro FortGlobal
+  def is_env_production
     return @@is_env_production
   end
 end

@@ -123,6 +123,8 @@ module Shivneri
             self.on_bad_request(ex)
             return false
           end
+        else
+          @body.body_data = {} of String => JSON::Any
         end
         return true
       end

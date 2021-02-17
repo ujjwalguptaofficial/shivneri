@@ -15,6 +15,6 @@ dependencies:
 #   webmock:
 #     github: manastech/webmock.cr
 
-crystal: 0.35.1
+crystal: 0.36.0
 
 license: APACHE 2.0

@@ -84,13 +84,6 @@ describe "RandomController" do
     response.headers.has_key?("content-disposition").should eq false
   end
 
-  it "/invalid_guard_injection" do
-    response = http_client.get("/invalid_guard_injection")
-    response.status_code.should eq 500
-    response.content_type.should eq "text/html"
-    response.body.includes?("Guard General::InvalidInjectionGuard expect some arguments in method check, use Inject annotation for dependency injection.").should eq true
-  end
-
   it "/tuple_convert_test for get" do
     response = http_client.get("/tuple_convert_test")
     response.status_code.should eq 200

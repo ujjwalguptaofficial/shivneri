@@ -12,7 +12,7 @@ module General
       return ip
     end
 
-    def incoming
+    def incoming : HttpResult | Nil
       if (query["req_count_reset"]? != nil)
         @@req_count = 0
       end

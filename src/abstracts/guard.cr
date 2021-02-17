@@ -13,7 +13,7 @@ module Shivneri
         return @context.as(RequestHandler).file
       end
 
-      abstract def check(*args)
+      abstract def check
     end
   end
 end

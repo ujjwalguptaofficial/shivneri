@@ -37,7 +37,7 @@ describe "UserController" do
       "Cookie" => cookie_string,
     })
     response.status_code.should eq 200
-    response.body.should eq "hello injection ok in guard"
+    response.body.should eq "injection ok in guard"
   end
 
   it "/guard injection test with return body sending no body" do

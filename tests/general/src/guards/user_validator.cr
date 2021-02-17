@@ -1,25 +1,25 @@
 module General
-  @[Inject("hello")]
+  @[Inject("injection ok in guard")]
+
   class UserValidator < Guard
-    # @user : NamedTuple(id: Int32, name: String)
+    @user : NamedTuple(id: Int32, name: String, password: String, gender: String, email: String, address: String)
 
     def initialize(value : String)
       @constructor_value = value
+      @user = body.to_tuple(NamedTuple(id: Int32, name: String, password: String, gender: String, email: String, address: String))
     end
 
-    @[Inject("injection ok in guard", "as_body")]
-    @[BodySameAs("UserController", "add_user")]
     # @[ExpectBody(NamedTuple(id: Int32, name: String, password: String, gender: String, email: String, address: String))]
     # @[ExpectBody(User)]
-    def check(value : String, user)
+    def check
       self.logger.debug "'#{query["guard_injection_test"]?}'"
       if (query["guard_injection_test"]? != nil)
-        return text_result("#{@constructor_value} #{value}", 200)
+        return text_result("#{@constructor_value}", 200)
       end
       if (request.headers.has_key?("guard_injection_test_return_body"))
-        return json_result(user, 200)
+        return json_result(@user, 200)
       end
-      err_message = validate user
+      err_message = validate @user
       if (err_message.size > 0)
         return text_result(err_message, 400)
       end

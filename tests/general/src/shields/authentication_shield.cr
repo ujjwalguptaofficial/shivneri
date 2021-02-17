@@ -2,7 +2,7 @@ module General
   class AuthenticationShield < Shield
     @@counter = 0
 
-    def protect
+    def protect : HttpResult | Nil
       @@counter = @@counter + 1
       puts "authentication shield executed"
       self["authentication_shield_counter"] = @@counter
@@ -19,7 +19,7 @@ module General
         if (worker_name == "allow_me")
           nil_result
         else
-          redirect_result("/default/login")
+          redirect_result("/home/login")
         end
       end
     end

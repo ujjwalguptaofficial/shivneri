@@ -5,6 +5,6 @@ shards:
     version: 0.7.0
 
   shivneri:
-    git: https://github.com/ujjwalguptaofficial/shivneri.git
+    path: ../..
     version: 0.14.1
 

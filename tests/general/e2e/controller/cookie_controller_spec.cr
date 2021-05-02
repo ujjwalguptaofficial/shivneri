@@ -30,7 +30,7 @@ describe "CookieController" do
     body["max_age"].should eq 5000
     body["http_only"].should eq false
     body["path"].should eq "/"
-    cookies = HTTP::Cookies.from_headers(response.headers)
+    cookies = HTTP::Cookies.from_server_headers(response.headers)
     cookies[cookie_name]?.as(HTTP::Cookie).value.should eq cookie_value_obj[:cookie_value]
     cookies[cookie_name]?.as(HTTP::Cookie).path.should eq "/"
     cookies[cookie_name]?.as(HTTP::Cookie).secure.should eq false
@@ -65,7 +65,7 @@ describe "CookieController" do
     body["max_age"].should eq 3600
     body["http_only"].should eq false
     body["path"].should eq "/"
-    cookies = HTTP::Cookies.from_headers(response.headers)
+    cookies = HTTP::Cookies.from_server_headers(response.headers)
     cookies[cookie_name]?.as(HTTP::Cookie).value.should eq cookie_value_obj[:cookie_value]
     cookies[cookie_name]?.as(HTTP::Cookie).path.should eq "/"
     cookies[cookie_name]?.as(HTTP::Cookie).secure.should eq false
@@ -91,7 +91,7 @@ describe "CookieController" do
     })
     response.status_code.should eq 200
     cookie_string = response.headers["Set-Cookie"]
-    cookies = HTTP::Cookies.from_headers(response.headers)
+    cookies = HTTP::Cookies.from_server_headers(response.headers)
     cookies[cookie_name]?.as(HTTP::Cookie).path.should eq "/"
     cookies[cookie_name]?.as(HTTP::Cookie).secure.should eq false
     cookies[cookie_name]?.as(HTTP::Cookie).http_only.should eq false

@@ -30,11 +30,11 @@ describe "CookieController" do
     body["max_age"].should eq 5000
     body["http_only"].should eq false
     body["path"].should eq "/"
-    cookies = HTTP::Cookies.from_headers(response.headers)
-    cookies[cookie_name]?.as(HTTP::Cookie).value.should eq cookie_value_obj[:cookie_value]
-    cookies[cookie_name]?.as(HTTP::Cookie).path.should eq "/"
-    cookies[cookie_name]?.as(HTTP::Cookie).secure.should eq false
-    cookies[cookie_name]?.as(HTTP::Cookie).http_only.should eq false
+    cookies = response.cookies
+    cookie = cookies[cookie_name]
+    cookie.value.should eq cookie_value_obj[:cookie_value]
+    cookie.secure.should eq false
+    cookie.http_only.should eq false
     cookie_string = response.headers["Set-Cookie"]
   end
 
@@ -65,11 +65,10 @@ describe "CookieController" do
     body["max_age"].should eq 3600
     body["http_only"].should eq false
     body["path"].should eq "/"
-    cookies = HTTP::Cookies.from_headers(response.headers)
-    cookies[cookie_name]?.as(HTTP::Cookie).value.should eq cookie_value_obj[:cookie_value]
-    cookies[cookie_name]?.as(HTTP::Cookie).path.should eq "/"
-    cookies[cookie_name]?.as(HTTP::Cookie).secure.should eq false
-    cookies[cookie_name]?.as(HTTP::Cookie).http_only.should eq false
+    cookie = response.cookies[cookie_name]
+    cookie.value.should eq cookie_value_obj[:cookie_value]
+    cookie.secure.should eq false
+    cookie.http_only.should eq false
     cookie_string = response.headers["Set-Cookie"]
   end
 
@@ -91,11 +90,9 @@ describe "CookieController" do
     })
     response.status_code.should eq 200
     cookie_string = response.headers["Set-Cookie"]
-    cookies = HTTP::Cookies.from_headers(response.headers)
-    cookies[cookie_name]?.as(HTTP::Cookie).path.should eq "/"
-    cookies[cookie_name]?.as(HTTP::Cookie).secure.should eq false
-    cookies[cookie_name]?.as(HTTP::Cookie).http_only.should eq false
-    # cookies[cookie_name]?.as(HTTP::Cookie).expires.should eq ""
+    cookie = response.cookies[cookie_name]
+    cookie.secure.should eq false
+    cookie.http_only.should eq false
     status = (cookie_string.includes? "Expires=1900-01-01 00:00:00 UTC; Max-Age=-1;")
     status.should eq true
     response.body.should eq "deleted"
